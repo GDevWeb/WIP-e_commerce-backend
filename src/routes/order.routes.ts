@@ -7,7 +7,10 @@ import {
   updateOrder,
 } from "../controllers/order.controller";
 import { validate } from "../middlewares/validate";
-import { createOrderSchema, updateOrderSchema } from "../schemas/order.schema";
+import {
+  createOrderSchema,
+  updateOrderSchema,
+} from "../modules/order/schema/order.schema";
 
 const orderRouter = express.Router();
 

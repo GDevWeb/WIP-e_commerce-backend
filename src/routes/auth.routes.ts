@@ -22,7 +22,18 @@ console.log("=== FIN DEBUG ===");
 
 const authRouter = express.Router();
 
-authRouter.post("/register", validate(RegisterSchema), register);
+authRouter.post(
+  "/register",
+  (req, res, next) => {
+    console.log("🔍 DEBUG Register:");
+    console.log("  - req.body:", req.body);
+    console.log("  - Content-Type:", req.headers["content-type"]);
+    console.log("  - Body is undefined?", req.body === undefined);
+    next();
+  },
+  validate(RegisterSchema),
+  register
+);
 authRouter.post("/login", validate(LoginSchema), login);
 
 authRouter.get("/profile", authMiddleware, getProfile);
@@ -34,6 +45,5 @@ authRouter.patch(
 );
 
 authRouter.post("/refresh", validate(RefreshTokenSchema), refreshToken);
-// authRouter.post("/refresh", refreshToken);
 
 export default authRouter;
