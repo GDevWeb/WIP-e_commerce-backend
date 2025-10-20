@@ -296,7 +296,7 @@ e-commerce-backend/
 
 - [x] Advanced validation with Zod - TODO: OrderItem et Review
 - [x] Centralized error handling
-- [ ] JWT Authentication
+- [x] JWT Authentication
 - [ ] Order management system
 
 ### 🚀 Phase 3: Advanced Features (Weeks 6-8)

@@ -97,9 +97,11 @@
 
 **Goal: Protected Routes + Refresh Tokens**
 
-- [ ] Create `authMiddleware` (verify JWT)
+- [x] Create `authMiddleware` (verify JWT)
 - [ ] Protect sensitive routes (Orders, Profile)
-- [ ] Implement refresh tokens (optional but recommended)
+  - [x] Profile
+  - [ ] Orders
+- [x] Implement refresh tokens (optional but recommended)
 - [ ] **Deliverable**: JWT-secured routes
 
 **Estimated time: 4h**
