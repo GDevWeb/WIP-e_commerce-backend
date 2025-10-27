@@ -1,5 +1,10 @@
 import { BadRequestError, NotFoundError } from "../../../errors";
-import { Order, OrderItem, PrismaClient } from "../../../generated/prisma";
+import {
+  Order,
+  OrderItem,
+  OrderStatus,
+  PrismaClient,
+} from "../../../generated/prisma";
 import { CreateOrderInput } from "../schema/order.schema";
 
 const prisma = new PrismaClient();
@@ -156,4 +161,200 @@ export const createOrder = async (
       price: item.price,
     })),
   };
+};
+
+/**
+ * Retrieves a list of orders for a specific customer, with optional filtering and pagination.
+ *
+ * This function allows customers to view their order history. It supports filtering orders
+ * by their current status and paginating the results to manage large datasets.
+ *
+ * @param customerId The ID of the customer whose orders are to be retrieved.
+ * @param filters An object containing optional filters for the orders:
+ *   - `status`: An optional `OrderStatus` to filter orders by their current status (e.g., "DELIVERED", "PENDING").
+ *   - `page`: The page number for pagination (defaults to 1).
+ *   - `limit`: The maximum number of orders to return per page (defaults to 10).
+ * @returns A promise that resolves to an object containing the list of orders and pagination metadata.
+ */
+
+export const getOrders = async (
+  customerId: number,
+  filters: {
+    status?: OrderStatus;
+    page?: number;
+    limit?: number;
+  }
+) => {
+  const { status, page = 1, limit = 10 } = filters;
+
+  // Calculate skip for pagination
+  const skip = (page - 1) * limit;
+
+  // Building where clause
+  const where: { customer_id: number; status?: OrderStatus } = {
+    customer_id: customerId,
+  };
+
+  if (status) {
+    where.status = status;
+  }
+
+  //Retrieving orders with pagination
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: {
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        order_date: "desc",
+      },
+      skip,
+      take: limit,
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  // Calculate metaData ofr pagination
+  const totalPages = Math.ceil(total / limit);
+  const hasNextPage = page < totalPages;
+  const hasPrevPage = page > 1;
+
+  return {
+    orders,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage,
+      hasPrevPage,
+    },
+  };
+};
+
+/**
+ * Retrieves a specific order by its ID for a given customer.
+ *
+ * This function fetches a single order, ensuring it belongs to the specified customer.
+ * It includes detailed information about the order items and the products associated with them.
+ *
+ * @param customerId The ID of the customer who owns the order.
+ * @param orderId The ID of the order to retrieve.
+ * @returns A promise that resolves to the found order with its items and product details.
+ * @throws {NotFoundError} If the order is not found or does not belong to the customer.
+ */
+
+export const getOrderById = async (customerId: number, orderId: number) => {
+  const order = await prisma.order.findFirst({
+    where: {
+      id: orderId,
+      customer_id: customerId,
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+              imageUrl: true,
+              price: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  //Handle the case where the order is not found or does not belong to the customer
+  if (!order) {
+    throw new NotFoundError(
+      `Order #${orderId} not found or does not belong to you`
+    );
+  }
+
+  return order;
+};
+
+/**
+ * Could be restricted to ADMIN only (future)
+ * Updates the status of a specific order.
+ *
+ * This function allows for changing the status of an order (e.g., from PENDING to PROCESSING, or SHIPPED to DELIVERED).
+ * It includes validation to ensure that the status transition is valid according to predefined rules.
+ *
+ * @param orderId The ID of the order to update.
+ * @param newStatus The new status to set for the order.
+ * @returns A promise that resolves to the updated order with its items and product details.
+ * @throws {NotFoundError} If the order with the given ID is not found.
+ * @throws {BadRequestError} If the requested status transition is invalid.
+ */
+
+// **Status transition** :
+// PENDING → PROCESSING → SHIPPED → DELIVERED
+//    ↓          ↓
+// CANCELLED  CANCELLED
+// DELIVERED → REFUNDED (if payback)
+
+export const updateOrderStatus = async (
+  orderId: number,
+  newStatus: OrderStatus
+) => {
+  // Checking if the command exists
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new NotFoundError(`Order #${orderId} not found`);
+  }
+
+  // Checking valid transitions
+  const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+    PENDING: ["PROCESSING", "CANCELLED"],
+    PROCESSING: ["SHIPPED", "CANCELLED"],
+    SHIPPED: ["DELIVERED"],
+    DELIVERED: ["REFUNDED"],
+    CANCELLED: [],
+    REFUNDED: [],
+  };
+
+  const allowedStatuses = validTransitions[order.status];
+  if (!allowedStatuses.includes(newStatus)) {
+    throw new BadRequestError(
+      `Cannot transition from ${order.status} to ${newStatus}`
+    );
+  }
+
+  // Update the status
+  const updatedOrder = await prisma.order.update({
+    where: { id: orderId },
+    data: { status: newStatus },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return updatedOrder;
 };

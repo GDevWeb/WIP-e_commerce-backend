@@ -27,7 +27,7 @@ export const CreateOrderSchema = z.object({
   query: z.object({}),
 });
 
-//Schema for retrieving Orders
+// Schema for retrieving Orders
 export const GetOrdersSchema = z.object({
   body: z.object({}),
   params: z.object({}),
@@ -44,18 +44,14 @@ export const GetOrdersSchema = z.object({
       .optional(),
     page: z
       .string()
-      .regex(/^\d+$/, "Page must be a number")
-      .transform(Number)
-      .pipe(z.number().int().positive())
       .optional()
-      .default(1),
+      .transform((val) => (val ? parseInt(val, 10) : 1))
+      .pipe(z.number().int().positive()),
     limit: z
       .string()
-      .regex(/^\d+$/, "Limit must be a number")
-      .transform(Number)
-      .pipe(z.number().int().min(1).max(100))
       .optional()
-      .default(20),
+      .transform((val) => (val ? parseInt(val, 10) : 20))
+      .pipe(z.number().int().min(1).max(100)),
   }),
 });
 
