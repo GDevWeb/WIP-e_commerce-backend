@@ -90,7 +90,7 @@ export const createOrder = async (
 
   // Execute all database operations within a transaction to ensure atomicity
   const result = (await prisma.$transaction(async (tx) => {
-    // 5.1 : Create order
+    // Create order
     const order = await tx.order.create({
       data: {
         customer_id: customerId,
