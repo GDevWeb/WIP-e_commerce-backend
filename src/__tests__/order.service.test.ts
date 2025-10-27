@@ -28,7 +28,7 @@ jest.mock("../generated/prisma", () => ({
 }));
 
 import { Prisma } from "../generated/prisma";
-import * as orderService from "../services/order.service";
+import * as orderService from "../modules/order/service/order.service";
 
 describe("Order Service", () => {
   beforeEach(() => {

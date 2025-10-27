@@ -55,25 +55,27 @@ enum OrderStatus {
 // ===== MODELS =====
 
 model Customer {
-  id                       Int            @id @default(autoincrement())
+  id                       Int           @id @default(autoincrement())
   first_name               String
   last_name                String
   date_of_birth            DateTime?
-  email                    String         @unique
-  password                 String? //Temporary added 15102025 - Schedule splitting Customer AND User session 14 RBAC
+  email                    String        @unique
+  password                 String?
   phone_number             String?
   address                  String?
-  is_active                Boolean        @default(true)
+  is_active                Boolean       @default(true)
   last_purchase_date       DateTime?
-  total_orders             Int            @default(0)
-  total_spent              Float          @default(0)
-  customer_type            CustomerType   @default(STANDARD)
-  preferred_contact_method ContactMethod  @default(EMAIL)
-  createdAt                DateTime       @default(now())
-  updatedAt                DateTime       @updatedAt
-  orders                   Order[]
-  reviews                  Review[]
-  RefreshToken             RefreshToken[]
+  total_orders             Int           @default(0)
+  total_spent              Float         @default(0)
+  customer_type            CustomerType  @default(STANDARD)
+  preferred_contact_method ContactMethod @default(EMAIL)
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+
+  // Relations
+  orders        Order[]
+  reviews       Review[]
+  refreshTokens RefreshToken[] // ✅ Avant @@map
 
   @@map("customers")
 }
@@ -81,12 +83,13 @@ model Customer {
 model RefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
-  user      Customer @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
+  user      Customer @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
-}
 
+  @@map("refresh_tokens") // ✅ Bon nom de table
+}
 model Brand {
   id        Int       @id @default(autoincrement())
   name      String    @unique

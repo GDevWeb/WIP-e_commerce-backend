@@ -59,7 +59,7 @@ model Customer {
   last_name                String
   date_of_birth            DateTime?
   email                    String        @unique
-  password                 String?       //Temporary added 15102025 - Schedule splitting Customer AND User session 14 RBAC
+  password                 String?
   phone_number             String?
   address                  String?
   is_active                Boolean       @default(true)
@@ -70,21 +70,26 @@ model Customer {
   preferred_contact_method ContactMethod @default(EMAIL)
   createdAt                DateTime      @default(now())
   updatedAt                DateTime      @updatedAt
+  
+  // Relations
   orders                   Order[]
   reviews                  Review[]
+  refreshTokens            RefreshToken[]  
 
   @@map("customers")
-  RefreshToken RefreshToken[]
 }
 
 model RefreshToken {
-  id Int @id @default(autoincrement())
-  token String @unique
-  user Customer @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  user      Customer @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime 
-  createdAt DateTime @default(now()) 
+  createdAt DateTime @default(now())
+  
+  @@map("refresh_tokens")
 }
+
 model Brand {
   id        Int       @id @default(autoincrement())
   name      String    @unique

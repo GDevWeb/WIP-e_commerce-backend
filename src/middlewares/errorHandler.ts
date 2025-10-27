@@ -9,28 +9,33 @@ import logger from "../utils/logger";
  * This middleware should be the LAST one added to the Express app.
  */
 export const errorHandler = (
-  error: Error,
+  receivedError: Error,
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
-  // Log the error for debugging purposes
+  const error = receivedError as any;
+
   logger.error("❌ Error caught by global handler:", {
     name: error.name,
     message: error.message,
     stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
   });
 
-  // 1. Handle applicative errors
-  if (error instanceof AppError) {
-    res.status(error.statusCode).json({
+  const isOperationalError =
+    error.isOperational === true || error instanceof AppError;
+
+  if (isOperationalError) {
+    const statusCode = error.statusCode || 500;
+    const message = error.message;
+
+    res.status(statusCode).json({
       status: "error",
-      message: error.message,
+      message: message,
     });
     return;
   }
-
-  // 2. Handle Zod errors (validation)
+  // 2. Handle Zod errors
   if (error instanceof ZodError) {
     const formattedErrors = error.issues.map((issue) => ({
       field: issue.path.slice(1).join("."),

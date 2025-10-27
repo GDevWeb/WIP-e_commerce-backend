@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import jwt, { SignOptions } from "jsonwebtoken";
+import { UnauthorizedError } from "../errors";
 
 dotenv.config();
 
@@ -62,10 +63,12 @@ export const verifyToken = (
     return decoded;
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      throw new Error("Token has expired");
+      throw new UnauthorizedError("Refresh token has expired");
     }
     if (error instanceof jwt.JsonWebTokenError) {
-      throw new Error("Invalid token");
+      throw new UnauthorizedError(
+        "Invalid refresh token signature or malformed token"
+      );
     }
     throw error;
   }

@@ -5,6 +5,8 @@ import * as authService from "../service/auth.service";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const authResponse = await authService.register(req.body);
+  console.log("ℹ️From controller register - value of body:", req.body);
+
   res.status(201).json(authResponse);
 });
 
@@ -33,6 +35,18 @@ export const updateProfile = asyncHandler(
     res.status(200).json({
       message: "Profile updated successfully",
       data: user,
+    });
+  }
+);
+
+export const refreshToken = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { refreshToken } = req.body;
+    const authResponse = await authService.refreshTokenAccess(refreshToken);
+
+    res.status(200).json({
+      message: "Access token refreshed successfully",
+      data: authResponse,
     });
   }
 );

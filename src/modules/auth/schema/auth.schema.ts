@@ -49,15 +49,15 @@ export const UpdateProfileSchema = z.object({
   query: z.object({}),
 });
 
-export const RefreshTokenSchema = z.object({
-  body: z.object({
-    refreshToken: z.string().min(1, "Refresh token is required"),
-  }),
-  params: z.object({}),
-  query: z.object({}),
-});
+// export const RefreshTokenSchema = z.object({
+//   body: z.object({
+//     refreshToken: z.string().min(1, "Refresh token cannot be empty"),
+//   }),
+//   params: z.object({}),
+//   query: z.object({}),
+// });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>["body"];
 export type LoginInput = z.infer<typeof LoginSchema>["body"];
 export type UpdateProfileInput = z.infer<typeof UpdateProfileSchema>["body"];
-export type RefreshTokenInput = z.infer<typeof RefreshTokenSchema>["body"];
+// export type RefreshTokenInput = z.infer<typeof RefreshTokenSchema>["body"];

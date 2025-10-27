@@ -147,3 +147,6 @@ uploads
 
 #personal notes
 /personal
+
+# API Collections avec tokens sensibles
+docs/api-collections/environment.json

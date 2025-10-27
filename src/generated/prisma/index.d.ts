@@ -1549,13 +1549,13 @@ export namespace Prisma {
   export type CustomerCountOutputType = {
     orders: number
     reviews: number
-    RefreshToken: number
+    refreshTokens: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | CustomerCountOutputTypeCountOrdersArgs
     reviews?: boolean | CustomerCountOutputTypeCountReviewsArgs
-    RefreshToken?: boolean | CustomerCountOutputTypeCountRefreshTokenArgs
+    refreshTokens?: boolean | CustomerCountOutputTypeCountRefreshTokensArgs
   }
 
   // Custom InputTypes
@@ -1586,7 +1586,7 @@ export namespace Prisma {
   /**
    * CustomerCountOutputType without action
    */
-  export type CustomerCountOutputTypeCountRefreshTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CustomerCountOutputTypeCountRefreshTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RefreshTokenWhereInput
   }
 
@@ -2024,7 +2024,7 @@ export namespace Prisma {
     updatedAt?: boolean
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     reviews?: boolean | Customer$reviewsArgs<ExtArgs>
-    RefreshToken?: boolean | Customer$RefreshTokenArgs<ExtArgs>
+    refreshTokens?: boolean | Customer$refreshTokensArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -2089,7 +2089,7 @@ export namespace Prisma {
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     reviews?: boolean | Customer$reviewsArgs<ExtArgs>
-    RefreshToken?: boolean | Customer$RefreshTokenArgs<ExtArgs>
+    refreshTokens?: boolean | Customer$refreshTokensArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2100,7 +2100,7 @@ export namespace Prisma {
     objects: {
       orders: Prisma.$OrderPayload<ExtArgs>[]
       reviews: Prisma.$ReviewPayload<ExtArgs>[]
-      RefreshToken: Prisma.$RefreshTokenPayload<ExtArgs>[]
+      refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2515,7 +2515,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     orders<T extends Customer$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Customer$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviews<T extends Customer$reviewsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    RefreshToken<T extends Customer$RefreshTokenArgs<ExtArgs> = {}>(args?: Subset<T, Customer$RefreshTokenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    refreshTokens<T extends Customer$refreshTokensArgs<ExtArgs> = {}>(args?: Subset<T, Customer$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2997,9 +2997,9 @@ export namespace Prisma {
   }
 
   /**
-   * Customer.RefreshToken
+   * Customer.refreshTokens
    */
-  export type Customer$RefreshTokenArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Customer$refreshTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the RefreshToken
      */
@@ -11305,7 +11305,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     orders?: OrderListRelationFilter
     reviews?: ReviewListRelationFilter
-    RefreshToken?: RefreshTokenListRelationFilter
+    refreshTokens?: RefreshTokenListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -11327,7 +11327,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     orders?: OrderOrderByRelationAggregateInput
     reviews?: ReviewOrderByRelationAggregateInput
-    RefreshToken?: RefreshTokenOrderByRelationAggregateInput
+    refreshTokens?: RefreshTokenOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -11352,7 +11352,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     orders?: OrderListRelationFilter
     reviews?: ReviewListRelationFilter
-    RefreshToken?: RefreshTokenListRelationFilter
+    refreshTokens?: RefreshTokenListRelationFilter
   }, "id" | "email">
 
   export type CustomerOrderByWithAggregationInput = {
@@ -11891,7 +11891,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutCustomerInput
     reviews?: ReviewCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -11913,7 +11913,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
     reviews?: ReviewUncheckedCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type CustomerUpdateInput = {
@@ -11934,7 +11934,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutCustomerNestedInput
     reviews?: ReviewUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -11956,7 +11956,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -12019,7 +12019,7 @@ export namespace Prisma {
     token: string
     expiresAt: Date | string
     createdAt?: Date | string
-    user: CustomerCreateNestedOneWithoutRefreshTokenInput
+    user: CustomerCreateNestedOneWithoutRefreshTokensInput
   }
 
   export type RefreshTokenUncheckedCreateInput = {
@@ -12034,7 +12034,7 @@ export namespace Prisma {
     token?: StringFieldUpdateOperationsInput | string
     expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: CustomerUpdateOneRequiredWithoutRefreshTokenNestedInput
+    user?: CustomerUpdateOneRequiredWithoutRefreshTokensNestedInput
   }
 
   export type RefreshTokenUncheckedUpdateInput = {
@@ -13342,18 +13342,18 @@ export namespace Prisma {
     deleteMany?: RefreshTokenScalarWhereInput | RefreshTokenScalarWhereInput[]
   }
 
-  export type CustomerCreateNestedOneWithoutRefreshTokenInput = {
-    create?: XOR<CustomerCreateWithoutRefreshTokenInput, CustomerUncheckedCreateWithoutRefreshTokenInput>
-    connectOrCreate?: CustomerCreateOrConnectWithoutRefreshTokenInput
+  export type CustomerCreateNestedOneWithoutRefreshTokensInput = {
+    create?: XOR<CustomerCreateWithoutRefreshTokensInput, CustomerUncheckedCreateWithoutRefreshTokensInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutRefreshTokensInput
     connect?: CustomerWhereUniqueInput
   }
 
-  export type CustomerUpdateOneRequiredWithoutRefreshTokenNestedInput = {
-    create?: XOR<CustomerCreateWithoutRefreshTokenInput, CustomerUncheckedCreateWithoutRefreshTokenInput>
-    connectOrCreate?: CustomerCreateOrConnectWithoutRefreshTokenInput
-    upsert?: CustomerUpsertWithoutRefreshTokenInput
+  export type CustomerUpdateOneRequiredWithoutRefreshTokensNestedInput = {
+    create?: XOR<CustomerCreateWithoutRefreshTokensInput, CustomerUncheckedCreateWithoutRefreshTokensInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutRefreshTokensInput
+    upsert?: CustomerUpsertWithoutRefreshTokensInput
     connect?: CustomerWhereUniqueInput
-    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutRefreshTokenInput, CustomerUpdateWithoutRefreshTokenInput>, CustomerUncheckedUpdateWithoutRefreshTokenInput>
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutRefreshTokensInput, CustomerUpdateWithoutRefreshTokensInput>, CustomerUncheckedUpdateWithoutRefreshTokensInput>
   }
 
   export type ProductCreateNestedManyWithoutBrandInput = {
@@ -14108,7 +14108,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"RefreshToken"> | Date | string
   }
 
-  export type CustomerCreateWithoutRefreshTokenInput = {
+  export type CustomerCreateWithoutRefreshTokensInput = {
     first_name: string
     last_name: string
     date_of_birth?: Date | string | null
@@ -14128,7 +14128,7 @@ export namespace Prisma {
     reviews?: ReviewCreateNestedManyWithoutCustomerInput
   }
 
-  export type CustomerUncheckedCreateWithoutRefreshTokenInput = {
+  export type CustomerUncheckedCreateWithoutRefreshTokensInput = {
     id?: number
     first_name: string
     last_name: string
@@ -14149,23 +14149,23 @@ export namespace Prisma {
     reviews?: ReviewUncheckedCreateNestedManyWithoutCustomerInput
   }
 
-  export type CustomerCreateOrConnectWithoutRefreshTokenInput = {
+  export type CustomerCreateOrConnectWithoutRefreshTokensInput = {
     where: CustomerWhereUniqueInput
-    create: XOR<CustomerCreateWithoutRefreshTokenInput, CustomerUncheckedCreateWithoutRefreshTokenInput>
+    create: XOR<CustomerCreateWithoutRefreshTokensInput, CustomerUncheckedCreateWithoutRefreshTokensInput>
   }
 
-  export type CustomerUpsertWithoutRefreshTokenInput = {
-    update: XOR<CustomerUpdateWithoutRefreshTokenInput, CustomerUncheckedUpdateWithoutRefreshTokenInput>
-    create: XOR<CustomerCreateWithoutRefreshTokenInput, CustomerUncheckedCreateWithoutRefreshTokenInput>
+  export type CustomerUpsertWithoutRefreshTokensInput = {
+    update: XOR<CustomerUpdateWithoutRefreshTokensInput, CustomerUncheckedUpdateWithoutRefreshTokensInput>
+    create: XOR<CustomerCreateWithoutRefreshTokensInput, CustomerUncheckedCreateWithoutRefreshTokensInput>
     where?: CustomerWhereInput
   }
 
-  export type CustomerUpdateToOneWithWhereWithoutRefreshTokenInput = {
+  export type CustomerUpdateToOneWithWhereWithoutRefreshTokensInput = {
     where?: CustomerWhereInput
-    data: XOR<CustomerUpdateWithoutRefreshTokenInput, CustomerUncheckedUpdateWithoutRefreshTokenInput>
+    data: XOR<CustomerUpdateWithoutRefreshTokensInput, CustomerUncheckedUpdateWithoutRefreshTokensInput>
   }
 
-  export type CustomerUpdateWithoutRefreshTokenInput = {
+  export type CustomerUpdateWithoutRefreshTokensInput = {
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
     date_of_birth?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -14185,7 +14185,7 @@ export namespace Prisma {
     reviews?: ReviewUpdateManyWithoutCustomerNestedInput
   }
 
-  export type CustomerUncheckedUpdateWithoutRefreshTokenInput = {
+  export type CustomerUncheckedUpdateWithoutRefreshTokensInput = {
     id?: IntFieldUpdateOperationsInput | number
     first_name?: StringFieldUpdateOperationsInput | string
     last_name?: StringFieldUpdateOperationsInput | string
@@ -14538,7 +14538,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reviews?: ReviewCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type CustomerUncheckedCreateWithoutOrdersInput = {
@@ -14559,7 +14559,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     reviews?: ReviewUncheckedCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type CustomerCreateOrConnectWithoutOrdersInput = {
@@ -14622,7 +14622,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reviews?: ReviewUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutOrdersInput = {
@@ -14643,7 +14643,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     reviews?: ReviewUncheckedUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutOrderInput = {
@@ -14847,7 +14847,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenCreateNestedManyWithoutUserInput
   }
 
   export type CustomerUncheckedCreateWithoutReviewsInput = {
@@ -14868,7 +14868,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     orders?: OrderUncheckedCreateNestedManyWithoutCustomerInput
-    RefreshToken?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+    refreshTokens?: RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type CustomerCreateOrConnectWithoutReviewsInput = {
@@ -14946,7 +14946,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutReviewsInput = {
@@ -14967,7 +14967,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     orders?: OrderUncheckedUpdateManyWithoutCustomerNestedInput
-    RefreshToken?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+    refreshTokens?: RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type OrderCreateManyCustomerInput = {
