@@ -5,6 +5,7 @@ const OrderItemSchema = z.object({
   product_id: z.number().int().positive("Product ID must be positive"),
   quantity: z.number().int().min(1, "Quantity must be at least 1"),
 });
+
 // For an order
 export const CreateOrderSchema = z.object({
   body: z.object({
