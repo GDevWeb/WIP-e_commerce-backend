@@ -1,31 +1,22 @@
 import { z } from "zod";
 
-//Individual item
-const orderItemBody = z.object({
-  product_id: z
-    .number()
-    .int()
-    .positive()
-    .min(1, "Product ID must be at least 1"),
-  quantity: z
-    .number()
-    .int()
-    .positive()
-    .min(1, "Quantity must be at least 1")
-    .max(50, "Quantity cannot exceed 50"),
+//For an item
+const OrderItemSchema = z.object({
+  product_id: z.number().int().positive("Product ID must be positive"),
+  quantity: z.number().int().min(1, "Quantity must be at least 1"),
 });
-
-//Order
+// For an order
 export const CreateOrderSchema = z.object({
   body: z.object({
     items: z
-      .array(orderItemBody)
-      .min(1, "Order must contain at least 1 item")
-      .max(50, "Order cannot have more than 50 items"),
+      .array(OrderItemSchema)
+      .min(1, "Order must contain at least one item")
+      .max(50, "Order cannot contain more than 50 items"),
   }),
   params: z.object({}),
   query: z.object({}),
 });
 
+// Types
 export type CreateOrderInput = z.infer<typeof CreateOrderSchema>["body"];
-export type OrderItemInput = z.infer<typeof orderItemBody>;
+export type OrderItemInput = z.infer<typeof OrderItemSchema>;
