@@ -25,7 +25,10 @@ console.log(BCRYPT_ROUNDS);
 
 export const register = async (input: RegisterInput): Promise<AuthResponse> => {
   try {
-    const hashedPassword = await bcrypt.hash(input.password, BCRYPT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(
+      input.password,
+      parseInt(BCRYPT_ROUNDS)
+    );
 
     const newUser = await prisma.customer.create({
       data: {
