@@ -100,9 +100,9 @@
 - [x] Create `authMiddleware` (verify JWT)
 - [ ] Protect sensitive routes (Orders, Profile)
   - [x] Profile
-  - [ ] Orders
+  - [x] Orders
 - [x] Implement refresh tokens (optional but recommended)
-- [ ] **Deliverable**: JWT-secured routes
+- [x] **Deliverable**: JWT-secured routes
 
 **Estimated time: 4h**
 
@@ -112,11 +112,11 @@
 
 **Goal: Create orders**
 
-- [ ] `OrderService.createOrder()`
-- [ ] Validate available stock
-- [ ] Prisma transaction (Order + OrderItems + Update stock)
-- [ ] Route: `POST /api/orders`
-- [ ] **Deliverable**: Functional order system
+- [x] `OrderService.createOrder()`
+- [x] Validate available stock
+- [x] Prisma transaction (Order + OrderItems + Update stock)
+- [x] Route: `POST /api/orders`
+- [x] **Deliverable**: Functional order system
 
 **Estimated time: 4h**
 
@@ -126,10 +126,10 @@
 
 **Goal: Order management**
 
-- [ ] Routes: `GET /api/orders`, `GET /api/orders/:id`
-- [ ] Filter by status, date, customer
-- [ ] Update order status (PENDING → SHIPPED → DELIVERED)
-- [ ] **Deliverable**: Complete order CRUD
+- [x] Routes: `GET /api/orders`, `GET /api/orders/:id`
+- [x] Filter by status, date, customer
+- [x] Update order status (PENDING → SHIPPED → DELIVERED)
+- [x] **Deliverable**: Complete order CRUD
 
 **Estimated time: 4h**
 
