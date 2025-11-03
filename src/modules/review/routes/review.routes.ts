@@ -32,5 +32,3 @@ reviewRouter.delete(
 );
 
 export default reviewRouter;
-
-// commit

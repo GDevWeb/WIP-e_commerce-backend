@@ -141,12 +141,12 @@
 
 **Goal: Customer reviews**
 
-- [ ] `ReviewService` + `ReviewController`
-- [ ] Verify customer purchased the product
-- [ ] 1 review per customer/product
-- [ ] Rating 1-5 with validation
-- [ ] Routes: POST, GET, DELETE reviews
-- [ ] **Deliverable**: Functional review system
+- [x] `ReviewService` + `ReviewController`
+- [x] Verify customer purchased the product
+- [x] 1 review per customer/product
+- [x] Rating 1-5 with validation
+- [x] Routes: POST, GET, DELETE reviews
+- [x] **Deliverable**: Functional review system
 
 **Estimated time: 4h**
 

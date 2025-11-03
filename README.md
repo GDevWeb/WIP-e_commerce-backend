@@ -605,7 +605,7 @@ e-commerce-backend/
 
 ### 🚀 Phase 3: Advanced Features (Weeks 6-8) - **NEXT**
 
-- [ ] Product reviews with ratings
+- [x] Product reviews with ratings
 - [ ] Shopping cart with Redis
 - [ ] Advanced search & filters
 - [ ] Role-Based Access Control (RBAC)
@@ -628,7 +628,7 @@ e-commerce-backend/
 - [ ] Deployment guide
 
 **Total Duration**: 12 weeks @ 4h/day (Mon-Fri) = ~96 hours  
-**Current Progress**: 41.7% (10/24 sessions)
+**Current Progress**: 45.8% (11/24 sessions)
 
 ---
 
