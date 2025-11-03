@@ -1,6 +1,6 @@
-import * as productService from "../services/product.service";
-import { asyncHandler } from "../utils/asyncHandler";
-import { generateSKU } from "../utils/product.utils";
+import { asyncHandler } from "../../../utils/asyncHandler";
+import { generateSKU } from "../../../utils/product.utils";
+import * as productService from "../service/product.service";
 
 export const getAllProducts = asyncHandler(async (req, res) => {
   const filters = {

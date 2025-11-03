@@ -1,5 +1,8 @@
-import { Prisma, PrismaClient, Product } from "../generated/prisma";
-import { PaginatedProducts, ProductFilters } from "../types/product.types";
+import { Prisma, PrismaClient, Product } from "../../../generated/prisma";
+import {
+  PaginatedProducts,
+  ProductFilters,
+} from "../../../types/product.types";
 
 const prisma = new PrismaClient();
 
