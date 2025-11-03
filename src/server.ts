@@ -5,14 +5,14 @@ import { PrismaClient } from "./generated/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
 import orderRouter from "./modules/order/routes/order.routes";
+import reviewRouter from "./modules/review/routes/review.routes";
 import authRouter from "./routes/auth.routes";
 import brandRouter from "./routes/brand.routes";
 import categoryRouter from "./routes/category.routes";
 import customerRouter from "./routes/customer.routes";
 import orderItemRouter from "./routes/orderItem.routes";
-import productRouter from "./routes/product.routes";
-import reviewRouter from "./routes/review.routes";
 import logger from "./utils/logger";
+import productRouter from "./modules/product/routes/product.routes";
 
 dotenv.config();
 
