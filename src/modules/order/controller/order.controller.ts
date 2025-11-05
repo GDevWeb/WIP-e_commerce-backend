@@ -39,9 +39,6 @@ export const getOrders = asyncHandler(
       ? parseInt(req.query.limit as string)
       : undefined;
 
-    console.log("🔍 DEBUG - req.user:", req.user);
-    console.log("🔍 DEBUG - req.query:", req.query);
-
     const result = await orderService.getOrders(customerId, {
       status,
       page,
