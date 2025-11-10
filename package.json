@@ -17,6 +17,7 @@
     "prisma:seed:customers": "ts-node prisma/seed-customers.ts",
     "prisma:seed:orders": "ts-node prisma/seed-orders.ts",
     "prisma:seed:reviews": "ts-node prisma/seed-reviews.ts",
+    "redis:cli": "docker run -d -p 6379:6379 --name redis redis:latest",
     "generate:secret-key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
   },
   "prisma": {
