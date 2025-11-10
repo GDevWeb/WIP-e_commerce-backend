@@ -1,10 +1,12 @@
 import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import path from "path";
+import { connectRedis, disconnectRedis } from "./configuration/redis";
 import { PrismaClient } from "./generated/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
 import orderRouter from "./modules/order/routes/order.routes";
+import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
 import authRouter from "./routes/auth.routes";
 import brandRouter from "./routes/brand.routes";
@@ -12,7 +14,6 @@ import categoryRouter from "./routes/category.routes";
 import customerRouter from "./routes/customer.routes";
 import orderItemRouter from "./routes/orderItem.routes";
 import logger from "./utils/logger";
-import productRouter from "./modules/product/routes/product.routes";
 
 dotenv.config();
 
@@ -43,18 +44,33 @@ server.get("/", (req: Request, res: Response) => {
 
 server.use(errorHandler);
 
-async function main() {
+async function startServer() {
   try {
+    // 1.Prisma
     await prisma.$connect();
-    console.log(`Successfully connected to the database`);
+    logger.info(`\n🖲️ Successfully connected to the database`);
 
+    // 2.Redis
+    await connectRedis();
+    // 3.API
     server.listen(PORT, () => {
-      logger.info(`Server is listening on: "http://localhost:${PORT}"`);
+      logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
     });
   } catch (error) {
-    console.error("Failed to connect to the database", error);
+    logger.error("❌ Failed to connect to the database", error);
     process.exit(1);
   }
 }
 
-main();
+process.on("SIGINT", async () => {
+  logger.info("\n🔴 Shutting down gracefully...");
+  await disconnectRedis();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  logger.info("\n🔴 Shutting down gracefully...");
+  await disconnectRedis();
+  process.exit(0);
+});
+startServer();
