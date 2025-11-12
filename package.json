@@ -17,6 +17,7 @@
     "prisma:seed:customers": "ts-node prisma/seed-customers.ts",
     "prisma:seed:orders": "ts-node prisma/seed-orders.ts",
     "prisma:seed:reviews": "ts-node prisma/seed-reviews.ts",
+    "redis:cli": "docker run -d -p 6379:6379 --name redis redis:latest",
     "generate:secret-key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\""
   },
   "prisma": {
@@ -28,6 +29,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.3",
     "@types/helmet": "^0.0.48",
     "@types/jest": "^30.0.0",
@@ -35,6 +37,7 @@
     "@types/ms": "^2.1.0",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.7.0",
+    "@types/redis": "^4.0.10",
     "@types/winston": "^2.4.4",
     "jest": "^30.2.0",
     "jest-mock-extended": "^4.0.0",
@@ -50,12 +53,14 @@
   "dependencies": {
     "@prisma/client": "^6.16.3",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "ms": "^2.1.3",
     "prisma": "^6.16.3",
+    "redis": "^5.9.0",
     "uninstall": "^0.0.0"
   }
 }
