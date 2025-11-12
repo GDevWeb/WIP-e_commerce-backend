@@ -763,7 +763,7 @@ e-commerce-backend/
 ### 🔄 Phase 3: Advanced Features (Weeks 6-8) - **IN PROGRESS**
 
 - [x] **Session 11**: Product reviews with ratings ✅
-- [ ] **Session 12**: Shopping cart with Redis
+- [x] **Session 12**: Shopping cart with Redis ✅
 - [ ] **Session 13**: Advanced search & filters
 - [ ] **Session 14**: Role-Based Access Control (RBAC)
 - [ ] **Session 15**: Image upload system (Multer + Sharp)
@@ -784,7 +784,7 @@ e-commerce-backend/
 - [ ] **Session 24**: Docker & Deployment
 
 **Total Duration**: 12 weeks @ 4h/day (Mon-Fri) = ~96 hours  
-**Current Progress**: 45.8% (11/24 sessions) 🎯
+**Current Progress**: 50% (12/24 sessions) 🎯
 
 ---
 
@@ -1114,7 +1114,7 @@ DELETE /api/products/:id    # Supprimer produit
 ### 🔄 Phase 3 : Fonctionnalités Avancées - **EN COURS**
 
 - [x] **Session 11** : Système d'avis produits ✅
-- [ ] **Session 12** : Panier avec Redis
+- [x] **Session 12** : Panier avec Redis ✅
 - [ ] **Session 13** : Recherche avancée
 - [ ] **Session 14** : RBAC (Admin/User)
 - [ ] **Session 15** : Upload d'images
@@ -1132,7 +1132,7 @@ DELETE /api/products/:id    # Supprimer produit
 - [ ] Jobs arrière-plan
 - [ ] Docker & Déploiement
 
-**Progression** : 45.8% (11/24 sessions) 🎯
+**Progression** : 50% (12/24 sessions) 🎯
 
 ---
 
