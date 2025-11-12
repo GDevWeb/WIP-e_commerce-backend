@@ -1,4 +1,5 @@
 import express from "express";
+import { optionalAuthMiddleware } from "../../../middlewares/optionalAuth.middleware";
 import { validate } from "../../../middlewares/validate";
 import * as cartController from "../controller/cart.controller";
 import {
@@ -8,6 +9,8 @@ import {
 } from "../schema/cart.schema";
 
 const cartRouter = express.Router();
+
+cartRouter.use(optionalAuthMiddleware);
 
 /**
  * GET /api/cart
