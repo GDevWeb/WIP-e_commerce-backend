@@ -5,6 +5,7 @@ import { connectRedis, disconnectRedis } from "./configuration/redis";
 import { PrismaClient } from "./generated/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
+import cartRouter from "./modules/cart/routes/cart.routes";
 import orderRouter from "./modules/order/routes/order.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
@@ -14,6 +15,7 @@ import categoryRouter from "./routes/category.routes";
 import customerRouter from "./routes/customer.routes";
 import orderItemRouter from "./routes/orderItem.routes";
 import logger from "./utils/logger";
+import cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -26,6 +28,7 @@ configureSecurityMiddlewares(server);
 
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+server.use(cookieParser());
 
 server.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
@@ -37,6 +40,7 @@ server.use("/api/orders", orderRouter);
 server.use("/api/orderItems", orderItemRouter);
 server.use("/api/reviews", reviewRouter);
 server.use("/api/auth", authRouter);
+server.use("/api/cart", cartRouter);
 
 server.get("/", (req: Request, res: Response) => {
   res.status(200).send("e_commerce API is running");
