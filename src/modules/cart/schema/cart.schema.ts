@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Add to cart
+// Add
 export const AddToCartSchema = z.object({
   body: z.object({
     product_id: z.number().int().positive("Product ID must be positive"),

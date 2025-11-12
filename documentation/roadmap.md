@@ -156,7 +156,7 @@
 
 **Goal: User cart**
 
-- [ ] Install Redis: `npm install redis`
+- [x] Install Redis: `npm install redis`
 - [ ] `CartService` with Redis cache
 - [ ] Add/Remove/Update items
 - [ ] Handle anonymous sessions + logged users
