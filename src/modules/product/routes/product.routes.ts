@@ -8,7 +8,11 @@ import { SearchProductsSchema } from "../schema/product.schema";
 
 const productRouter = express.Router();
 
-productRouter.get("/search", validate(SearchProductsSchema));
+productRouter.get(
+  "/search",
+  validate(SearchProductsSchema),
+  productController.searchProducts
+);
 
 productRouter.get("/", productController.getAllProducts);
 

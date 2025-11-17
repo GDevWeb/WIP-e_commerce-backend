@@ -148,19 +148,20 @@ export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
   });
 });
 
-/**
- * Searches for products based on various criteria.
- * GET /api/products/search
- */
 export const searchProducts = asyncHandler(
   async (req: Request, res: Response) => {
     const filters = req.query as unknown as SearchProductsQuery;
 
+    if (filters.minPrice) filters.minPrice = Number(filters.minPrice);
+    if (filters.maxPrice) filters.maxPrice = Number(filters.maxPrice);
+    if (filters.minRating) filters.minRating = Number(filters.minRating);
+    if (filters.page) filters.page = Number(filters.page);
+    if (filters.limit) filters.limit = Number(filters.limit);
+
     const result = await productService.searchProducts(filters);
 
     res.status(200).json({
-      status: "success",
-      results: result.products.length,
+      message: "Products retrieved successfully",
       data: result.products,
       pagination: result.pagination,
       filters: result.filters,

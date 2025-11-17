@@ -1,9 +1,16 @@
+import { redisClient } from "../../../configuration/redis";
 import { Prisma, PrismaClient, Product } from "../../../generated/prisma";
 import {
   PaginatedProducts,
   ProductFilters,
 } from "../../../types/product.types";
+import {
+  generateSearchCacheKey,
+  getFromCache,
+  setInCache,
+} from "../../../utils/cacheHelper";
 import { SearchProductsQuery } from "../schema/product.schema";
+import { SearchResult } from "../types/product.types";
 
 const prisma = new PrismaClient();
 
@@ -98,13 +105,17 @@ export const getProductById = async (id: number): Promise<Product> => {
 export const createProduct = async (
   data: Prisma.ProductCreateInput
 ): Promise<Product> => {
-  return prisma.product.create({
+  const product = prisma.product.create({
     data,
     include: {
       category: true,
       brand: true,
     },
   });
+
+  await invalidateSearchCache();
+
+  return product;
 };
 
 export const updateProduct = async (
@@ -128,6 +139,23 @@ export const deleteProduct = async (id: number): Promise<Product> => {
 };
 
 /**
+ * Invalidates all search-related cache entries in Redis.
+ * This function is typically called when product data changes (e.g., creation, update, deletion)
+ * to ensure that subsequent search queries reflect the latest data.
+ */
+async function invalidateSearchCache() {
+  try {
+    const keys = await redisClient.keys("search:products:*");
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+      console.log(`🗑️  Invalidated ${keys.length} search cache entries`);
+    }
+  } catch (error) {
+    console.error("Cache invalidation error:", error);
+  }
+}
+
+/**
  * Searches for products based on various filters, sorting, and pagination.
  *
  * @param filters - An object containing search criteria.
@@ -145,7 +173,9 @@ export const deleteProduct = async (id: number): Promise<Product> => {
  * @returns A promise that resolves to an object containing the filtered products, pagination metadata, and applied filters.
  */
 
-export const searchProducts = async (filters: SearchProductsQuery) => {
+export const searchProducts = async (
+  filters: SearchProductsQuery
+): Promise<SearchResult> => {
   const {
     q,
     minPrice,
@@ -159,6 +189,17 @@ export const searchProducts = async (filters: SearchProductsQuery) => {
     page = 1,
     limit = 20,
   } = filters;
+
+  const cacheKey = generateSearchCacheKey(filters);
+
+  const cached = await getFromCache<SearchResult>(cacheKey);
+
+  if (cached) {
+    console.log("🎯Cache HIT:", cacheKey);
+    return cached;
+  }
+
+  console.log("💾 Cache MISS:", cacheKey);
 
   // I. Step One - Building Where clause
   const where: Prisma.ProductWhereInput =
@@ -217,11 +258,11 @@ export const searchProducts = async (filters: SearchProductsQuery) => {
       break;
     case "rating":
       orderBy.createdAt = order;
-      // provisory on createdAt by way updating Product adding a field "average_rating"
+      // provisory on createdAt by way updating Product Model adding a field "average_rating"
       break;
     case "popularity":
       orderBy.createdAt = order;
-      // provisory on createdAt by way updating Product adding a field "sales_count"
+      // provisory on createdAt by way updating Product Model adding a field "sales_count"
       //
       break;
     default:
@@ -265,7 +306,7 @@ export const searchProducts = async (filters: SearchProductsQuery) => {
   const productsWithRating = products.map((product) => {
     const reviews = product.reviews;
     /* Future plan:
-     May produce a performance bottleneck for a realistic case.
+     May produce a performance bottleneck for a (large) realistic case.
      Consider adding an "average_rating" field to the Product model and updating it automatically (e.g., via a trigger or service after review creation/update). i See Reviews Models
      The current approach is efficient for < 1k products.
     */
@@ -296,7 +337,7 @@ export const searchProducts = async (filters: SearchProductsQuery) => {
   const hasNextPage = page < totalPages;
   const hasPrevPage = page > 1;
 
-  return {
+  const result: SearchResult = {
     products: filteredProducts,
     pagination: {
       total,
@@ -318,4 +359,8 @@ export const searchProducts = async (filters: SearchProductsQuery) => {
       order,
     },
   };
+
+  await setInCache(cacheKey, result, 300);
+
+  return result;
 };

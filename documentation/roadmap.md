@@ -171,12 +171,12 @@
 
 **Goal: Performant product search**
 
-- [ ] Full-text search on name/description
-- [ ] Multiple filters (price, category, brand, rating)
-- [ ] Sorting (price, popularity, date)
-- [ ] Optimized pagination
-- [ ] **Bonus**: Cache with Redis
-- [ ] **Deliverable**: Modern e-commerce search
+- [x] Full-text search on name/description
+- [x] Multiple filters (price, category, brand, rating)
+- [x] Sorting (price, popularity, date)
+- [x] Optimized pagination
+- [x] **Bonus**: Cache with Redis
+- [x] **Deliverable**: Modern e-commerce search
 
 **Estimated time: 4h**
 
