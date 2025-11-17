@@ -1,16 +1,16 @@
 import express from "express";
+import { validate } from "../../../middlewares/validate";
 import {
   createCategory,
   deleteCategory,
   getAllCategories,
   getCategory,
   updateCategory,
-} from "../controllers/category.controller";
-import { validate } from "../middlewares/validate";
+} from "../controller/category.controller";
 import {
   createCategorySchema,
   updateCategorySchema,
-} from "../schemas/category.schema";
+} from "../schema/category.schema";
 
 const categoryRouter = express.Router();
 

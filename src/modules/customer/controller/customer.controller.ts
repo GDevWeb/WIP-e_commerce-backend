@@ -1,6 +1,6 @@
-import { NotFoundError } from "../errors";
-import * as customerService from "../services/customer.service";
-import { asyncHandler } from "../utils/asyncHandler";
+import { NotFoundError } from "../../../errors";
+import { asyncHandler } from "../../../utils/asyncHandler";
+import * as customerService from "../service/customer.service";
 
 /**
  * GET /api/customers
