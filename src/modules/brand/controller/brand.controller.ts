@@ -1,5 +1,5 @@
-import * as brandService from "../services/brand.service";
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../../../utils/asyncHandler";
+import * as brandService from "../service/brand.service";
 
 export const getAllBrands = asyncHandler(async (req, res) => {
   const brands = await brandService.getAllBrands();

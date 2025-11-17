@@ -61,6 +61,71 @@ export const getProductsQuerySchema = z.object({
     .optional(),
 });
 
+// Advanced_search schemas
+export const SearchProductsSchema = z.object({
+  body: z.object({}),
+  params: z.object({}),
+  query: z.object({
+    // By text
+    q: z.string().min(1).max(100).optional(),
+
+    // By price
+    minPrice: z
+      .string()
+      .regex(/^\d+(\.\d{1,2})?$/, "Invalid price format")
+      .transform(Number)
+      .optional(),
+    maxPrice: z
+      .string()
+      .regex(/^\d+(\.\d{1,2})?$/, "Invalid price format")
+      .transform(Number)
+      .optional(),
+
+    // By category and brand
+    category: z.string().optional(),
+    brand: z.string().optional(),
+
+    // By rating (average)
+    minRating: z
+      .string()
+      .regex(/^[1-5]$/, "Rating must be between 1 and 5")
+      .transform(Number)
+      .optional(),
+
+    // By stock
+    inStock: z
+      .string()
+      .regex(/^(true|false)$/, "Must be true or false")
+      .transform((val) => val === "true")
+      .optional(),
+
+    // Sort
+    sortBy: z
+      .enum(["price", "createdAt", "name", "rating", "popularity"])
+      .optional()
+      .default("createdAt"),
+    order: z.enum(["asc", "desc"]).optional().default("desc"),
+
+    // Pagination
+    page: z
+      .string()
+      .regex(/^\d+$/, "Page must be a number")
+      .transform(Number)
+      .pipe(z.number().int().positive())
+      .optional()
+      .default(1),
+    limit: z
+      .string()
+      .regex(/^\d+$/, "Limit must be a number")
+      .transform(Number)
+      .pipe(z.number().int().min(1).max(100))
+      .optional()
+      .default(20),
+  }),
+});
+
+// Types
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type GetProductsQuery = z.infer<typeof getProductsQuerySchema>;
+export type SearchProductsQuery = z.infer<typeof SearchProductsSchema>["query"];
