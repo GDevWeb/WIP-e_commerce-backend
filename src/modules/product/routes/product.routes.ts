@@ -3,25 +3,26 @@ import upload from "../../../middlewares/upload.middleware";
 import { validate } from "../../../middlewares/validate";
 import { getProductReviews } from "../../review/controller/review.controller";
 import { GetProductReviewsSchema } from "../../review/schema/review.schema";
-import {
-  createProduct,
-  deleteProduct,
-  getAllProducts,
-  getProduct,
-  updateProduct,
-} from "../controller/product.controller";
+import * as productController from "../controller/product.controller";
+import { SearchProductsSchema } from "../schema/product.schema";
 
 const productRouter = express.Router();
 
-productRouter.get("/", getAllProducts);
+productRouter.get("/search", validate(SearchProductsSchema));
 
-productRouter.get("/:id", getProduct);
+productRouter.get("/", productController.getAllProducts);
 
-productRouter.post("/", upload.single("imageUrl"), createProduct);
+productRouter.get("/:id", productController.getProduct);
 
-productRouter.put("/:id", updateProduct);
+productRouter.post(
+  "/",
+  upload.single("imageUrl"),
+  productController.createProduct
+);
 
-productRouter.delete("/:id", deleteProduct);
+productRouter.put("/:id", productController.updateProduct);
+
+productRouter.delete("/:id", productController.deleteProduct);
 
 productRouter.get(
   "/:productId/reviews",

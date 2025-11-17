@@ -1,13 +1,13 @@
 import express from "express";
+import { validate } from "../../../middlewares/validate";
 import {
   createBrand,
   deleteBrand,
   getAllBrands,
   getBrand,
   updateBrand,
-} from "../controllers/brand.controller";
-import { validate } from "../middlewares/validate";
-import { createBrandSchema, updateBrandSchema } from "../schemas/brand.schema";
+} from "../controller/brand.controller";
+import { createBrandSchema, updateBrandSchema } from "../schema/brand.schema";
 
 const brandRouter = express.Router();
 

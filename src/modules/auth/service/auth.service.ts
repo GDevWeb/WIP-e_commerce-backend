@@ -10,12 +10,12 @@ import {
   generateRefreshToken,
   verifyToken,
 } from "../../../utils/jwt.utils";
-import { AuthResponse } from "../authResponse.types";
 import {
   LoginInput,
   RegisterInput,
   UpdateProfileInput,
 } from "../schema/auth.schema"; // Removed unused 'error' import
+import { AuthResponse } from "../types/authResponse.types";
 
 dotenv.config();
 

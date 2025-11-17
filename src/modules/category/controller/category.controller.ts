@@ -1,5 +1,5 @@
-import * as categoryService from "../services/category.service";
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../../../utils/asyncHandler";
+import * as categoryService from "../service/category.service";
 
 export const getAllCategories = asyncHandler(async (req, res) => {
   const categories = await categoryService.getAllCategories();

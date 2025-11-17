@@ -157,11 +157,11 @@
 **Goal: User cart**
 
 - [x] Install Redis: `npm install redis`
-- [ ] `CartService` with Redis cache
-- [ ] Add/Remove/Update items
-- [ ] Handle anonymous sessions + logged users
-- [ ] Routes: `POST /api/cart/items`, `GET /api/cart`, etc.
-- [ ] **Deliverable**: Persistent cart
+- [x] `CartService` with Redis cache
+- [x] Add/Remove/Update items
+- [x] Handle anonymous sessions + logged users
+- [x] Routes: `POST /api/cart/items`, `GET /api/cart`, etc.
+- [x] **Deliverable**: Persistent cart
 
 **Estimated time: 4h**
 

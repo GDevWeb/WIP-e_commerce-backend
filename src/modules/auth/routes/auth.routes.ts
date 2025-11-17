@@ -1,19 +1,13 @@
 import express from "express";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { validate } from "../middlewares/validate";
-import {
-  getProfile,
-  login,
-  refreshToken,
-  register,
-  updateProfile,
-} from "../modules/auth/controller/auth.controller";
+import { authMiddleware } from "../../../middlewares/auth.middleware";
+import { validate } from "../../../middlewares/validate";
+import { RefreshTokenSchema } from "../../../schemas/auth.refresh.schema";
+import * as authController from "../controller/auth.controller";
 import {
   LoginSchema,
   RegisterSchema,
   UpdateProfileSchema,
-} from "../modules/auth/schema/auth.schema";
-import { RefreshTokenSchema } from "../schemas/auth.refresh.schema";
+} from "../schema/auth.schema";
 
 // ✅ Debug log
 console.log("=== DEBUG SCHEMAS ===");
@@ -32,18 +26,22 @@ authRouter.post(
     next();
   },
   validate(RegisterSchema),
-  register
+  authController.register
 );
-authRouter.post("/login", validate(LoginSchema), login);
+authRouter.post("/login", validate(LoginSchema), authController.login);
 
-authRouter.get("/profile", authMiddleware, getProfile);
+authRouter.get("/profile", authMiddleware, authController.getProfile);
 authRouter.patch(
   "/profile",
   authMiddleware,
   validate(UpdateProfileSchema),
-  updateProfile
+  authController.updateProfile
 );
 
-authRouter.post("/refresh", validate(RefreshTokenSchema), refreshToken);
+authRouter.post(
+  "/refresh",
+  validate(RefreshTokenSchema),
+  authController.refreshToken
+);
 
 export default authRouter;

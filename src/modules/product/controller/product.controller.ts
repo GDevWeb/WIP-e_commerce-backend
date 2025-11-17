@@ -1,7 +1,13 @@
+import { Request, Response } from "express";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import { generateSKU } from "../../../utils/product.utils";
+import { SearchProductsQuery } from "../schema/product.schema";
 import * as productService from "../service/product.service";
 
+/**
+ * Retrieves all products with optional filtering and pagination.
+ * GET /api/products
+ */
 export const getAllProducts = asyncHandler(async (req, res) => {
   const filters = {
     name: req.query.name as string,
@@ -27,6 +33,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Retrieves a single product by its ID.
+ * GET /api/products/:id
+ */
 export const getProduct = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id);
 
@@ -38,6 +48,10 @@ export const getProduct = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Creates a new product.
+ * POST /api/products
+ */
 export const createProduct = asyncHandler(async (req, res) => {
   const imageUrl =
     req.file?.path?.replace(/\\/g, "/") || "https://placehold.co/300x200";
@@ -73,6 +87,10 @@ export const createProduct = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Updates an existing product.
+ * PUT /api/products/:id
+ */
 export const updateProduct = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id);
 
@@ -114,6 +132,10 @@ export const updateProduct = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * Deletes a product by its ID.
+ * DELETE /api/products/:id
+ */
 export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
   const productId = parseInt(req.params.id);
 
@@ -125,3 +147,23 @@ export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
     data: deletedProduct,
   });
 });
+
+/**
+ * Searches for products based on various criteria.
+ * GET /api/products/search
+ */
+export const searchProducts = asyncHandler(
+  async (req: Request, res: Response) => {
+    const filters = req.query as unknown as SearchProductsQuery;
+
+    const result = await productService.searchProducts(filters);
+
+    res.status(200).json({
+      status: "success",
+      results: result.products.length,
+      data: result.products,
+      pagination: result.pagination,
+      filters: result.filters,
+    });
+  }
+);

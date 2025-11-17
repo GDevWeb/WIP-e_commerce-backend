@@ -1,16 +1,16 @@
 import express from "express";
+import { validate } from "../../../middlewares/validate";
 import {
   createCustomer,
   deleteCustomer,
   getAllCustomers,
   getCustomer,
   updateCustomer,
-} from "../controllers/customer.controller";
-import { validate } from "../middlewares/validate";
+} from "../controller/customer.controller";
 import {
   createCustomerSchema,
   updateCustomerSchema,
-} from "../schemas/customer.schema";
+} from "../schema/customer.schema";
 
 const customerRouter = express.Router();
 
