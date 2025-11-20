@@ -177,3 +177,14 @@ export const searchProducts = asyncHandler(
     });
   }
 );
+
+export const getProductStats = asyncHandler(
+  async (req: Request, res: Response) => {
+    const stats = await productService.getProductStats();
+
+    res.status(200).json({
+      message: "Product statistics retrieved successfully",
+      data: stats,
+    });
+  }
+);

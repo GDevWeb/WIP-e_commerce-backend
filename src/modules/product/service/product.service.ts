@@ -368,3 +368,33 @@ export const searchProducts = async (
 
   return result;
 };
+
+/**
+ * Retrieves various statistics about products, including total count, out-of-stock items,
+ * low-stock items, and the total value of all products.
+ *
+ * @returns A promise that resolves to an object containing product statistics.
+ */
+export const getProductStats = async () => {
+  const [totalProducts, outOfStock, lowStock, totalValue] = await Promise.all([
+    prisma.product.count(),
+    prisma.product.count({
+      where: { stock_quantity: 0 },
+    }),
+    prisma.product.count({
+      where: { stock_quantity: { lte: 10, gt: 0 } },
+    }),
+    prisma.product.aggregate({
+      _sum: {
+        price: true,
+      },
+    }),
+  ]);
+
+  return {
+    totalProducts,
+    outOfStock,
+    lowStock,
+    totalValue: totalValue._sum.price || 0,
+  };
+};
