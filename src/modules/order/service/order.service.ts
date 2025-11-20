@@ -358,3 +358,114 @@ export const updateOrderStatus = async (
 
   return updatedOrder;
 };
+
+/**
+ * ADMIN SECTION
+ *
+ */
+
+/**
+ * Get all orders (ADMIN/MANAGER)
+ * Not filtered by customer
+ * Retrieves all orders with optional pagination and filtering by status.
+ * This function is intended for administrative use to view all orders placed by customers.
+ *
+ * @param options An object containing pagination and filtering options:
+ *   - `page`: The page number for pagination (defaults to 1).
+ *   - `limit`: The maximum number of orders to return per page (defaults to 20).
+ *   - `status`: An optional `OrderStatus` to filter orders by their current status.
+ * @returns A promise that resolves to an object containing the list of orders, customer details, order items, and pagination metadata.
+ */
+export const getAllOrders = async (options: {
+  page?: number;
+  limit?: number;
+  status?: OrderStatus;
+}) => {
+  const { page = 1, limit = 20, status } = options;
+  const skip = (page - 1) * limit;
+
+  const where: any = {};
+  if (status) {
+    where.status = status;
+  }
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      include: {
+        customer: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+          },
+        },
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        order_date: "desc",
+      },
+      skip,
+      take: limit,
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  return {
+    orders,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      hasNextPage: page < Math.ceil(total / limit),
+      hasPrevPage: page > 1,
+    },
+  };
+};
+
+/**
+ * Get order statistics (ADMIN/MANAGER)
+ *
+ * Retrieves various statistics about orders, including total count, pending orders,
+ * total revenue, and the number of orders placed today.
+ * This function is intended for administrative or managerial use.
+ *
+ * @returns A promise that resolves to an object containing order statistics.
+ */
+export const getOrderStats = async () => {
+  const [totalOrders, pendingOrders, totalRevenue, ordersToday] =
+    await Promise.all([
+      prisma.order.count(),
+      prisma.order.count({
+        where: { status: "PENDING" },
+      }),
+      prisma.order.aggregate({
+        _sum: { total: true },
+      }),
+      prisma.order.count({
+        where: {
+          order_date: {
+            gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          },
+        },
+      }),
+    ]);
+
+  return {
+    totalOrders,
+    pendingOrders,
+    totalRevenue: totalRevenue._sum.total || 0,
+    ordersToday,
+  };
+};

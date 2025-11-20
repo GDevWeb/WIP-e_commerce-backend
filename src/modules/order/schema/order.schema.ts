@@ -32,16 +32,7 @@ export const GetOrdersSchema = z.object({
   body: z.object({}),
   params: z.object({}),
   query: z.object({
-    status: z
-      .enum([
-        "PENDING",
-        "PROCESSING",
-        "SHIPPED",
-        "DELIVERED",
-        "CANCELLED",
-        "REFUNDED",
-      ])
-      .optional(),
+    status: OrderStatus.optional(),
     page: z
       .string()
       .optional()
@@ -79,6 +70,16 @@ export const UpdateOrderStatusSchema = z.object({
       .transform(Number),
   }),
   query: z.object({}),
+});
+
+export const GetAllOrdersSchema = z.object({
+  body: z.object({}),
+  params: z.object({}),
+  query: z.object({
+    page: z.string().regex(/^\d+$/).transform(Number).optional(),
+    limit: z.string().regex(/^\d+$/).transform(Number).optional(),
+    status: OrderStatus.optional(),
+  }),
 });
 
 // Types

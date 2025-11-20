@@ -178,6 +178,20 @@ export const searchProducts = asyncHandler(
   }
 );
 
+/**
+ * ADMIN SECTION
+ *
+ */
+
+/**
+ * Retrieves various statistics about products, including total count, out-of-stock items,
+ * low-stock items, and the total value of all products.
+ * GET /api/products/stats
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ * @returns A JSON response with product statistics.
+ */
 export const getProductStats = asyncHandler(
   async (req: Request, res: Response) => {
     const stats = await productService.getProductStats();

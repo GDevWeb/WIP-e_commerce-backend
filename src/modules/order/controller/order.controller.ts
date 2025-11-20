@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { OrderStatus } from "../../../generated/prisma";
 import { AuthRequest } from "../../../types/auth.types";
 import { asyncHandler } from "../../../utils/asyncHandler";
@@ -85,6 +85,48 @@ export const updateOrderStatus = asyncHandler(
     res.status(200).json({
       message: "Order status updated successfully",
       data: order,
+    });
+  }
+);
+
+/**
+ * ADMIN SECTION
+ *
+ */
+
+/**
+ * Get ALL orders (ADMIN/MANAGER)
+ * GET /api/orders/admin/all
+ */
+export const getAllOrders = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { page, limit, status } = req.query as any;
+
+    const result = await orderService.getAllOrders({
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 20,
+      status,
+    });
+
+    res.status(200).json({
+      message: "Orders retrieved successfully",
+      data: result.orders,
+      pagination: result.pagination,
+    });
+  }
+);
+
+/**
+ * Get order statistics (ADMIN/MANAGER)
+ * GET /api/orders/admin/stats
+ */
+export const getOrderStats = asyncHandler(
+  async (req: Request, res: Response) => {
+    const stats = await orderService.getOrderStats();
+
+    res.status(200).json({
+      message: "Order statistics retrieved successfully",
+      data: stats,
     });
   }
 );

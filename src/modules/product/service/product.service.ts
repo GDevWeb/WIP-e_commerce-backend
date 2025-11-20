@@ -370,6 +370,11 @@ export const searchProducts = async (
 };
 
 /**
+ * ADMIN SECTION
+ *
+ */
+
+/**
  * Retrieves various statistics about products, including total count, out-of-stock items,
  * low-stock items, and the total value of all products.
  *
