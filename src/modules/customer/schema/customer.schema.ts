@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContactMethod, CustomerType } from "../../../generated/prisma";
+import { ContactMethod, CustomerType, Role } from "../../../generated/prisma";
 
 const customerTypeSchema = z.enum(CustomerType);
 const contactMethodSchema = z.enum(ContactMethod);
@@ -58,6 +58,15 @@ export const updateCustomerSchema = z.object({
   }).partial(),
 });
 
+export const UpdateCustomerRoleSchema = z.object({
+  body: z.object({
+    role: z.enum(Role),
+  }),
+  params: z.object({
+    id: z.string().regex(/^\d+$/).transform(Number),
+  }),
+  query: z.object({}),
+});
 export type CreateCustomerInput = z.infer<typeof createCustomerSchema>;
 export type UpdateCustomerInput = z.infer<typeof updateCustomerSchema>;
 export type CustomerIdParam = z.infer<typeof customerIdParamSchema>;

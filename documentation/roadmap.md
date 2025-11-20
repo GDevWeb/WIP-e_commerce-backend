@@ -186,10 +186,11 @@
 
 **Goal: Role management**
 
-- [ ] Add `Role` enum to schema (USER, ADMIN, MANAGER)
-- [ ] Create `checkRole(['ADMIN'])` middleware
-- [ ] Protect admin routes (manage products, orders)
-- [ ] Routes: `PATCH /api/orders/:id/status` (ADMIN only)
+- [x] Add `Role` enum to schema (USER, ADMIN, MANAGER)
+- [x] Create `checkRole(['ADMIN'])` middleware
+- [x] Protect admin routes (manage products, orders)
+- [x] Routes: `PATCH /api/orders/:id/status` (ADMIN only)
+- [ ] Protect admin routes (manage customers)
 - [ ] **Deliverable**: Permission system
 
 **Estimated time: 4h**
@@ -212,7 +213,7 @@
 
 ---
 
-## ✅ Phase 4: Testing & Quality (Weeks 9-10)
+## Phase 4: Testing & Quality (Weeks 9-10)
 
 ### Session 16: Unit Tests (Part 1)
 

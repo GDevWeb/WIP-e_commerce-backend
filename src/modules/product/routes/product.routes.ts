@@ -80,7 +80,7 @@ productRouter.get(
  * Get product statistics - ADMIN ONLY
  */
 productRouter.get(
-  "admin/stats",
+  "/admin/stats",
   authMiddleware,
   checkRole([Role.ADMIN]),
   productController.getProductStats
