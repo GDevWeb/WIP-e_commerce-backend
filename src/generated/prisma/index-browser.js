@@ -129,6 +129,7 @@ exports.Prisma.CustomerScalarFieldEnum = {
   password: 'password',
   phone_number: 'phone_number',
   address: 'address',
+  role: 'role',
   is_active: 'is_active',
   last_purchase_date: 'last_purchase_date',
   total_orders: 'total_orders',
@@ -220,6 +221,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.Role = exports.$Enums.Role = {
+  USER: 'USER',
+  MANAGER: 'MANAGER',
+  ADMIN: 'ADMIN'
+};
+
 exports.CustomerType = exports.$Enums.CustomerType = {
   STANDARD: 'STANDARD',
   SILVER: 'SILVER',

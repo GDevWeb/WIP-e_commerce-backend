@@ -10,6 +10,12 @@ datasource db {
 
 // ===== ENUMS =====
 
+enum Role {
+  USER 
+  MANAGER
+  ADMIN
+}
+
 enum CustomerType {
   STANDARD
   SILVER
@@ -62,6 +68,7 @@ model Customer {
   password                 String?
   phone_number             String?
   address                  String?
+role                       Role          @default(USER)
   is_active                Boolean       @default(true)
   last_purchase_date       DateTime?
   total_orders             Int           @default(0)

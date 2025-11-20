@@ -9,6 +9,7 @@ import {
   getFromCache,
   setInCache,
 } from "../../../utils/cacheHelper";
+import logger from "../../../utils/logger";
 import { SearchProductsQuery } from "../schema/product.schema";
 import { SearchResult } from "../types/product.types";
 
@@ -190,21 +191,24 @@ export const searchProducts = async (
     limit = 20,
   } = filters;
 
+  // Check if data is in cache
   const cacheKey = generateSearchCacheKey(filters);
+
+  if (!redisClient.isReady) {
+    logger.warn("Redis client is not ready. Skipping cache check.");
+  }
 
   const cached = await getFromCache<SearchResult>(cacheKey);
 
   if (cached) {
-    console.log("🎯Cache HIT:", cacheKey);
+    logger.info("🎯Cache HIT:", cacheKey);
     return cached;
   }
 
-  console.log("💾 Cache MISS:", cacheKey);
+  logger.info("💾 Cache MISS:", cacheKey);
 
   // I. Step One - Building Where clause
-  const where: Prisma.ProductWhereInput =
-    //replacing any
-    {};
+  const where: Prisma.ProductWhereInput = {};
 
   // 1.Filter by Text name or description
   if (q) {
@@ -320,7 +324,7 @@ export const searchProducts = async (
       ...product,
       averageRating: Number(averageRating.toFixed(1)),
       reviewCount: reviews.length,
-      reviews: undefined, // Ne pas exposer tous les reviews
+      reviews: undefined,
     };
   });
 

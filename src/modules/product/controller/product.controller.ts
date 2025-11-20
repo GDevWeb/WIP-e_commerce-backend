@@ -148,6 +148,15 @@ export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
   });
 });
 
+/**
+ * Searches for products based on various criteria, including text search, price range,
+ * category, brand, minimum rating, stock status, and sorting options.
+ * GET /api/products/search
+ *
+ * @param req - The Express request object, containing search filters in the query parameters.
+ * @param res - The Express response object.
+ * @returns A JSON response with the search results, pagination info, and applied filters.
+ */
 export const searchProducts = asyncHandler(
   async (req: Request, res: Response) => {
     const filters = req.query as unknown as SearchProductsQuery;

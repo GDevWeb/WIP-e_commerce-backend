@@ -58,7 +58,16 @@ export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
  * Enums
  */
 export namespace $Enums {
-  export const CustomerType: {
+  export const Role: {
+  USER: 'USER',
+  MANAGER: 'MANAGER',
+  ADMIN: 'ADMIN'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const CustomerType: {
   STANDARD: 'STANDARD',
   SILVER: 'SILVER',
   GOLD: 'GOLD',
@@ -91,6 +100,10 @@ export const OrderStatus: {
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 }
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
 
 export type CustomerType = $Enums.CustomerType
 
@@ -1761,6 +1774,7 @@ export namespace Prisma {
     password: string | null
     phone_number: string | null
     address: string | null
+    role: $Enums.Role | null
     is_active: boolean | null
     last_purchase_date: Date | null
     total_orders: number | null
@@ -1780,6 +1794,7 @@ export namespace Prisma {
     password: string | null
     phone_number: string | null
     address: string | null
+    role: $Enums.Role | null
     is_active: boolean | null
     last_purchase_date: Date | null
     total_orders: number | null
@@ -1799,6 +1814,7 @@ export namespace Prisma {
     password: number
     phone_number: number
     address: number
+    role: number
     is_active: number
     last_purchase_date: number
     total_orders: number
@@ -1832,6 +1848,7 @@ export namespace Prisma {
     password?: true
     phone_number?: true
     address?: true
+    role?: true
     is_active?: true
     last_purchase_date?: true
     total_orders?: true
@@ -1851,6 +1868,7 @@ export namespace Prisma {
     password?: true
     phone_number?: true
     address?: true
+    role?: true
     is_active?: true
     last_purchase_date?: true
     total_orders?: true
@@ -1870,6 +1888,7 @@ export namespace Prisma {
     password?: true
     phone_number?: true
     address?: true
+    role?: true
     is_active?: true
     last_purchase_date?: true
     total_orders?: true
@@ -1976,6 +1995,7 @@ export namespace Prisma {
     password: string | null
     phone_number: string | null
     address: string | null
+    role: $Enums.Role
     is_active: boolean
     last_purchase_date: Date | null
     total_orders: number
@@ -2014,6 +2034,7 @@ export namespace Prisma {
     password?: boolean
     phone_number?: boolean
     address?: boolean
+    role?: boolean
     is_active?: boolean
     last_purchase_date?: boolean
     total_orders?: boolean
@@ -2037,6 +2058,7 @@ export namespace Prisma {
     password?: boolean
     phone_number?: boolean
     address?: boolean
+    role?: boolean
     is_active?: boolean
     last_purchase_date?: boolean
     total_orders?: boolean
@@ -2056,6 +2078,7 @@ export namespace Prisma {
     password?: boolean
     phone_number?: boolean
     address?: boolean
+    role?: boolean
     is_active?: boolean
     last_purchase_date?: boolean
     total_orders?: boolean
@@ -2075,6 +2098,7 @@ export namespace Prisma {
     password?: boolean
     phone_number?: boolean
     address?: boolean
+    role?: boolean
     is_active?: boolean
     last_purchase_date?: boolean
     total_orders?: boolean
@@ -2085,7 +2109,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "first_name" | "last_name" | "date_of_birth" | "email" | "password" | "phone_number" | "address" | "is_active" | "last_purchase_date" | "total_orders" | "total_spent" | "customer_type" | "preferred_contact_method" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "first_name" | "last_name" | "date_of_birth" | "email" | "password" | "phone_number" | "address" | "role" | "is_active" | "last_purchase_date" | "total_orders" | "total_spent" | "customer_type" | "preferred_contact_method" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | Customer$ordersArgs<ExtArgs>
     reviews?: boolean | Customer$reviewsArgs<ExtArgs>
@@ -2111,6 +2135,7 @@ export namespace Prisma {
       password: string | null
       phone_number: string | null
       address: string | null
+      role: $Enums.Role
       is_active: boolean
       last_purchase_date: Date | null
       total_orders: number
@@ -2553,6 +2578,7 @@ export namespace Prisma {
     readonly password: FieldRef<"Customer", 'String'>
     readonly phone_number: FieldRef<"Customer", 'String'>
     readonly address: FieldRef<"Customer", 'String'>
+    readonly role: FieldRef<"Customer", 'Role'>
     readonly is_active: FieldRef<"Customer", 'Boolean'>
     readonly last_purchase_date: FieldRef<"Customer", 'DateTime'>
     readonly total_orders: FieldRef<"Customer", 'Int'>
@@ -11045,6 +11071,7 @@ export namespace Prisma {
     password: 'password',
     phone_number: 'phone_number',
     address: 'address',
+    role: 'role',
     is_active: 'is_active',
     last_purchase_date: 'last_purchase_date',
     total_orders: 'total_orders',
@@ -11218,6 +11245,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -11295,6 +11336,7 @@ export namespace Prisma {
     password?: StringNullableFilter<"Customer"> | string | null
     phone_number?: StringNullableFilter<"Customer"> | string | null
     address?: StringNullableFilter<"Customer"> | string | null
+    role?: EnumRoleFilter<"Customer"> | $Enums.Role
     is_active?: BoolFilter<"Customer"> | boolean
     last_purchase_date?: DateTimeNullableFilter<"Customer"> | Date | string | null
     total_orders?: IntFilter<"Customer"> | number
@@ -11317,6 +11359,7 @@ export namespace Prisma {
     password?: SortOrderInput | SortOrder
     phone_number?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
+    role?: SortOrder
     is_active?: SortOrder
     last_purchase_date?: SortOrderInput | SortOrder
     total_orders?: SortOrder
@@ -11342,6 +11385,7 @@ export namespace Prisma {
     password?: StringNullableFilter<"Customer"> | string | null
     phone_number?: StringNullableFilter<"Customer"> | string | null
     address?: StringNullableFilter<"Customer"> | string | null
+    role?: EnumRoleFilter<"Customer"> | $Enums.Role
     is_active?: BoolFilter<"Customer"> | boolean
     last_purchase_date?: DateTimeNullableFilter<"Customer"> | Date | string | null
     total_orders?: IntFilter<"Customer"> | number
@@ -11364,6 +11408,7 @@ export namespace Prisma {
     password?: SortOrderInput | SortOrder
     phone_number?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
+    role?: SortOrder
     is_active?: SortOrder
     last_purchase_date?: SortOrderInput | SortOrder
     total_orders?: SortOrder
@@ -11391,6 +11436,7 @@ export namespace Prisma {
     password?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     phone_number?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     address?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    role?: EnumRoleWithAggregatesFilter<"Customer"> | $Enums.Role
     is_active?: BoolWithAggregatesFilter<"Customer"> | boolean
     last_purchase_date?: DateTimeNullableWithAggregatesFilter<"Customer"> | Date | string | null
     total_orders?: IntWithAggregatesFilter<"Customer"> | number
@@ -11881,6 +11927,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -11903,6 +11950,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -11924,6 +11972,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -11946,6 +11995,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -11968,6 +12018,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -11986,6 +12037,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -12005,6 +12057,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -12527,6 +12580,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -12612,6 +12672,7 @@ export namespace Prisma {
     password?: SortOrder
     phone_number?: SortOrder
     address?: SortOrder
+    role?: SortOrder
     is_active?: SortOrder
     last_purchase_date?: SortOrder
     total_orders?: SortOrder
@@ -12637,6 +12698,7 @@ export namespace Prisma {
     password?: SortOrder
     phone_number?: SortOrder
     address?: SortOrder
+    role?: SortOrder
     is_active?: SortOrder
     last_purchase_date?: SortOrder
     total_orders?: SortOrder
@@ -12656,6 +12718,7 @@ export namespace Prisma {
     password?: SortOrder
     phone_number?: SortOrder
     address?: SortOrder
+    role?: SortOrder
     is_active?: SortOrder
     last_purchase_date?: SortOrder
     total_orders?: SortOrder
@@ -12736,6 +12799,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -13224,6 +13297,10 @@ export namespace Prisma {
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -13726,6 +13803,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -13840,6 +13924,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -14116,6 +14210,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14137,6 +14232,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14173,6 +14269,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -14194,6 +14291,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -14529,6 +14627,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14550,6 +14649,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14613,6 +14713,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -14634,6 +14735,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -14838,6 +14940,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14859,6 +14962,7 @@ export namespace Prisma {
     password?: string | null
     phone_number?: string | null
     address?: string | null
+    role?: $Enums.Role
     is_active?: boolean
     last_purchase_date?: Date | string | null
     total_orders?: number
@@ -14937,6 +15041,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
@@ -14958,6 +15063,7 @@ export namespace Prisma {
     password?: NullableStringFieldUpdateOperationsInput | string | null
     phone_number?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_active?: BoolFieldUpdateOperationsInput | boolean
     last_purchase_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     total_orders?: IntFieldUpdateOperationsInput | number
