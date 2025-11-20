@@ -396,10 +396,12 @@ export const getProductStats = async () => {
     }),
   ]);
 
+  const formattedValue = totalValue._sum.price?.toFixed(2);
+
   return {
     totalProducts,
     outOfStock,
     lowStock,
-    totalValue: totalValue._sum.price || 0,
+    totalValue: Number(formattedValue) || 0,
   };
 };

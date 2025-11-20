@@ -19,7 +19,7 @@ const ProductSchema = z.object({
   updatedAt: z.date().optional(),
 });
 
-export const createProductSchema = z.object({
+export const CreateProductSchema = z.object({
   body: ProductSchema.omit({
     id: true,
     sku: true,
@@ -28,7 +28,7 @@ export const createProductSchema = z.object({
   }).strict(),
 });
 
-export const updateProductSchema = z.object({
+export const UpdateProductSchema = z.object({
   params: z.object({
     id: z
       .string()
@@ -47,7 +47,7 @@ export const updateProductSchema = z.object({
     .strict(),
 });
 
-export const getProductsQuerySchema = z.object({
+export const GetProductsQuerySchema = z.object({
   query: z
     .object({
       name: z.string().optional(),
@@ -61,6 +61,16 @@ export const getProductsQuerySchema = z.object({
     .optional(),
 });
 
+export const DeleteProductSchema = z.object({
+  params: z.object({
+    id: z
+      .string()
+      .refine((val) => !isNaN(Number(val)), {
+        message: "Product ID must be a valid number",
+      })
+      .transform(Number),
+  }),
+});
 // Advanced_search schemas
 export const SearchProductsSchema = z.object({
   body: z.object({}),
@@ -125,7 +135,8 @@ export const SearchProductsSchema = z.object({
 });
 
 // Types
-export type CreateProductInput = z.infer<typeof createProductSchema>;
-export type UpdateProductInput = z.infer<typeof updateProductSchema>;
-export type GetProductsQuery = z.infer<typeof getProductsQuerySchema>;
+export type CreateProductInput = z.infer<typeof CreateProductSchema>;
+export type UpdateProductInput = z.infer<typeof UpdateProductSchema>;
+export type GetProductsQuery = z.infer<typeof GetProductsQuerySchema>;
+export type DeleteProductsQuery = z.infer<typeof DeleteProductSchema>;
 export type SearchProductsQuery = z.infer<typeof SearchProductsSchema>["query"];
