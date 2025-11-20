@@ -16,6 +16,7 @@
     "src/types/*.ts",
     "src/types/express/index.d.ts",
     "prisma/seed-customers.ts",
-    "prisma/seed-products.ts"
+    "prisma/seed-products.ts",
+    "src/__tests__/test-rbac.js"
   ]
 }

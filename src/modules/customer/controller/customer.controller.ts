@@ -1,4 +1,5 @@
 import { NotFoundError } from "../../../errors";
+import { AuthRequest } from "../../../types/auth.types";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import * as customerService from "../service/customer.service";
 
@@ -6,7 +7,10 @@ import * as customerService from "../service/customer.service";
  * GET /api/customers
  */
 export const getAllCustomers = asyncHandler(async (req, res) => {
-  const customers = await customerService.getAllCustomers();
+  const { customers } = await customerService.getAllCustomers({
+    page: 1,
+    limit: 20,
+  });
 
   res.status(200).json({
     status: "success",
@@ -18,7 +22,7 @@ export const getAllCustomers = asyncHandler(async (req, res) => {
 /**
  * GET /api/customers/:id
  */
-export const getCustomer = asyncHandler(async (req, res) => {
+export const getCustomer = asyncHandler(async (req: AuthRequest, res) => {
   const customerId = parseInt(req.params.id);
   const customer = await customerService.getCustomerById(customerId);
 

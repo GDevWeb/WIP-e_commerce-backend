@@ -1,5 +1,7 @@
 import express from "express";
+import { Role } from "../../../generated/prisma";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
+import { checkRole } from "../../../middlewares/checkRole.middleware";
 import { validate } from "../../../middlewares/validate";
 import * as orderController from "../controller/order.controller";
 import {
@@ -48,13 +50,34 @@ orderRouter.get(
 /**
  * PATCH /api/orders/:id/status
  * Update order status
- * TODO: Restrict to ADMIN role in Phase 3
  */
 orderRouter.patch(
   "/:id/status",
+  checkRole([Role.ADMIN, Role.MANAGER]),
   authMiddleware,
   validate(UpdateOrderStatusSchema),
   orderController.updateOrderStatus
 );
 
+/**
+ * GET /api/orders/admin/all
+ * Get all orders - ADMIN/MANAGER ONLY
+ */
+orderRouter.get(
+  "/admin/all",
+  authMiddleware,
+  checkRole([Role.ADMIN, Role.MANAGER]),
+  orderController.getAllOrders
+);
+
+/**
+ * GET /api/orders/admin/stats
+ * Get order statistics - ADMIN/MANAGER ONLY
+ */
+orderRouter.get(
+  "/admin/stats",
+  authMiddleware,
+  checkRole([Role.ADMIN, Role.MANAGER]),
+  orderController.getOrderStats
+);
 export default orderRouter;

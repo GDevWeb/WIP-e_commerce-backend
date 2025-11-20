@@ -1,0 +1,595 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-01-20T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "token_user": "",
+        "token_manager": "",
+        "token_admin": "",
+        "user_id": "2",
+        "manager_id": "3",
+        "admin_id": "1"
+      }
+    },
+    {
+      "_id": "wrk_rbac",
+      "_type": "workspace",
+      "name": "E-Commerce RBAC Tests",
+      "description": "Complete RBAC testing suite"
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_rbac",
+      "name": "00 - Authentication",
+      "description": "Login to get tokens"
+    },
+    {
+      "_id": "req_login_user",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login USER",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"user@test.com\",\n  \"password\": \"User1234\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_login_manager",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login MANAGER",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"manager@test.com\",\n  \"password\": \"Manager1234\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_login_admin",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login ADMIN",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/login",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"Admin1234\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "fld_customers",
+      "_type": "request_group",
+      "parentId": "wrk_rbac",
+      "name": "01 - Customers Tests"
+    },
+    {
+      "_id": "req_customers_no_auth",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "❌ GET /customers - No Auth (401)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers"
+    },
+    {
+      "_id": "req_customers_user",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ GET /customers - USER (200 own)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customers_admin",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ GET /customers - ADMIN (200 all)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customer_own",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ GET /customers/:id - Own (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers/{{ _.user_id }}",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customer_other",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "❌ GET /customers/:id - Other (403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers/{{ _.manager_id }}",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customer_admin_any",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ GET /customers/:id - ADMIN any (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers/{{ _.user_id }}",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customers_admin_all_user",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "❌ GET /customers/admin/all - USER (403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers/admin/all",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_customers_admin_all_admin",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ GET /customers/admin/all - ADMIN (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/customers/admin/all",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_role_user",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "❌ PATCH /customers/:id/role - USER (403)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/customers/{{ _.user_id }}/role",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"ADMIN\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_role_admin",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ PATCH /customers/:id/role - ADMIN (200)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/customers/{{ _.user_id }}/role",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"role\": \"MANAGER\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_customer_own",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "✅ PATCH /customers/:id - Own (200)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/customers/{{ _.user_id }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"phone_number\": \"0999999999\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_delete_customer_user",
+      "_type": "request",
+      "parentId": "fld_customers",
+      "name": "❌ DELETE /customers/:id - USER (403)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/customers/5",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "fld_products",
+      "_type": "request_group",
+      "parentId": "wrk_rbac",
+      "name": "02 - Products Tests"
+    },
+    {
+      "_id": "req_create_product_user",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "❌ POST /products - USER (403)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/products",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Unauthorized Product\",\n  \"sku\": \"UNAUTH-001\",\n  \"price\": 99.99,\n  \"stock_quantity\": 10,\n  \"category_id\": 1,\n  \"brand_id\": 1\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_create_product_manager",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "❌ POST /products - MANAGER (403)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/products",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Manager Product\",\n  \"sku\": \"MGR-001\",\n  \"price\": 99.99,\n  \"stock_quantity\": 10,\n  \"category_id\": 1,\n  \"brand_id\": 1\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_manager }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_create_product_admin",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "✅ POST /products - ADMIN (201)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/products",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Admin Product Test\",\n  \"sku\": \"ADMIN-TEST-001\",\n  \"description\": \"Product created by admin\",\n  \"price\": 199.99,\n  \"stock_quantity\": 50,\n  \"category_id\": 1,\n  \"brand_id\": 1\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_product_user",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "❌ PATCH /products/:id - USER (403)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/products/1",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"price\": 99.99\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_product_admin",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "✅ PATCH /products/:id - ADMIN (200)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/products/1",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"price\": 149.99,\n  \"stock_quantity\": 100\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_delete_product_user",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "❌ DELETE /products/:id - USER (403)",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/products/1",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_product_stats_user",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "❌ GET /products/admin/stats - USER (403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/products/admin/stats",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_product_stats_admin",
+      "_type": "request",
+      "parentId": "fld_products",
+      "name": "✅ GET /products/admin/stats - ADMIN (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/products/admin/stats",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        }
+      ]
+    },
+    {
+      "_id": "fld_orders",
+      "_type": "request_group",
+      "parentId": "wrk_rbac",
+      "name": "03 - Orders Tests"
+    },
+    {
+      "_id": "req_orders_user",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ GET /orders - USER (200 own)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_orders_all_user",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "❌ GET /orders/admin/all - USER (403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders/admin/all",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_orders_all_manager",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ GET /orders/admin/all - MANAGER (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders/admin/all",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_manager }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_orders_all_admin",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ GET /orders/admin/all - ADMIN (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders/admin/all",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_orders_stats_user",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "❌ GET /orders/admin/stats - USER (403)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders/admin/stats",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_orders_stats_manager",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ GET /orders/admin/stats - MANAGER (200)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/orders/admin/stats",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_manager }}"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_status_user",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "❌ PATCH /orders/:id/status - USER (403)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/orders/1/status",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"SHIPPED\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_user }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_status_manager",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ PATCH /orders/:id/status - MANAGER (200)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/orders/1/status",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"PROCESSING\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_manager }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "_id": "req_update_status_admin",
+      "_type": "request",
+      "parentId": "fld_orders",
+      "name": "✅ PATCH /orders/:id/status - ADMIN (200)",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api/orders/1/status",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"status\": \"SHIPPED\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token_admin }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    }
+  ]
+}
