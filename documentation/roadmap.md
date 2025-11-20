@@ -190,8 +190,8 @@
 - [x] Create `checkRole(['ADMIN'])` middleware
 - [x] Protect admin routes (manage products, orders)
 - [x] Routes: `PATCH /api/orders/:id/status` (ADMIN only)
-- [ ] Protect admin routes (manage customers)
-- [ ] **Deliverable**: Permission system
+- [x] Protect admin routes (manage customers)
+- [x] **Deliverable**: Permission system
 
 **Estimated time: 4h**
 
