@@ -7,21 +7,19 @@ import { validate } from "../../../middlewares/validate";
 import { getProductReviews } from "../../review/controller/review.controller";
 import { GetProductReviewsSchema } from "../../review/schema/review.schema";
 import * as productController from "../controller/product.controller";
-import * as uploadController from "../controller/product.upload.controller";
 import {
-  CreateProductSchema,
+  CreateProductFormDataSchema,
   DeleteProductSchema,
   SearchProductsSchema,
-  UpdateProductSchema,
+  UpdateProductFormDataSchema,
 } from "../schema/product.schema";
 
 const productRouter = express.Router();
 
-// /**
-//  * GET /api/products/search
-//  * Search product  * Validate the search query *
-//  */
-
+/**
+ * GET /api/products/search
+ * Advanced product search with filters
+ */
 productRouter.get(
   "/search",
   validate(SearchProductsSchema),
@@ -29,30 +27,9 @@ productRouter.get(
 );
 
 /**
- * GET /api/products
- * Get products
- */
-productRouter.get("/", productController.getAllProducts);
-
-/**
- * GET /api/products/:productId
- * Get product by id
- */
-productRouter.get("/:id", productController.getProduct);
-
-/**
- * GET /api/products/:productId/reviews
- * Get product Reviews
- */
-productRouter.get(
-  "/:productId/reviews",
-  validate(GetProductReviewsSchema),
-  getProductReviews
-);
-
-/**
  * GET /api/products/admin/stats
  * Get product statistics - ADMIN ONLY
+ * Must be BEFORE /:id route
  */
 productRouter.get(
   "/admin/stats",
@@ -62,32 +39,58 @@ productRouter.get(
 );
 
 /**
+ * GET /api/products
+ * Get all products with optional filters
+ */
+productRouter.get("/", productController.getAllProducts);
+
+/**
+ * GET /api/products/:id
+ * Get single product by ID
+ */
+productRouter.get("/:id", productController.getProduct);
+
+/**
+ * GET /api/products/:productId/reviews
+ * Get product reviews
+ */
+productRouter.get(
+  "/:productId/reviews",
+  validate(GetProductReviewsSchema),
+  getProductReviews
+);
+
+/**
  * POST /api/products
- * Create product - ADMIN ONLY
+ * Create product with optional image - ADMIN ONLY
  */
 productRouter.post(
   "/",
   authMiddleware,
   checkRole([Role.ADMIN]),
-  validate(CreateProductSchema),
+  upload.single("image"),
+  validate(CreateProductFormDataSchema),
   productController.createProduct
 );
 
 /**
  * PATCH /api/products/:id
- * Update product - ADMIN ONLY
+ * Update product with optional new image - ADMIN ONLY
+ * Content-Type: multipart/form-data
+ * All fields optional, including image
  */
 productRouter.patch(
   "/:id",
   authMiddleware,
   checkRole([Role.ADMIN]),
-  validate(UpdateProductSchema),
+  upload.single("image"),
+  validate(UpdateProductFormDataSchema),
   productController.updateProduct
 );
 
 /**
  * DELETE /api/products/:id
- * Delete product - ADMIN ONLY
+ * Delete product and its images - ADMIN ONLY
  */
 productRouter.delete(
   "/:id",
@@ -95,29 +98,6 @@ productRouter.delete(
   checkRole([Role.ADMIN]),
   validate(DeleteProductSchema),
   productController.deleteProduct
-);
-
-/**
- * POST /api/products/:id/image
- * Upload product image - ADMIN ONLY
- */
-productRouter.post(
-  "/:id/image",
-  authMiddleware,
-  checkRole([Role.ADMIN]),
-  upload.single("image"),
-  uploadController.uploadProductImage
-);
-
-/**
- * DELETE /api/products/:id/image
- * Delete product image - ADMIN ONLY
- */
-productRouter.delete(
-  "/:id/image",
-  authMiddleware,
-  checkRole([Role.ADMIN]),
-  uploadController.deleteProductImageController
 );
 
 export default productRouter;

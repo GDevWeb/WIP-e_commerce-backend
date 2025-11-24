@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import * as uploadService from "../../../services/upload.service";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import { generateSKU } from "../../../utils/product.utils";
 import { SearchProductsQuery } from "../schema/product.schema";
@@ -49,13 +50,21 @@ export const getProduct = asyncHandler(async (req, res) => {
 });
 
 /**
- * Creates a new product.
+ * Creates a new product with optional image upload.
  * POST /api/products
+ * Content-Type: multipart/form-data
+ *
+ * Fields:
+ * - name (required)
+ * - description (optional)
+ * - weight (optional)
+ * - price (required)
+ * - stock_quantity (required)
+ * - category_id (required)
+ * - brand_id (required)
+ * - image (optional file)
  */
 export const createProduct = asyncHandler(async (req, res) => {
-  const imageUrl =
-    req.file?.path?.replace(/\\/g, "/") || "https://placehold.co/300x200";
-
   const {
     name,
     description,
@@ -66,34 +75,77 @@ export const createProduct = asyncHandler(async (req, res) => {
     brand_id,
   } = req.body;
 
+  // Generate SKU
   const sku = generateSKU(name);
 
-  const newProduct = await productService.createProduct({
-    name,
-    sku,
-    imageUrl,
-    description,
-    weight: weight ? parseFloat(weight) : undefined,
-    price: parseFloat(price),
-    stock_quantity: parseInt(stock_quantity),
-    category: { connect: { id: parseInt(category_id) } },
-    brand: { connect: { id: parseInt(brand_id) } },
-  });
+  // Handle the image if exists
+  let imageUrl: string | null = null;
+  let images: any = null;
 
-  res.status(201).json({
-    status: "success",
-    message: "Product created successfully",
-    data: newProduct,
-  });
+  if (req.file) {
+    const tempProduct = await productService.createProduct({
+      name,
+      sku,
+      imageUrl: null,
+      description: description || null,
+      weight: weight ? parseFloat(weight) : null,
+      price: parseFloat(price),
+      stock_quantity: parseInt(stock_quantity),
+      category: { connect: { id: parseInt(category_id) } },
+      brand: { connect: { id: parseInt(brand_id) } },
+    });
+
+    // Handle the image with the product's id
+    images = await uploadService.processProductImage(req.file, tempProduct.id);
+    imageUrl = images.medium;
+
+    // Update the product with the image URL
+    const updatedProduct = await productService.updateProduct(tempProduct.id, {
+      imageUrl,
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "Product created successfully with image",
+      data: updatedProduct,
+      images,
+    });
+  } else {
+    // Create without image
+    const newProduct = await productService.createProduct({
+      name,
+      sku,
+      imageUrl: null,
+      description: description || null,
+      weight: weight ? parseFloat(weight) : null,
+      price: parseFloat(price),
+      stock_quantity: parseInt(stock_quantity),
+      category: { connect: { id: parseInt(category_id) } },
+      brand: { connect: { id: parseInt(brand_id) } },
+    });
+
+    res.status(201).json({
+      status: "success",
+      message: "Product created successfully",
+      data: newProduct,
+    });
+  }
 });
 
 /**
- * Updates an existing product.
- * PUT /api/products/:id
+ * Updates an existing product with optional image upload.
+ * PATCH /api/products/:id
+ * Content-Type: multipart/form-data
+ *
+ * All fields are optional.
+ * If image is provided, replaces the existing image.
  */
 export const updateProduct = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id);
 
+  // Vérifier que le produit existe
+  const existingProduct = await productService.getProductById(productId);
+
   const {
     name,
     description,
@@ -102,9 +154,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
     stock_quantity,
     category_id,
     brand_id,
-    imageUrl,
   } = req.body;
 
+  // Construire l'objet de mise à jour
   const data: any = {};
 
   if (name !== undefined) data.name = name;
@@ -113,7 +165,6 @@ export const updateProduct = asyncHandler(async (req, res) => {
   if (price !== undefined) data.price = parseFloat(price);
   if (stock_quantity !== undefined)
     data.stock_quantity = parseInt(stock_quantity);
-  if (imageUrl !== undefined) data.imageUrl = imageUrl;
 
   if (category_id !== undefined) {
     data.category = { connect: { id: parseInt(category_id) } };
@@ -123,12 +174,28 @@ export const updateProduct = asyncHandler(async (req, res) => {
     data.brand = { connect: { id: parseInt(brand_id) } };
   }
 
+  // Traiter la nouvelle image si présente
+  let images: any = null;
+
+  if (req.file) {
+    // Supprimer l'ancienne image si elle existe
+    if (existingProduct.imageUrl) {
+      await uploadService.deleteProductImage(existingProduct.imageUrl);
+    }
+
+    // Traiter la nouvelle image
+    images = await uploadService.processProductImage(req.file, productId);
+    data.imageUrl = images.medium;
+  }
+
+  // Mettre à jour le produit
   const updatedProduct = await productService.updateProduct(productId, data);
 
   res.status(200).json({
     status: "success",
     message: "Product updated successfully",
     data: updatedProduct,
+    ...(images && { images }), // Inclure les URLs des images si présent
   });
 });
 
@@ -139,6 +206,15 @@ export const updateProduct = asyncHandler(async (req, res) => {
 export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
   const productId = parseInt(req.params.id);
 
+  // Récupérer le produit pour supprimer son image
+  const product = await productService.getProductById(productId);
+
+  // Supprimer l'image si elle existe
+  if (product.imageUrl) {
+    await uploadService.deleteProductImage(product.imageUrl);
+  }
+
+  // Supprimer le produit
   const deletedProduct = await productService.deleteProduct(productId);
 
   res.status(200).json({
@@ -149,13 +225,8 @@ export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
 });
 
 /**
- * Searches for products based on various criteria, including text search, price range,
- * category, brand, minimum rating, stock status, and sorting options.
+ * Searches for products based on various criteria.
  * GET /api/products/search
- *
- * @param req - The Express request object, containing search filters in the query parameters.
- * @param res - The Express response object.
- * @returns A JSON response with the search results, pagination info, and applied filters.
  */
 export const searchProducts = asyncHandler(
   async (req: Request, res: Response) => {
@@ -180,17 +251,11 @@ export const searchProducts = asyncHandler(
 
 /**
  * ADMIN SECTION
- *
  */
 
 /**
- * Retrieves various statistics about products, including total count, out-of-stock items,
- * low-stock items, and the total value of all products.
- * GET /api/products/stats
- *
- * @param req - The Express request object.
- * @param res - The Express response object.
- * @returns A JSON response with product statistics.
+ * Retrieves product statistics.
+ * GET /api/products/admin/stats
  */
 export const getProductStats = asyncHandler(
   async (req: Request, res: Response) => {

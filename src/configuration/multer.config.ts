@@ -18,7 +18,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, callback) => {
-    cb(null, path.join(process.cwd(), "uploads/temp"));
+    callback(null, path.join(process.cwd(), "uploads/temp"));
   },
   filename: (req: Request, file: Express.Multer.File, callback) => {
     const uniqueSuffix = randomUUID();
@@ -26,17 +26,18 @@ const storage = multer.diskStorage({
     callback(null, `temp-${uniqueSuffix}${ext}`);
   },
 });
-// File filter
+
+// File filter (validation)
 const fileFilter = (
   req: Request,
   file: Express.Multer.File,
-  callback: multer.FileFilterCallback
+  cb: multer.FileFilterCallback
 ) => {
-  // Check the MIME type
+  // Vérifier le MIME type
   if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    callback(null, true);
+    cb(null, true);
   } else {
-    callback(
+    cb(
       new BadRequestError(
         `Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}`
       )
@@ -53,10 +54,11 @@ export const upload = multer({
   },
 });
 
-// Helper: Validate uploaded file
+// Helper: Validate uploaded file (now optional)
 export const validateUploadedFile = (file?: Express.Multer.File) => {
+  // Si pas de fichier, c'est OK (optionnel)
   if (!file) {
-    throw new BadRequestError("No file uploaded");
+    return false; // Pas de fichier
   }
 
   if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
@@ -69,5 +71,5 @@ export const validateUploadedFile = (file?: Express.Multer.File) => {
     );
   }
 
-  return true;
+  return true; // Fichier valide
 };
