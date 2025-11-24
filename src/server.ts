@@ -14,6 +14,7 @@ import orderRouter from "./modules/order/routes/order.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
 import orderItemRouter from "./routes/orderItem.routes";
+import { ensureUploadDirs } from "./services/upload.service";
 import logger from "./utils/logger";
 import cookieParser = require("cookie-parser");
 
@@ -30,8 +31,9 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 
-server.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+const UPLOADS_PATH = path.join(process.cwd(), "uploads");
 
+server.use("/uploads", express.static(UPLOADS_PATH));
 server.use("/api/categories", categoryRouter);
 server.use("/api/brands", brandRouter);
 server.use("/api/products", productRouter);
@@ -54,9 +56,13 @@ async function startServer() {
     await prisma.$connect();
     logger.info(`\n🖲️ Successfully connected to the database`);
 
-    // 2.Redis
+    // 2.Create uploads folder
+    await ensureUploadDirs();
+
+    // 3.Redis
     await connectRedis();
-    // 3.API
+
+    // 4.API
     server.listen(PORT, () => {
       logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
     });
