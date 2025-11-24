@@ -760,15 +760,15 @@ e-commerce-backend/
 - [x] Order management (list, detail, status update)
 - [x] Prisma transactions
 
-### 🔄 Phase 3: Advanced Features (Weeks 6-8) - **IN PROGRESS**
+### 🔄 Phase 3: Advanced Features (Weeks 6-8) - **COMPLETED**
 
 - [x] **Session 11**: Product reviews with ratings ✅
 - [x] **Session 12**: Shopping cart with Redis ✅
 - [x] **Session 13**: Advanced search & filters
 - [x] **Session 14**: Role-Based Access Control (RBAC)
-- [ ] **Session 15**: Image upload system (Multer + Sharp)
+- [x] **Session 15**: Image upload system (Multer + Sharp)
 
-### ⏳ Phase 4: Testing & Quality (Weeks 9-10)
+### ⏳ Phase 4: Testing & Quality (Weeks 9-10) - **IN PROGRESS**
 
 - [ ] **Session 16**: Unit tests (Services)
 - [ ] **Session 17**: Unit tests (Controllers)
@@ -784,7 +784,7 @@ e-commerce-backend/
 - [ ] **Session 24**: Docker & Deployment
 
 **Total Duration**: 12 weeks @ 4h/day (Mon-Fri) = ~96 hours  
-**Current Progress**: ~60% (14/24 sessions) 🎯
+**Current Progress**: ~60% (15/24 sessions) 🎯
 
 ---
 
@@ -950,7 +950,7 @@ Une API RESTful robuste et évolutive pour une plateforme e-commerce construite 
 - ✅**Panier d'Achat** : Panier avec Redis
 - ✅**Recherche Avancée** : Recherche full-text avec filtres
 - ✅**RBAC** : Contrôle d'accès basé sur les rôles
-- 🔄 **Upload d'Images** : Gestion des images produits
+- ✅ **Upload d'Images** : Gestion des images produits
 - 🔄 **Intégration Paiement** : Traitement Stripe
 - 🔄 **Notifications Email** : Emails transactionnels
 - 🔄 **Documentation API** : Swagger/OpenAPI
@@ -1111,15 +1111,15 @@ DELETE /api/products/:id    # Supprimer produit
 - [x] Gestion complète des commandes
 - [x] Transactions Prisma
 
-### 🔄 Phase 3 : Fonctionnalités Avancées - **EN COURS**
+### 🔄 Phase 3 : Fonctionnalités Avancées - **TERMINÉE**
 
-- [x] **Session 11** : Système d'avis produits ✅
-- [x] **Session 12** : Panier avec Redis ✅
+- [x] **Session 11** : Système d'avis produits
+- [x] **Session 12** : Panier avec Redis
 - [x] **Session 13** : Recherche avancée
 - [x] **Session 14** : RBAC (Admin/User)
-- [ ] **Session 15** : Upload d'images
+- [x] **Session 15** : Upload d'images
 
-### ⏳ Phase 4 : Tests & Qualité
+### ⏳ Phase 4 : Tests & Qualité - **EN COURS**
 
 - [ ] Tests unitaires
 - [ ] Tests d'intégration
@@ -1132,7 +1132,7 @@ DELETE /api/products/:id    # Supprimer produit
 - [ ] Jobs arrière-plan
 - [ ] Docker & Déploiement
 
-**Progression** : ~60% (14/24 sessions) 🎯
+**Progression** : ~60% (15/24 sessions) 🎯
 
 ---
 

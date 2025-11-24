@@ -201,13 +201,13 @@
 
 **Goal: Product image upload**
 
-- [ ] Install: `npm install multer sharp`
-- [ ] Configure Multer (limits, types)
-- [ ] Process images with Sharp (resize, optimize)
-- [ ] **Option A**: Local storage + serve static
-- [ ] **Option B**: Upload to S3/Cloudinary
+- [x] Install: `npm install multer sharp`
+- [x] Configure Multer (limits, types)
+- [x] Process images with Sharp (resize, optimize)
+- [x] **Option A**: Local storage + serve static
 - [ ] Route: `POST /api/products/:id/image`
-- [ ] **Deliverable**: Functional product images
+- [ ] Route: `PATCH /api/products/:id/image`
+- [x] **Deliverable**: Functional product images
 
 **Estimated time: 4h**
 
