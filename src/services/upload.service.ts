@@ -2,10 +2,12 @@ import fs from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 import { BadRequestError } from "../errors";
+import logger from "../utils/logger";
 
 // Configuration
-const PRODUCTS_DIR = "uploads/products";
-const TEMP_DIR = "uploads/temp";
+const UPLOADS_ROOT = path.join(process.cwd(), "uploads");
+const PRODUCTS_DIR = path.join(UPLOADS_ROOT, "products");
+const TEMP_DIR = path.join(UPLOADS_ROOT, "temp");
 
 // Dimensions for product images
 const IMAGE_CONFIG = {
@@ -159,8 +161,11 @@ export const ensureUploadDirs = async (): Promise<void> => {
   try {
     await fs.mkdir(PRODUCTS_DIR, { recursive: true });
     await fs.mkdir(TEMP_DIR, { recursive: true });
-    console.log("✅ Upload directories ready");
+    logger.info("✅ Upload directories ready");
+    logger.info(` Products: ${PRODUCTS_DIR}`);
+    logger.info(` Temp: ${TEMP_DIR}`);
   } catch (error) {
     console.error("Failed to create upload directories:", error);
+    throw error;
   }
 };

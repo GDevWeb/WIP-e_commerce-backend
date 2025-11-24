@@ -18,17 +18,14 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, callback) => {
-    // Temporary upload, will be handle with Sharp then moved
-    callback(null, "uploads/");
+    cb(null, path.join(process.cwd(), "uploads/temp"));
   },
-  filename(req: Request, file: Express.Multer.File, callback) {
-    // Generate a unique name using a random UUID
+  filename: (req: Request, file: Express.Multer.File, callback) => {
     const uniqueSuffix = randomUUID();
     const ext = path.extname(file.originalname);
     callback(null, `temp-${uniqueSuffix}${ext}`);
   },
 });
-
 // File filter
 const fileFilter = (
   req: Request,
