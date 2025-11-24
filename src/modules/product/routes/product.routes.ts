@@ -1,4 +1,5 @@
 import express from "express";
+import { upload } from "../../../configuration/multer.config";
 import { Role } from "../../../generated/prisma";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { checkRole } from "../../../middlewares/checkRole.middleware";
@@ -6,6 +7,7 @@ import { validate } from "../../../middlewares/validate";
 import { getProductReviews } from "../../review/controller/review.controller";
 import { GetProductReviewsSchema } from "../../review/schema/review.schema";
 import * as productController from "../controller/product.controller";
+import * as uploadController from "../controller/product.upload.controller";
 import {
   CreateProductSchema,
   DeleteProductSchema,
@@ -94,4 +96,28 @@ productRouter.delete(
   validate(DeleteProductSchema),
   productController.deleteProduct
 );
+
+/**
+ * POST /api/products/:id/image
+ * Upload product image - ADMIN ONLY
+ */
+productRouter.post(
+  "/:id/image",
+  authMiddleware,
+  checkRole([Role.ADMIN]),
+  upload.single("image"),
+  uploadController.uploadProductImage
+);
+
+/**
+ * DELETE /api/products/:id/image
+ * Delete product image - ADMIN ONLY
+ */
+productRouter.delete(
+  "/:id/image",
+  authMiddleware,
+  checkRole([Role.ADMIN]),
+  uploadController.deleteProductImageController
+);
+
 export default productRouter;

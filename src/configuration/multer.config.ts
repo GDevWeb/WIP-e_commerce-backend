@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { Request } from "express";
 import multer from "multer";
 import path from "path";
@@ -21,8 +22,8 @@ const storage = multer.diskStorage({
     callback(null, "uploads/");
   },
   filename(req: Request, file: Express.Multer.File, callback) {
-    // Generate an unique name
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    // Generate a unique name using a random UUID
+    const uniqueSuffix = randomUUID();
     const ext = path.extname(file.originalname);
     callback(null, `temp-${uniqueSuffix}${ext}`);
   },
