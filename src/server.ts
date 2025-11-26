@@ -16,7 +16,8 @@ import reviewRouter from "./modules/review/routes/review.routes";
 import orderItemRouter from "./routes/orderItem.routes";
 import { ensureUploadDirs } from "./services/upload.service";
 import logger from "./utils/logger";
-import cookieParser = require("cookie-parser");
+// import cookieParser = require("cookie-parser");
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
