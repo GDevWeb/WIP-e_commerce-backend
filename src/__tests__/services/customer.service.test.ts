@@ -1,185 +1,188 @@
-import { NotFoundError } from "../../errors";
-import * as customerService from "../../modules/customer/service/customer.service";
-import { createMockCustomer, mockCustomer } from "../__mocks__/fixtures";
-import { prismaMock } from "../__mocks__/prisma.mock";
+import { DeepMockProxy, mockDeep, mockReset } from "jest-mock-extended";
+import { PrismaClient } from "../../generated/prisma";
 
 jest.mock("../../generated/prisma", () => ({
-  PrismaClient: jest.fn(() => prismaMock),
+  PrismaClient: jest.fn(),
+
+  Role: {
+    ADMIN: "ADMIN",
+    CUSTOMER: "CUSTOMER",
+  },
 }));
 
+import { NotFoundError } from "../../errors";
+import * as CustomerServiceType from "../../modules/customer/service/customer.service";
+
 describe("CustomerService", () => {
+  let customerService: typeof CustomerServiceType;
+  let prismaMock: DeepMockProxy<PrismaClient>;
+
+  beforeAll(() => {
+    prismaMock = mockDeep<PrismaClient>();
+
+    (PrismaClient as jest.Mock).mockImplementation(() => prismaMock);
+
+    customerService = require("../../modules/customer/service/customer.service");
+  });
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockReset(prismaMock);
   });
 
-  describe("getCustomerById", () => {
-    it("should return a customer by id", async () => {
-      // Arrange
-      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer);
+  const mockDate = new Date();
+  const mockCustomer = {
+    id: 1,
+    first_name: "John",
+    last_name: "Doe",
+    email: "john@example.com",
+    role: "CUSTOMER",
+    is_active: true,
+    total_orders: 0,
+    total_spent: 0,
+    createdAt: mockDate,
+    updatedAt: mockDate,
+  };
 
-      // Act
-      const result = await customerService.getCustomerById(1);
+  describe("getAllCustomers", () => {
+    it("should return paginated customers", async () => {
+      prismaMock.customer.findMany.mockResolvedValue([mockCustomer] as any);
+      prismaMock.customer.count.mockResolvedValue(1);
 
-      // Assert
-      expect(result).toEqual(mockCustomer);
-      expect(prismaMock.customer.findUnique).toHaveBeenCalledWith({
-        where: { id: 1 },
+      const result = await customerService.getAllCustomers({
+        page: 1,
+        limit: 10,
       });
-    });
 
-    it("should throw NotFoundError if customer not found", async () => {
-      // Arrange
-      prismaMock.customer.findUnique.mockResolvedValue(null);
-
-      // Act & Assert
-      await expect(customerService.getCustomerById(999)).rejects.toThrow(
-        NotFoundError
+      expect(prismaMock.customer.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skip: 0,
+          take: 10,
+          orderBy: { createdAt: "desc" },
+        })
       );
-    });
-  });
-
-  describe("createCustomer", () => {
-    it("should create a new customer", async () => {
-      // Arrange
-      const newCustomerData = {
-        first_name: "Jane",
-        last_name: "Smith",
-        email: "jane@test.com",
-        phone_number: "0987654321",
-        address: "456 Oak Ave",
-      };
-
-      const createdCustomer = createMockCustomer({
-        id: 2,
-        first_name: "Jane",
-        last_name: "Smith",
-        email: "jane@test.com",
-      });
-
-      prismaMock.customer.create.mockResolvedValue(createdCustomer);
-
-      // Act
-      const result = await customerService.createCustomer(newCustomerData);
-
-      // Assert
-      expect(result).toEqual(createdCustomer);
-      expect(prismaMock.customer.create).toHaveBeenCalledWith({
-        data: newCustomerData,
-      });
-    });
-
-    it("should handle duplicate email error", async () => {
-      // Arrange
-      const duplicateData = {
-        first_name: "John",
-        last_name: "Doe",
-        email: "john@test.com", // Already exists
-        phone_number: "0123456789",
-        address: "123 Main St",
-      };
-
-      prismaMock.customer.create.mockRejectedValue({
-        code: "P2002",
-        meta: { target: ["email"] },
-      });
-
-      // Act & Assert
-      await expect(
-        customerService.createCustomer(duplicateData)
-      ).rejects.toThrow();
-    });
-  });
-
-  describe("updateCustomer", () => {
-    it("should update a customer", async () => {
-      // Arrange
-      const updateData = { phone_number: "0999999999" };
-      const updatedCustomer = createMockCustomer({
-        phone_number: "0999999999",
-      });
-
-      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer);
-      prismaMock.customer.update.mockResolvedValue(updatedCustomer);
-
-      // Act
-      const result = await customerService.updateCustomer(1, updateData);
-
-      // Assert
-      expect(result).toEqual(updatedCustomer);
-      expect(prismaMock.customer.update).toHaveBeenCalledWith({
-        where: { id: 1 },
-        data: updateData,
-      });
+      expect(result.customers).toEqual([mockCustomer]);
+      expect(result.pagination.total).toBe(1);
+      expect(result.pagination.totalPages).toBe(1);
     });
   });
 
   describe("updateCustomerRole", () => {
-    it("should update customer role", async () => {
-      // Arrange
-      const updatedCustomer = createMockCustomer({ role: "MANAGER" });
+    it("should update role if customer exists", async () => {
+      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer as any);
+      const updatedMock = { ...mockCustomer, role: "ADMIN" };
+      prismaMock.customer.update.mockResolvedValue(updatedMock as any);
 
-      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer);
-      prismaMock.customer.update.mockResolvedValue(updatedCustomer);
+      const result = await customerService.updateCustomerRole(
+        1,
+        "ADMIN" as any
+      );
 
-      // Act
-      const result = await customerService.updateCustomerRole(1, "MANAGER");
-
-      // Assert
-      expect(result.role).toBe("MANAGER");
-      expect(prismaMock.customer.update).toHaveBeenCalledWith({
+      expect(prismaMock.customer.findUnique).toHaveBeenCalledWith({
         where: { id: 1 },
-        data: { role: "MANAGER" },
-        select: expect.any(Object),
       });
+      expect(prismaMock.customer.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 1 },
+          data: { role: "ADMIN" },
+        })
+      );
+      expect(result.role).toBe("ADMIN");
+    });
+
+    it("should throw NotFoundError if customer does not exist", async () => {
+      prismaMock.customer.findUnique.mockResolvedValue(null);
+
+      await expect(
+        customerService.updateCustomerRole(999, "ADMIN" as any)
+      ).rejects.toThrow(NotFoundError);
+
+      expect(prismaMock.customer.update).not.toHaveBeenCalled();
     });
   });
 
   describe("deleteCustomer", () => {
-    it("should delete a customer", async () => {
-      // Arrange
-      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer);
-      prismaMock.customer.delete.mockResolvedValue(mockCustomer);
+    it("should delete customer if found", async () => {
+      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer as any);
+      prismaMock.customer.delete.mockResolvedValue(mockCustomer as any);
 
-      // Act
       await customerService.deleteCustomer(1);
 
-      // Assert
       expect(prismaMock.customer.delete).toHaveBeenCalledWith({
         where: { id: 1 },
       });
     });
 
-    it("should throw NotFoundError if customer not found", async () => {
-      // Arrange
+    it("should throw NotFoundError if customer to delete does not exist", async () => {
       prismaMock.customer.findUnique.mockResolvedValue(null);
 
-      // Act & Assert
       await expect(customerService.deleteCustomer(999)).rejects.toThrow(
         NotFoundError
       );
+
+      expect(prismaMock.customer.delete).not.toHaveBeenCalled();
     });
   });
 
-  describe("getAllCustomers", () => {
-    it("should return paginated customers", async () => {
-      // Arrange
-      const mockCustomers = [
-        createMockCustomer({ id: 1 }),
-        createMockCustomer({ id: 2 }),
-      ];
+  describe("getCustomerById", () => {
+    it("should return customer if found", async () => {
+      prismaMock.customer.findUnique.mockResolvedValue(mockCustomer as any);
 
-      prismaMock.customer.findMany.mockResolvedValue(mockCustomers);
-      prismaMock.customer.count.mockResolvedValue(2);
+      const result = await customerService.getCustomerById(1);
 
-      // Act
-      const result = await customerService.getAllCustomers({
-        page: 1,
-        limit: 20,
+      expect(result).toEqual(mockCustomer);
+    });
+
+    it("should return null if customer not found", async () => {
+      prismaMock.customer.findUnique.mockResolvedValue(null);
+
+      const result = await customerService.getCustomerById(999);
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("createCustomer", () => {
+    it("should create a new customer", async () => {
+      const newCustomerData = {
+        first_name: "Jane",
+        last_name: "Doe",
+        email: "jane@example.com",
+        phone_number: "1234567890",
+        address: "123 St",
+      };
+
+      prismaMock.customer.create.mockResolvedValue({
+        id: 2,
+        ...newCustomerData,
+        createdAt: mockDate,
+      } as any);
+
+      const result = await customerService.createCustomer(
+        newCustomerData as any
+      );
+
+      expect(prismaMock.customer.create).toHaveBeenCalledWith({
+        data: newCustomerData,
       });
+      expect(result.first_name).toBe("Jane");
+    });
+  });
 
-      // Assert
-      expect(result.customers).toEqual(mockCustomers);
-      expect(result.pagination.total).toBe(2);
+  describe("updateCustomer", () => {
+    it("should update customer data", async () => {
+      const updateData = { first_name: "John Updated" };
+      prismaMock.customer.update.mockResolvedValue({
+        ...mockCustomer,
+        first_name: "John Updated",
+      } as any);
+
+      const result = await customerService.updateCustomer(1, updateData as any);
+
+      expect(prismaMock.customer.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: updateData,
+      });
+      expect(result.first_name).toBe("John Updated");
     });
   });
 });

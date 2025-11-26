@@ -159,5 +159,3 @@ export const updateCustomer = async (
     data,
   });
 };
-
-// /generate comments and jsdocs
