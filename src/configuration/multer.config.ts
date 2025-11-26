@@ -31,13 +31,13 @@ const storage = multer.diskStorage({
 const fileFilter = (
   req: Request,
   file: Express.Multer.File,
-  cb: multer.FileFilterCallback
+  callback: multer.FileFilterCallback
 ) => {
-  // Vérifier le MIME type
+  // Check MIME type
   if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-    cb(null, true);
+    callback(null, true);
   } else {
-    cb(
+    callback(
       new BadRequestError(
         `Invalid file type. Allowed: ${ALLOWED_MIME_TYPES.join(", ")}`
       )
@@ -56,9 +56,8 @@ export const upload = multer({
 
 // Helper: Validate uploaded file (now optional)
 export const validateUploadedFile = (file?: Express.Multer.File) => {
-  // Si pas de fichier, c'est OK (optionnel)
   if (!file) {
-    return false; // Pas de fichier
+    return false;
   }
 
   if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
@@ -71,5 +70,5 @@ export const validateUploadedFile = (file?: Express.Multer.File) => {
     );
   }
 
-  return true; // Fichier valide
+  return true;
 };
