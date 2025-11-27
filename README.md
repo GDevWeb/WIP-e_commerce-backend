@@ -770,7 +770,7 @@ e-commerce-backend/
 
 ### ⏳ Phase 4: Testing & Quality (Weeks 9-10) - **IN PROGRESS**
 
-- [ ] **Session 16**: Unit tests (Services)
+- [x] **Session 16**: Unit tests (Services)
 - [ ] **Session 17**: Unit tests (Controllers)
 - [ ] **Session 18**: Integration tests (E2E)
 - [ ] **Session 19**: Security hardening
@@ -951,10 +951,10 @@ Une API RESTful robuste et évolutive pour une plateforme e-commerce construite 
 - ✅**Recherche Avancée** : Recherche full-text avec filtres
 - ✅**RBAC** : Contrôle d'accès basé sur les rôles
 - ✅ **Upload d'Images** : Gestion des images produits
-- 🔄 **Intégration Paiement** : Traitement Stripe
-- 🔄 **Notifications Email** : Emails transactionnels
 - 🔄 **Documentation API** : Swagger/OpenAPI
 - 🔄 **Suite de Tests** : Tests unitaires et d'intégration
+- 🔄 **Intégration Paiement** : Traitement Stripe
+- 🔄 **Notifications Email** : Emails transactionnels
 
 ---
 
@@ -1121,7 +1121,7 @@ DELETE /api/products/:id    # Supprimer produit
 
 ### ⏳ Phase 4 : Tests & Qualité - **EN COURS**
 
-- [ ] Tests unitaires
+- [x] Tests unitaires
 - [ ] Tests d'intégration
 - [ ] Documentation Swagger
 

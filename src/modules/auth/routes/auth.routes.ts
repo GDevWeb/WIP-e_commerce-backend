@@ -9,11 +9,6 @@ import {
   UpdateProfileSchema,
 } from "../schema/auth.schema";
 
-// ✅ Debug log
-console.log("=== DEBUG SCHEMAS ===");
-console.log("RefreshTokenSchema defined?", RefreshTokenSchema !== undefined);
-console.log("=== FIN DEBUG ===");
-
 const authRouter = express.Router();
 
 authRouter.post(

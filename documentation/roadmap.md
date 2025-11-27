@@ -219,11 +219,11 @@
 
 **Goal: Test services**
 
-- [ ] Configure Jest: `npm install jest ts-jest @types/jest --save-dev`
-- [ ] Mock Prisma with `jest-mock-extended`
-- [ ] Tests: `AuthService`, `ProductService`
-- [ ] Coverage > 70% on services
-- [ ] **Deliverable**: Service test suite
+- [x] Configure Jest: `npm install jest ts-jest @types/jest --save-dev`
+- [x] Mock Prisma with `jest-mock-extended`
+- [x] Tests: `AuthService`, `ProductService`
+- [x] Coverage > 70% on services
+- [x] **Deliverable**: Service test suite
 
 **Estimated time: 4h**
 
