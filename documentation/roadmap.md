@@ -229,14 +229,14 @@
 
 ---
 
-### Session 17: Unit Tests (Part 2)
+### Session 17: Unit Tests (Part 2) **Partial +80%**
 
 **Goal: Test controllers**
 
-- [ ] Install: `npm install supertest @types/supertest --save-dev`
-- [ ] Test controllers with supertest
-- [ ] Mock auth middlewares
-- [ ] **Deliverable**: Controller tests
+- [x] Install: `npm install supertest @types/supertest --save-dev`
+- [x] Test controllers with supertest
+- [x] Mock auth middlewares
+- [x] **Deliverable**: Controller tests
 
 **Estimated time: 4h**
 

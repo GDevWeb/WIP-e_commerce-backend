@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import ms from "ms";
+import { config } from "../../../configuration/env.config";
 import { UnauthorizedError } from "../../../errors";
 import { PrismaClient } from "../../../generated/prisma";
 import { UserProfile } from "../../../types/user.types";
@@ -14,20 +15,18 @@ import {
   LoginInput,
   RegisterInput,
   UpdateProfileInput,
-} from "../schema/auth.schema"; // Removed unused 'error' import
+} from "../schema/auth.schema";
 import { AuthResponse } from "../types/authResponse.types";
 
 dotenv.config();
 
 const prisma = new PrismaClient();
-const BCRYPT_ROUNDS = process.env.BCRYPT_ROUNDS as string;
-console.log(BCRYPT_ROUNDS);
 
 export const register = async (input: RegisterInput): Promise<AuthResponse> => {
   try {
     const hashedPassword = await bcrypt.hash(
       input.password,
-      parseInt(BCRYPT_ROUNDS)
+      config.bcrypt.rounds
     );
 
     const newUser = await prisma.customer.create({
@@ -155,7 +154,7 @@ export const saveRefreshToken = async (
   userId: number,
   token: string
 ): Promise<void> => {
-  const jwtRefreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || "30d";
+  const jwtRefreshExpiresIn = config.jwt.refreshExpiresIn || "30d";
   console.info("jwtRefreshExpiresIn:", jwtRefreshExpiresIn);
 
   const milliseconds = ms(jwtRefreshExpiresIn as ms.StringValue);

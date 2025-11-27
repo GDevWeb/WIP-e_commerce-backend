@@ -1,5 +1,6 @@
 import express from "express";
 import { upload } from "../../../configuration/multer.config";
+import { apiWriteLimiter } from "../../../configuration/security.config";
 import { Role } from "../../../generated/prisma";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { checkRole } from "../../../middlewares/checkRole.middleware";
@@ -35,6 +36,7 @@ productRouter.get(
   "/admin/stats",
   authMiddleware,
   checkRole([Role.ADMIN]),
+  apiWriteLimiter,
   productController.getProductStats
 );
 

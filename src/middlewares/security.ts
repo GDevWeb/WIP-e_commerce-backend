@@ -13,7 +13,7 @@ export const configureSecurityMiddlewares = (app: Express) => {
         directives: {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"], // swagger
-          scriptSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"], // swagger
           imgSrc: ["'self'", "data:", "https:"],
         },
       },

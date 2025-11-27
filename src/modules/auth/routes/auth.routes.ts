@@ -1,4 +1,8 @@
 import express from "express";
+import {
+  authLimiter,
+  registerLimiter,
+} from "../../../configuration/security.config";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { validate } from "../../../middlewares/validate";
 import { RefreshTokenSchema } from "../../../schemas/auth.refresh.schema";
@@ -13,19 +17,19 @@ const authRouter = express.Router();
 
 authRouter.post(
   "/register",
-  (req, res, next) => {
-    console.log("🔍 DEBUG Register:");
-    console.log("  - req.body:", req.body);
-    console.log("  - Content-Type:", req.headers["content-type"]);
-    console.log("  - Body is undefined?", req.body === undefined);
-    next();
-  },
+  registerLimiter,
   validate(RegisterSchema),
   authController.register
 );
-authRouter.post("/login", validate(LoginSchema), authController.login);
+authRouter.post(
+  "/login",
+  authLimiter,
+  validate(LoginSchema),
+  authController.login
+);
 
 authRouter.get("/profile", authMiddleware, authController.getProfile);
+
 authRouter.patch(
   "/profile",
   authMiddleware,
