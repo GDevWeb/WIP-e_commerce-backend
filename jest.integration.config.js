@@ -3,11 +3,12 @@ module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
   roots: ["<rootDir>/src"],
-  testMatch: ["**/__tests__/**/*.test.ts"],
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 
-  // Separate unit tests from integration tests
-  testPathIgnorePatterns: ["/node_modules/", "/__tests__/integration/"],
+  testMatch: ["**/__tests__/integration/**/*.test.ts"],
+
+  testPathIgnorePatterns: ["/node_modules/"],
+
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 
   collectCoverageFrom: [
     "src/**/*.ts",
@@ -17,20 +18,17 @@ module.exports = {
     "!src/__tests__/**",
     "!src/server.ts",
   ],
-  coverageDirectory: "coverage",
+
+  coverageDirectory: "coverage/integration",
   coverageReporters: ["text", "lcov", "html"],
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70,
-    },
-  },
+
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+
   setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
-  testTimeout: 10000,
+
+  testTimeout: 30000,
+
   verbose: true,
 };
