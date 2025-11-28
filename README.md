@@ -6,7 +6,7 @@
 
 <a name="english"></a>
 
-# 🇬🇧 English Version
+# English Version
 
 A robust and scalable RESTful API for an e-commerce platform built with Node.js, Express, TypeScript, and Prisma.
 
@@ -18,116 +18,101 @@ A robust and scalable RESTful API for an e-commerce platform built with Node.js,
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Getting Started](#-getting-started)
-- [Database Schema](#-database-schema)
-- [API Documentation](#-api-documentation)
-- [Project Structure](#-project-structure)
-- [Development Roadmap](#-development-roadmap)
-- [Security](#-security)
-- [Contributing](#-contributing)
-
----
-
-## ✨ Features
-
-### Current Features (Phases 1-3 - In Progress)
-
-#### 🏗️ Core System
-
-- ✅ **Product Management**: Full CRUD with advanced filtering and pagination
-- ✅ **Brand Management**: Organize products by manufacturer
-- ✅ **Category Management**: Product categorization system
-- ✅ **Customer Management**: User profiles with purchase history
-
-#### 🔐 Authentication & Authorization
-
-- ✅ **JWT Authentication**: Secure token-based auth with access/refresh tokens
-- ✅ **Token Rotation**: Enhanced security with automatic token rotation
-- ✅ **Password Hashing**: Bcrypt for secure password storage
-- ✅ **Protected Routes**: Middleware-based route protection
-- ✅ **Profile Management**: User can view and update their profile
-
-#### 🛒 Order Management
-
-- ✅ **Order Creation**: Create orders with automatic stock validation
-- ✅ **Stock Management**: Automatic inventory updates
-- ✅ **Order Tracking**: View order history with pagination and filters
-- ✅ **Status Management**: Update order status with transition validation
-- ✅ **Transaction Safety**: Prisma transactions for data consistency
-- ✅ **Customer Stats**: Automatic update of purchase history
-
-#### ⭐ Review System
-
-- ✅ **Product Reviews**: Customers can review purchased products
-- ✅ **Rating System**: 1-5 star ratings with comments
-- ✅ **Purchase Verification**: Only customers who received the product can review
-- ✅ **One Review Per Product**: Customers can only leave one review per product
-- ✅ **Review Statistics**: Automatic calculation of average ratings and distribution
-- ✅ **Review Management**: Delete your own reviews
-
-#### 🛡️ Quality & Security
-
-- ✅ **Input Validation**: Zod schemas for type-safe validation
-- ✅ **Error Handling**: Centralized error management
-- ✅ **Logging**: Winston for application logging
-- ✅ **Security Headers**: Helmet for HTTP security
-- ✅ **Type Safety**: Full TypeScript implementation
-
-### Upcoming Features (Phases 3-5)
-
-- ✅ **Shopping Cart**: Session-based cart with Redis
-- ✅ **Advanced Search**: Full-text search with multiple filters
-- ✅ **RBAC**: Role-based access control (Admin/User/Manager)
-- 🔄 **Image Upload**: Product image management with Multer/Sharp
-- 🔄 **Payment Integration**: Stripe payment processing
-- 🔄 **Email Notifications**: Transactional emails
-- 🔄 **API Documentation**: Swagger/OpenAPI docs
-- 🔄 **Testing Suite**: Unit and integration tests
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [API Documentation](#api-documentation)
+- [Security](#security)
+- [Project Structure](#project-structure)
+- [Development Roadmap](#development-roadmap)
+- [Testing](#testing)
+- [Contributing](#contributing)
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-### Core
+### Core System
+
+- **Product Management**: Full CRUD with advanced filtering and pagination
+- **Brand & Category Management**: Organize products by manufacturer and type
+- **Customer Management**: User profiles with purchase history
+- **Order Processing**: Complete order lifecycle with stock validation
+- **Review System**: Customer reviews with 1-5 star ratings
+- **Shopping Cart**: Redis-based session cart
+- **Advanced Search**: Full-text search with multiple filters
+- **Image Upload**: Product image management with optimization
+
+### Authentication & Authorization
+
+- **JWT Authentication**: Secure token-based auth with access/refresh tokens
+- **Token Rotation**: Automatic refresh token rotation for enhanced security
+- **Password Security**: bcrypt hashing with configurable rounds
+- **Role-Based Access Control**: USER, MANAGER, ADMIN roles
+- **Profile Management**: User profile viewing and updates
+
+### Security Features
+
+- **HTTP Security Headers**: Helmet configuration (CSP, HSTS, X-Frame-Options, etc.)
+- **Rate Limiting**: Protection against brute force and DDoS
+  - General API: 100 requests/15min per IP
+  - Authentication: 5 attempts/15min per IP
+  - Registration: 3 accounts/hour per IP
+  - Write operations: 50 requests/15min per IP
+- **CORS**: Configured allowed origins with credentials support
+- **Input Validation**: Zod schemas for type-safe validation
+- **SQL Injection Protection**: Prisma parameterized queries
+- **XSS Protection**: Input sanitization and security headers
+
+### Quality & Development
+
+- **Input Validation**: Zod schemas throughout the application
+- **Error Handling**: Centralized error management with custom error classes
+- **Logging**: Winston for structured application logging
+- **Type Safety**: Full TypeScript implementation
+- **Interactive Documentation**: Swagger/OpenAPI 3.0 with "Try it out" functionality
+- **Testing**: Unit tests for services and controllers (80%+ coverage)
+
+---
+
+## Tech Stack
+
+### Core Technologies
 
 - **Runtime**: Node.js 18+
 - **Language**: TypeScript 5.3+
 - **Framework**: Express 4.18
 - **ORM**: Prisma 6.16
-
-### Database
-
-- **Primary**: PostgreSQL 14+
-- **Cache**: Redis (planned for Phase 3)
+- **Database**: PostgreSQL 14+
+- **Cache**: Redis 7+
 
 ### Security & Validation
 
 - **Authentication**: JWT (jsonwebtoken)
 - **Password Hashing**: bcrypt
 - **Validation**: Zod
-- **Security Headers**: Helmet
+- **Security**: Helmet, express-rate-limit, CORS
+- **Image Processing**: Multer, Sharp
 
 ### Development Tools
 
 - **Linter**: ESLint
 - **Formatter**: Prettier
-- **Testing**: Jest + Supertest (planned for Phase 4)
+- **Testing**: Jest + Supertest
 - **API Testing**: Insomnia / Postman
 - **Logging**: Winston
+- **Documentation**: Swagger UI
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────┐
 │   Client    │
-│  (Insomnia) │
 └──────┬──────┘
        │
        ▼
@@ -135,20 +120,12 @@ A robust and scalable RESTful API for an e-commerce platform built with Node.js,
 │        Express API               │
 │  ┌──────────────────────────┐   │
 │  │   Middleware Layer       │   │
+│  │  - Security (Helmet)     │   │
+│  │  - Rate Limiting         │   │
+│  │  - CORS                  │   │
 │  │  - Auth Middleware       │   │
 │  │  - Validation (Zod)      │   │
 │  │  - Error Handler         │   │
-│  │  - Security (Helmet)     │   │
-│  │  - Winston Logger        │   │
-│  └──────────┬───────────────┘   │
-│             │                    │
-│  ┌──────────▼───────────────┐   │
-│  │   Routes Layer           │   │
-│  │  /api/auth               │   │
-│  │  /api/products           │   │
-│  │  /api/orders             │   │
-│  │  /api/reviews            │   │
-│  │  /api/customers          │   │
 │  └──────────┬───────────────┘   │
 │             │                    │
 │  ┌──────────▼───────────────┐   │
@@ -170,17 +147,28 @@ A robust and scalable RESTful API for an e-commerce platform built with Node.js,
               ▼
        ┌──────────────┐
        │ PostgreSQL   │
+       │   + Redis    │
        └──────────────┘
 ```
 
+**Architecture Pattern**: MVC (Model-View-Controller)
+
+**Separation of Concerns**:
+
+- **Routes**: Define endpoints and apply middleware
+- **Controllers**: Handle HTTP requests/responses
+- **Services**: Implement business logic
+- **Prisma**: Database access layer
+
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+ and npm
 - PostgreSQL 14+
+- Redis 7+ (for cart functionality)
 - Git
 
 ### Installation
@@ -210,17 +198,24 @@ A robust and scalable RESTful API for an e-commerce platform built with Node.js,
    NODE_ENV=development
    PORT=3000
 
-   # JWT Configuration
+   # JWT Configuration (CHANGE IN PRODUCTION!)
    JWT_SECRET="your-super-secret-jwt-key-min-32-characters"
-   JWT_EXPIRES_IN=7d
+   JWT_EXPIRES_IN=1h
    JWT_REFRESH_SECRET="your-different-refresh-secret-min-32-characters"
-   JWT_REFRESH_EXPIRES_IN=30d
+   JWT_REFRESH_EXPIRES_IN=7d
 
    # Bcrypt
    BCRYPT_ROUNDS=10
+
+   # Redis
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+
+   # Security
+   ALLOWED_ORIGINS="http://localhost:3000,http://localhost:5173"
    ```
 
-   **⚠️ Important**: Generate secure secrets using:
+   **IMPORTANT**: Generate secure secrets using:
 
    ```bash
    node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
@@ -264,32 +259,55 @@ npm run prisma:generate  # Generate Prisma Client
 npm run prisma:studio    # Open Prisma Studio GUI
 npm run prisma:seed      # Seed database
 
-# Testing (coming in Phase 4)
-npm test                 # Run tests
+# Testing
+npm test                 # Run unit tests
 npm run test:watch       # Run tests in watch mode
 npm run test:coverage    # Generate coverage report
+npm run test:unit        # Run unit tests only
+npm run test:integration # Run integration tests
 ```
 
 ---
 
-## 🗄️ Database Schema
+## API Documentation
 
-### Core Models
+### Interactive Documentation
 
-- **Customer**: User accounts with authentication and purchase history
-- **RefreshToken**: JWT refresh tokens for secure authentication
-- **Product**: Items for sale with pricing and inventory
-- **Brand**: Product manufacturers
-- **Category**: Product classification
-- **Order**: Customer purchases with order items
-- **OrderItem**: Individual items within an order
-- **Review**: Customer product reviews with ratings (1-5 stars)
+**Swagger UI available at**: `http://localhost:3000/api-docs`
 
-For complete schema details, see [prisma/schema.prisma](prisma/schema.prisma)
+The API includes interactive Swagger documentation with "Try it out" functionality for all endpoints.
 
----
+### Test Credentials
 
-## 📚 API Documentation
+Use these credentials to test different access levels in Swagger:
+
+**ADMIN Account** (full access to all routes):
+
+```json
+{
+  "email": "admin_test@fakemail.com",
+  "password": "P@ssword123."
+}
+```
+
+**Regular USER**: Register a new account via `POST /auth/register`
+
+### Quick Start with Swagger
+
+1. Start the server: `npm run dev`
+2. Open: `http://localhost:3000/api-docs`
+3. **Test as User**:
+   - POST /auth/register (create account)
+   - Copy the `accessToken`
+   - Click "Authorize" button
+   - Paste token and authorize
+   - Try: GET /auth/profile
+4. **Test as Admin**:
+   - POST /auth/login (use admin credentials above)
+   - Copy the `accessToken`
+   - Click "Authorize" button
+   - Try: POST /products (create product)
+   - Try: GET /customers/admin/all (view all customers)
 
 ### Base URL
 
@@ -297,550 +315,248 @@ For complete schema details, see [prisma/schema.prisma](prisma/schema.prisma)
 http://localhost:3000/api
 ```
 
-### Authentication Endpoints
+### Main Endpoints
 
-#### Register
+#### Authentication
 
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "SecurePass123",
-  "first_name": "John",
-  "last_name": "Doe",
-  "phone_number": "1234567890",  // optional
-  "address": "123 Main St"        // optional
-}
-
-Response: 201 Created
-{
-  "accessToken": "eyJhbGci...",
-  "refreshToken": "eyJhbGci...",
-  "user": {
-    "id": 1,
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe"
-  }
-}
+```
+POST   /api/auth/register     # Register new user
+POST   /api/auth/login        # Login
+GET    /api/auth/profile      # Get profile (requires auth)
+PATCH  /api/auth/profile      # Update profile (requires auth)
+POST   /api/auth/refresh      # Refresh access token
 ```
 
-#### Login
+#### Products
 
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "SecurePass123"
-}
-
-Response: 200 OK
-{
-  "accessToken": "eyJhbGci...",
-  "refreshToken": "eyJhbGci...",
-  "user": { ... }
-}
+```
+GET    /api/products           # Get all products (public)
+GET    /api/products/:id       # Get product by ID (public)
+POST   /api/products           # Create product (ADMIN only)
+PATCH  /api/products/:id       # Update product (ADMIN only)
+DELETE /api/products/:id       # Delete product (ADMIN only)
+GET    /api/products/search    # Search products
 ```
 
-#### Get Profile
+#### Orders
 
-```http
-GET /api/auth/profile
-Authorization: Bearer <access_token>
-
-Response: 200 OK
-{
-  "message": "Profile retrieved successfully",
-  "data": {
-    "id": 1,
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "phone_number": "1234567890",
-    "address": "123 Main St"
-  }
-}
+```
+POST   /api/orders             # Create order (requires auth)
+GET    /api/orders             # Get user orders (requires auth)
+GET    /api/orders/:id         # Get order details (requires auth)
+PATCH  /api/orders/:id/status  # Update order status (ADMIN)
 ```
 
-#### Update Profile
+#### Reviews
 
-```http
-PATCH /api/auth/profile
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "first_name": "Johnny",
-  "phone_number": "0987654321"
-}
-
-Response: 200 OK
-{
-  "message": "Profile updated successfully",
-  "data": { ... }
-}
+```
+POST   /api/reviews                       # Create review (requires auth)
+GET    /api/products/:productId/reviews   # Get product reviews (public)
+DELETE /api/reviews/:id                   # Delete own review (requires auth)
 ```
 
-#### Refresh Token
+#### Cart
 
-```http
-POST /api/auth/refresh
-Content-Type: application/json
+```
+GET    /api/cart               # Get cart (requires auth)
+POST   /api/cart/items         # Add item to cart (requires auth)
+PATCH  /api/cart/items/:id     # Update item quantity (requires auth)
+DELETE /api/cart/items/:id     # Remove item (requires auth)
+DELETE /api/cart/clear         # Clear cart (requires auth)
+```
 
-{
-  "refreshToken": "eyJhbGci..."
-}
+#### Customers
 
-Response: 200 OK
-{
-  "message": "Access token refreshed successfully",
-  "data": {
-    "accessToken": "new_access_token...",
-    "refreshToken": "new_refresh_token..."
-  }
-}
+```
+GET    /api/customers          # Get customers (ADMIN only)
+GET    /api/customers/:id      # Get customer by ID (ADMIN only)
+PATCH  /api/customers/:id/role # Update customer role (ADMIN only)
+```
+
+For complete request/response examples and schemas, see the Swagger documentation.
+
+---
+
+## Security
+
+This API implements production-ready security measures:
+
+### HTTP Security Headers (Helmet)
+
+- Content Security Policy (CSP)
+- X-Frame-Options (clickjacking protection)
+- X-Content-Type-Options (MIME sniffing protection)
+- Strict-Transport-Security (HSTS)
+- X-XSS-Protection
+- Referrer-Policy
+- X-DNS-Prefetch-Control
+
+### Rate Limiting
+
+- **General API**: 100 requests per 15 minutes per IP
+- **Authentication**: 5 login attempts per 15 minutes (brute force protection)
+- **Registration**: 3 accounts per hour per IP
+- **Write Operations**: 50 requests per 15 minutes per IP
+
+### CORS Configuration
+
+- Configured allowed origins whitelist
+- Credentials support enabled
+- Pre-flight requests handled
+- Development vs production modes
+
+### Authentication & Authorization
+
+- JWT tokens with configurable expiration
+- Refresh token rotation for enhanced security
+- Bcrypt password hashing (10 rounds, configurable)
+- Role-Based Access Control (USER, MANAGER, ADMIN)
+- Protected routes with authentication middleware
+- Token stored in database (revocable)
+
+### Input Validation & Sanitization
+
+- Zod schema validation for all inputs
+- Type-safe request validation
+- SQL injection protection via Prisma parameterized queries
+- Sensitive data exclusion in responses (via Prisma select)
+
+### Best Practices
+
+- Environment variables for all secrets
+- No sensitive data in error messages
+- Resource ownership validation
+- Business rules enforcement (e.g., purchase verification for reviews)
+- Secure password requirements
+- Token expiration management
+
+### Testing Security
+
+Test the security configuration:
+
+```bash
+npm run dev
+./scripts/test-security.sh  # Run security tests
 ```
 
 ---
 
-### Order Endpoints
-
-#### Create Order
-
-```http
-POST /api/orders
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "items": [
-    {
-      "product_id": 1,
-      "quantity": 2
-    },
-    {
-      "product_id": 3,
-      "quantity": 1
-    }
-  ]
-}
-
-Response: 201 Created
-{
-  "message": "Order created successfully",
-  "data": {
-    "order": {
-      "id": 1,
-      "customer_id": 1,
-      "order_date": "2025-10-20T10:00:00.000Z",
-      "status": "PENDING",
-      "total": 159.99
-    },
-    "items": [
-      {
-        "id": 1,
-        "product_id": 1,
-        "quantity": 2,
-        "price": 49.99
-      }
-    ]
-  }
-}
-```
-
-#### Get All Orders
-
-```http
-GET /api/orders?status=PENDING&page=1&limit=20
-Authorization: Bearer <access_token>
-
-Response: 200 OK
-{
-  "message": "Orders retrieved successfully",
-  "data": [ ... ],
-  "pagination": {
-    "total": 10,
-    "page": 1,
-    "limit": 20,
-    "totalPages": 1,
-    "hasNextPage": false,
-    "hasPrevPage": false
-  }
-}
-```
-
-**Query Parameters:**
-
-- `status` - Filter by order status (PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REFUNDED)
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 20)
-
-#### Get Order by ID
-
-```http
-GET /api/orders/:id
-Authorization: Bearer <access_token>
-
-Response: 200 OK
-{
-  "message": "Order retrieved successfully",
-  "data": {
-    "id": 1,
-    "customer_id": 1,
-    "status": "PENDING",
-    "total": 159.99,
-    "orderItems": [
-      {
-        "id": 1,
-        "product_id": 1,
-        "quantity": 2,
-        "price": 49.99,
-        "product": {
-          "id": 1,
-          "name": "Product Name",
-          "imageUrl": "..."
-        }
-      }
-    ]
-  }
-}
-```
-
-#### Update Order Status
-
-```http
-PATCH /api/orders/:id/status
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "status": "PROCESSING"
-}
-
-Response: 200 OK
-{
-  "message": "Order status updated successfully",
-  "data": { ... }
-}
-```
-
-**Valid Status Transitions:**
-
-- PENDING → PROCESSING, CANCELLED
-- PROCESSING → SHIPPED, CANCELLED
-- SHIPPED → DELIVERED
-- DELIVERED → REFUNDED
-
----
-
-### Review Endpoints
-
-#### Create Review
-
-```http
-POST /api/reviews
-Authorization: Bearer <access_token>
-Content-Type: application/json
-
-{
-  "product_id": 1,
-  "rating": 5,
-  "comment": "Excellent product! Highly recommended."
-}
-
-Response: 201 Created
-{
-  "message": "Review created successfully",
-  "data": {
-    "id": 1,
-    "product_id": 1,
-    "customer_id": 1,
-    "rating": 5,
-    "comment": "Excellent product! Highly recommended.",
-    "createdAt": "2025-10-20T10:00:00.000Z",
-    "customer": {
-      "id": 1,
-      "first_name": "John",
-      "last_name": "Doe"
-    }
-  }
-}
-```
-
-**Requirements:**
-
-- Must have purchased and received the product (order status = DELIVERED)
-- Only one review per customer per product
-- Rating must be between 1 and 5
-- Comment must be at least 10 characters (optional)
-
-#### Get Product Reviews
-
-```http
-GET /api/products/:productId/reviews?page=1&limit=10
-
-Response: 200 OK
-{
-  "message": "Reviews retrieved successfully",
-  "data": [
-    {
-      "id": 1,
-      "rating": 5,
-      "comment": "Excellent product!",
-      "createdAt": "2025-10-20T10:00:00.000Z",
-      "customer": {
-        "id": 1,
-        "first_name": "John",
-        "last_name": "Doe"
-      }
-    }
-  ],
-  "stats": {
-    "total": 15,
-    "averageRating": 4.5,
-    "distribution": {
-      "1": 0,
-      "2": 1,
-      "3": 2,
-      "4": 5,
-      "5": 7
-    }
-  },
-  "pagination": {
-    "page": 1,
-    "limit": 10,
-    "total": 15,
-    "totalPages": 2,
-    "hasNextPage": true,
-    "hasPrevPage": false
-  }
-}
-```
-
-**Query Parameters:**
-
-- `page` - Page number (default: 1)
-- `limit` - Reviews per page (default: 10, max: 50)
-
-#### Delete Review
-
-```http
-DELETE /api/reviews/:id
-Authorization: Bearer <access_token>
-
-Response: 200 OK
-{
-  "message": "Review deleted successfully"
-}
-```
-
-**Requirements:**
-
-- Only the author can delete their own review
-
----
-
-### Product Endpoints
-
-```http
-GET    /api/products           # Get all products (with filters)
-GET    /api/products/:id       # Get single product
-POST   /api/products           # Create product
-PATCH  /api/products/:id       # Update product
-DELETE /api/products/:id       # Delete product
-```
-
-**Query Parameters for GET /products:**
-
-- `category` - Filter by category name
-- `brand` - Filter by brand name
-- `minPrice` - Minimum price
-- `maxPrice` - Maximum price
-- `search` - Search in name/description
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 20)
-
----
-
-### Customer Endpoints
-
-```http
-GET    /api/customers          # Get all customers
-GET    /api/customers/:id      # Get single customer
-POST   /api/customers          # Create customer
-PATCH  /api/customers/:id      # Update customer
-DELETE /api/customers/:id      # Delete customer
-```
-
----
-
-### Brand & Category Endpoints
-
-```http
-GET    /api/brands             # Get all brands
-GET    /api/categories         # Get all categories
-```
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 e-commerce-backend/
 ├── prisma/
-│   ├── migrations/              # Database migrations
-│   ├── schema.prisma            # Database schema
-│   └── seed*.ts                 # Seed scripts
+│   ├── migrations/          # Database migrations
+│   ├── schema.prisma        # Database schema
+│   └── seed*.ts             # Seed scripts
 ├── src/
 │   ├── modules/
-│   │   ├── auth/
-│   │   │   ├── controller/      # Auth controllers
-│   │   │   ├── service/         # Auth business logic
-│   │   │   ├── schema/          # Zod validation schemas
-│   │   │   └── routes/          # Auth routes
-│   │   ├── order/
-│   │   │   ├── controller/      # Order controllers
-│   │   │   ├── service/         # Order business logic
-│   │   │   ├── schema/          # Zod validation schemas
-│   │   │   └── routes/          # Order routes
-│   │   ├── review/
-│   │   │   ├── controller/      # Review controllers
-│   │   │   ├── service/         # Review business logic
-│   │   │   ├── schema/          # Zod validation schemas
-│   │   │   └── routes/          # Review routes
-│   │   ├── product/             # Product module
-│   │   ├── customer/            # Customer module
-│   │   ├── brand/               # Brand module
-│   │   └── category/            # Category module
-│   ├── middleware/
-│   │   ├── auth.middleware.ts   # JWT verification
-│   │   ├── errorHandler.ts      # Error handling
-│   │   ├── validate.ts          # Zod validation
-│   │   └── security.ts          # Helmet configuration
+│   │   ├── auth/            # Authentication module
+│   │   ├── product/         # Product module
+│   │   ├── order/           # Order module
+│   │   ├── review/          # Review module
+│   │   ├── cart/            # Shopping cart module
+│   │   ├── customer/        # Customer module
+│   │   └── [brand, category]/
+│   ├── middlewares/
+│   │   ├── auth.middleware.ts
+│   │   ├── validate.ts
+│   │   └── errorHandler.ts
+│   ├── config/
+│   │   ├── env.config.ts
+│   │   └── security.config.ts
 │   ├── utils/
-│   │   ├── asyncHandler.ts      # Async error wrapper
-│   │   ├── jwt.utils.ts         # JWT utilities
-│   │   └── logger.ts            # Winston logger
-│   ├── errors/                  # Custom error classes
-│   ├── types/                   # TypeScript types
-│   ├── generated/prisma/        # Generated Prisma Client
-│   └── server.ts                # App entry point
-├── docs/
-│   └── api-collections/         # API collection exports
-├── .env                         # Environment variables
-├── .env.example                 # Environment template
-├── tsconfig.json                # TypeScript config
+│   ├── errors/
+│   ├── types/
+│   ├── docs/                # Swagger documentation
+│   └── server.ts
+├── scripts/
+│   └── test-security.sh     # Security testing script
+├── .env.example
+├── tsconfig.json
 └── package.json
 ```
 
 ---
 
-## 🗺️ Development Roadmap
+## Development Roadmap
 
-### ✅ Phase 1: Foundations (Weeks 1-2) - **COMPLETED**
+### Phase 1: Foundations (Weeks 1-2) - COMPLETED
 
 - [x] Project setup and configuration
 - [x] Database schema design
-- [x] Product, Brand, Category, Customer modules
+- [x] Base CRUD modules
 - [x] Database seeding
 
-### ✅ Phase 2: Business Logic (Weeks 3-5) - **COMPLETED**
+### Phase 2: Business Logic (Weeks 3-5) - COMPLETED
 
 - [x] Advanced validation with Zod
 - [x] Centralized error handling
-- [x] Winston logging
-- [x] Helmet security
-- [x] JWT Authentication (register, login, profile)
-- [x] Refresh token system with rotation
-- [x] Order creation with stock validation
-- [x] Order management (list, detail, status update)
-- [x] Prisma transactions
+- [x] JWT Authentication system
+- [x] Refresh token rotation
+- [x] Order management
+- [x] Review system
 
-### 🔄 Phase 3: Advanced Features (Weeks 6-8) - **COMPLETED**
+### Phase 3: Advanced Features (Weeks 6-8) - COMPLETED
 
-- [x] **Session 11**: Product reviews with ratings ✅
-- [x] **Session 12**: Shopping cart with Redis ✅
-- [x] **Session 13**: Advanced search & filters
-- [x] **Session 14**: Role-Based Access Control (RBAC)
-- [x] **Session 15**: Image upload system (Multer + Sharp)
+- [x] Shopping cart with Redis
+- [x] Advanced search with filters
+- [x] Role-Based Access Control (RBAC)
+- [x] Image upload with optimization
 
-### ⏳ Phase 4: Testing & Quality (Weeks 9-10) - **IN PROGRESS**
+### Phase 4: Testing & Quality (Weeks 9-10) - COMPLETED
 
-- [ ] **Session 16**: Unit tests (Services)
-- [ ] **Session 17**: Unit tests (Controllers)
-- [ ] **Session 18**: Integration tests (E2E)
-- [ ] **Session 19**: Security hardening
-- [ ] **Session 20**: Swagger/OpenAPI documentation
+- [x] Unit tests (Services & Controllers) - 80%+ coverage
+- [x] Integration tests (partial, manual validation)
+- [x] Security hardening (Helmet, Rate limiting, CORS)
+- [x] API documentation (Swagger/OpenAPI)
 
-### ⏳ Phase 5: Bonus Features (Weeks 11-12)
+### Phase 5: Production & Deployment (Weeks 11-12)
 
-- [ ] **Session 21**: Email notifications (Nodemailer)
-- [ ] **Session 22**: Stripe payment integration
-- [ ] **Session 23**: Background jobs with Bull
-- [ ] **Session 24**: Docker & Deployment
+- [ ] Email notifications (Nodemailer)
+- [ ] Payment integration (Stripe)
+- [ ] Background jobs (Bull/BullMQ)
+- [ ] Docker containerization
+- [ ] CI/CD pipeline (GitHub Actions)
+- [ ] Cloud deployment (Railway/Render/AWS)
 
-**Total Duration**: 12 weeks @ 4h/day (Mon-Fri) = ~96 hours  
-**Current Progress**: ~60% (15/24 sessions) 🎯
+**Current Progress**: 84% (21/25 sessions)  
+**Total Duration**: 12 weeks @ 4h/day = ~100 hours
 
 ---
 
-## 🛡️ Security
+## Testing
 
-### Implemented Security Measures
+### Unit Tests
 
-- ✅ **JWT Authentication**: Secure token-based authentication
-- ✅ **Token Rotation**: Automatic refresh token rotation
-- ✅ **Password Hashing**: bcrypt with configurable rounds
-- ✅ **Input Validation**: Zod schemas for all inputs
-- ✅ **SQL Injection Protection**: Prisma ORM parameterized queries
-- ✅ **Security Headers**: Helmet for HTTP security (XSS, CSRF, etc.)
-- ✅ **Error Sanitization**: No sensitive data in error responses
-- ✅ **Route Protection**: Middleware-based authentication
-- ✅ **Business Rules Enforcement**: Purchase verification for reviews
-- ✅ **Resource Ownership**: Users can only access/modify their own resources
+```bash
+npm run test:unit          # Run unit tests only
+npm run test:coverage      # Generate coverage report
+```
 
-### Best Practices
+**Coverage**: 80%+ on services and controllers
 
-- Environment variables for secrets
-- Separate access and refresh tokens
-- Token expiration management
-- Database-stored refresh tokens (revocable)
-- User-owned resource validation
-- Status transition validation
-- One review per customer per product
-- Rating bounds enforcement (1-5)
+### Integration Tests
 
----
+Integration tests validate complete user flows with real database operations:
 
-## 🧪 Testing
+```bash
+npm run test:integration   # Run E2E tests
+```
 
 ### Manual Testing
 
-Use Insomnia or Postman with the provided collection in `docs/api-collections/`
-
-**Export your collection regularly** to avoid data loss!
-
-### Automated Testing (Coming in Phase 4)
-
-```bash
-npm test                # Run all tests
-npm run test:watch      # Run tests in watch mode
-npm run test:coverage   # Generate coverage report
-```
+Use the interactive Swagger documentation at `/api-docs` or import the Postman/Insomnia collection from `docs/api-collections/`.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'feat: add AmazingFeature'`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
@@ -857,21 +573,21 @@ Follow conventional commits:
 
 ---
 
-## 📞 Contact
+## Contact
 
 - **Developer**: GDevWeb
-- **Project Link**: [GitHub Repository](https://github.com/your-username/e-commerce-backend)
+- **Project**: [GitHub Repository](https://github.com/your-username/e-commerce-backend)
 - **Issues**: [Report a bug](https://github.com/your-username/e-commerce-backend/issues)
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-**Built with ❤️ and TypeScript**
+**Built with TypeScript**
 
 ---
 
@@ -879,134 +595,102 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <a name="français"></a>
 
-# 🇫🇷 Version Française
+# Version Française
 
-Une API RESTful robuste et évolutive pour une plateforme e-commerce construite avec Node.js, Express, TypeScript et Prisma.
-
----
-
-## 📋 Table des Matières
-
-- [Fonctionnalités](#-fonctionnalités-1)
-- [Stack Technique](#-stack-technique-1)
-- [Architecture](#-architecture-1)
-- [Démarrage](#-démarrage-1)
-- [Schéma de Base de Données](#-schéma-de-base-de-données-1)
-- [Documentation API](#-documentation-api-1)
-- [Structure du Projet](#-structure-du-projet-1)
-- [Feuille de Route](#-feuille-de-route-1)
-- [Sécurité](#-sécurité-1)
-- [Contribution](#-contribution-1)
+Une API RESTful robuste et évolutive pour une plateforme e-commerce.
 
 ---
 
-## ✨ Fonctionnalités
+## Table des Matières
 
-### Fonctionnalités Actuelles (Phases 1-3 - En Cours)
-
-#### 🏗️ Système de Base
-
-- ✅ **Gestion des Produits** : CRUD complet avec filtrage avancé et pagination
-- ✅ **Gestion des Marques** : Organisation des produits par fabricant
-- ✅ **Gestion des Catégories** : Système de catégorisation des produits
-- ✅ **Gestion des Clients** : Profils utilisateurs avec historique d'achats
-
-#### 🔐 Authentification & Autorisation
-
-- ✅ **Authentification JWT** : Auth sécurisée par tokens avec access/refresh
-- ✅ **Rotation des Tokens** : Sécurité renforcée avec rotation automatique
-- ✅ **Hachage des Mots de Passe** : Bcrypt pour stockage sécurisé
-- ✅ **Routes Protégées** : Protection par middleware
-- ✅ **Gestion du Profil** : Consultation et modification du profil
-
-#### 🛒 Gestion des Commandes
-
-- ✅ **Création de Commandes** : Création avec validation automatique du stock
-- ✅ **Gestion du Stock** : Mise à jour automatique de l'inventaire
-- ✅ **Suivi des Commandes** : Historique avec pagination et filtres
-- ✅ **Gestion des Statuts** : Mise à jour avec validation des transitions
-- ✅ **Sécurité Transactionnelle** : Transactions Prisma pour cohérence
-- ✅ **Stats Client** : Mise à jour automatique de l'historique d'achats
-
-#### ⭐ Système d'Avis
-
-- ✅ **Avis Produits** : Les clients peuvent évaluer les produits achetés
-- ✅ **Système de Notes** : Notes de 1 à 5 étoiles avec commentaires
-- ✅ **Vérification d'Achat** : Seuls les clients ayant reçu le produit peuvent donner un avis
-- ✅ **Un Avis par Produit** : Un seul avis par client et par produit
-- ✅ **Statistiques** : Calcul automatique des moyennes et distribution
-- ✅ **Gestion des Avis** : Suppression de ses propres avis
-
-#### 🛡️ Qualité & Sécurité
-
-- ✅ **Validation des Entrées** : Schémas Zod pour validation type-safe
-- ✅ **Gestion des Erreurs** : Gestion centralisée
-- ✅ **Logging** : Winston pour logs applicatifs
-- ✅ **En-têtes de Sécurité** : Helmet pour sécurité HTTP
-- ✅ **Sécurité des Types** : TypeScript complet
-
-### Fonctionnalités À Venir (Phases 3-5)
-
-- ✅**Panier d'Achat** : Panier avec Redis
-- ✅**Recherche Avancée** : Recherche full-text avec filtres
-- ✅**RBAC** : Contrôle d'accès basé sur les rôles
-- ✅ **Upload d'Images** : Gestion des images produits
-- 🔄 **Intégration Paiement** : Traitement Stripe
-- 🔄 **Notifications Email** : Emails transactionnels
-- 🔄 **Documentation API** : Swagger/OpenAPI
-- 🔄 **Suite de Tests** : Tests unitaires et d'intégration
+- [Fonctionnalités](#fonctionnalités)
+- [Stack Technique](#stack-technique-1)
+- [Démarrage](#démarrage)
+- [Documentation API](#documentation-api-1)
+- [Sécurité](#sécurité-1)
+- [Feuille de Route](#feuille-de-route)
 
 ---
 
-## 🛠️ Stack Technique
+## Fonctionnalités
 
-### Core
+### Système de Base
 
-- **Runtime** : Node.js 18+
-- **Langage** : TypeScript 5.3+
-- **Framework** : Express 4.18
-- **ORM** : Prisma 6.16
+- **Gestion Produits**: CRUD complet avec filtres et pagination
+- **Gestion Marques & Catégories**: Organisation des produits
+- **Gestion Clients**: Profils avec historique d'achats
+- **Traitement Commandes**: Cycle complet avec validation stock
+- **Système d'Avis**: Notes de 1 à 5 étoiles
+- **Panier d'Achat**: Panier avec Redis
+- **Recherche Avancée**: Recherche full-text avec filtres
+- **Upload Images**: Gestion et optimisation d'images
 
-### Base de Données
+### Authentification & Autorisation
 
-- **Primaire** : PostgreSQL 14+
-- **Cache** : Redis (prévu Phase 3)
+- **Authentification JWT**: Tokens access/refresh sécurisés
+- **Rotation Tokens**: Rotation automatique
+- **Sécurité Mots de Passe**: Hachage bcrypt
+- **Contrôle d'Accès**: Rôles USER, MANAGER, ADMIN
+- **Gestion Profil**: Consultation et modification
 
-### Sécurité & Validation
+### Sécurité
 
-- **Authentification** : JWT
-- **Hachage** : bcrypt
-- **Validation** : Zod
-- **Sécurité** : Helmet
+- **En-têtes HTTP**: Configuration Helmet
+- **Rate Limiting**: Protection brute force et DDoS
+- **CORS**: Configuration origins autorisées
+- **Validation**: Schémas Zod
+- **Protection Injection**: Requêtes Prisma paramétrées
 
-### Outils
+### Qualité & Développement
 
-- **Linter** : ESLint
-- **Formatter** : Prettier
-- **Testing** : Jest + Supertest (Phase 4)
-- **API Testing** : Insomnia / Postman
-- **Logging** : Winston
+- **Validation**: Schémas Zod
+- **Gestion Erreurs**: Centralisée
+- **Logging**: Winston
+- **TypeScript**: Complet
+- **Documentation**: Swagger/OpenAPI interactive
+- **Tests**: Coverage 80%+
 
 ---
 
-## 🚀 Démarrage
+## Stack Technique
+
+### Technologies
+
+- **Runtime**: Node.js 18+
+- **Langage**: TypeScript 5.3+
+- **Framework**: Express 4.18
+- **ORM**: Prisma 6.16
+- **Base de données**: PostgreSQL 14+
+- **Cache**: Redis 7+
+
+### Sécurité
+
+- **Auth**: JWT
+- **Hachage**: bcrypt
+- **Validation**: Zod
+- **Sécurité**: Helmet, express-rate-limit, CORS
+
+---
+
+## Démarrage
 
 ### Prérequis
 
-- Node.js 18+ et npm
+- Node.js 18+, npm
 - PostgreSQL 14+
+- Redis 7+
 - Git
 
 ### Installation
 
-1. **Cloner le dépôt**
+1. **Cloner**
 
    ```bash
    git clone https://github.com/your-username/e-commerce-backend.git
    cd e-commerce-backend
    ```
 
-2. **Installer les dépendances**
+2. **Installer**
 
    ```bash
    npm install
@@ -1014,24 +698,26 @@ Une API RESTful robuste et évolutive pour une plateforme e-commerce construite 
 
 3. **Configuration**
 
-   Créer `.env` :
+   Créer `.env`:
 
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/e_commerce_db"
+   DATABASE_URL="postgresql://user:pass@localhost:5432/e_commerce_db"
    NODE_ENV=development
    PORT=3000
-   JWT_SECRET="votre-secret-jwt-securise-32-chars-min"
-   JWT_EXPIRES_IN=7d
-   JWT_REFRESH_SECRET="votre-secret-refresh-different-32-chars-min"
-   JWT_REFRESH_EXPIRES_IN=30d
+   JWT_SECRET="secret-32-chars-minimum"
+   JWT_EXPIRES_IN=1h
+   JWT_REFRESH_SECRET="different-secret-32-chars"
+   JWT_REFRESH_EXPIRES_IN=7d
    BCRYPT_ROUNDS=10
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
    ```
 
 4. **Base de données**
 
    ```bash
    createdb e_commerce_db
-   npx prisma migrate dev --name init
+   npx prisma migrate dev
    npx prisma generate
    npm run prisma:seed
    ```
@@ -1044,126 +730,141 @@ Une API RESTful robuste et évolutive pour une plateforme e-commerce construite 
 
 ---
 
-## 📚 Documentation API
+## Documentation API
 
-### Endpoints Authentification
+### Documentation Interactive
 
-```http
-POST /api/auth/register    # Inscription
-POST /api/auth/login       # Connexion
-GET  /api/auth/profile     # Voir profil
-PATCH /api/auth/profile    # Modifier profil
-POST /api/auth/refresh     # Rafraîchir token
+**Swagger UI**: `http://localhost:3000/api-docs`
+
+Documentation interactive avec fonction "Try it out" pour tous les endpoints.
+
+### Identifiants de Test
+
+**Compte ADMIN**:
+
+```json
+{
+  "email": "admin_test@fakemail.com",
+  "password": "P@ssword123."
+}
 ```
 
-### Endpoints Commandes
+### URL de Base
 
-```http
-POST  /api/orders           # Créer commande
-GET   /api/orders           # Lister commandes
-GET   /api/orders/:id       # Détail commande
-PATCH /api/orders/:id/status # Modifier statut
+```
+http://localhost:3000/api
 ```
 
-### Endpoints Avis
+### Endpoints Principaux
 
-```http
-POST   /api/reviews                      # Créer avis
-GET    /api/products/:productId/reviews  # Voir avis produit
-DELETE /api/reviews/:id                  # Supprimer avis
+#### Authentification
+
+```
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/auth/profile
+PATCH  /api/auth/profile
+POST   /api/auth/refresh
 ```
 
-**Règles des Avis** :
+#### Produits
 
-- ✅ Produit doit être acheté et reçu (DELIVERED)
-- ✅ Un seul avis par client/produit
-- ✅ Note de 1 à 5 étoiles
-- ✅ Commentaire minimum 10 caractères (optionnel)
+```
+GET    /api/products
+POST   /api/products       (ADMIN)
+PATCH  /api/products/:id   (ADMIN)
+DELETE /api/products/:id   (ADMIN)
+```
 
-### Endpoints Produits
+#### Commandes
 
-```http
-GET    /api/products        # Lister produits
-GET    /api/products/:id    # Détail produit
-POST   /api/products        # Créer produit
-PATCH  /api/products/:id    # Modifier produit
-DELETE /api/products/:id    # Supprimer produit
+```
+POST   /api/orders
+GET    /api/orders
+PATCH  /api/orders/:id/status
+```
+
+#### Avis
+
+```
+POST   /api/reviews
+GET    /api/products/:id/reviews
+DELETE /api/reviews/:id
+```
+
+#### Panier
+
+```
+GET    /api/cart
+POST   /api/cart/items
+PATCH  /api/cart/items/:id
+DELETE /api/cart/items/:id
 ```
 
 ---
 
-## 🗺️ Feuille de Route
-
-### ✅ Phase 1 : Fondations - **TERMINÉE**
-
-- [x] Configuration projet
-- [x] Schéma base de données
-- [x] Modules de base
-
-### ✅ Phase 2 : Logique Métier - **TERMINÉE**
-
-- [x] Validation Zod
-- [x] Gestion erreurs
-- [x] Logging Winston
-- [x] Sécurité Helmet
-- [x] Authentification JWT complète
-- [x] Système de refresh tokens
-- [x] Gestion complète des commandes
-- [x] Transactions Prisma
-
-### 🔄 Phase 3 : Fonctionnalités Avancées - **TERMINÉE**
-
-- [x] **Session 11** : Système d'avis produits
-- [x] **Session 12** : Panier avec Redis
-- [x] **Session 13** : Recherche avancée
-- [x] **Session 14** : RBAC (Admin/User)
-- [x] **Session 15** : Upload d'images
-
-### ⏳ Phase 4 : Tests & Qualité - **EN COURS**
-
-- [ ] Tests unitaires
-- [ ] Tests d'intégration
-- [ ] Documentation Swagger
-
-### ⏳ Phase 5 : Bonus
-
-- [ ] Notifications email
-- [ ] Paiement Stripe
-- [ ] Jobs arrière-plan
-- [ ] Docker & Déploiement
-
-**Progression** : ~60% (15/24 sessions) 🎯
-
----
-
-## 🛡️ Sécurité
+## Sécurité
 
 ### Mesures Implémentées
 
-- ✅ Authentification JWT sécurisée
-- ✅ Rotation automatique des tokens
-- ✅ Hachage bcrypt
-- ✅ Validation Zod complète
-- ✅ Protection injection SQL (Prisma)
-- ✅ En-têtes sécurisés (Helmet)
-- ✅ Sanitisation erreurs
-- ✅ Protection routes par middleware
-- ✅ Vérification d'achat pour avis
-- ✅ Propriété des ressources
+- En-têtes HTTP sécurisés (Helmet)
+- Rate limiting par endpoint
+- CORS configuré
+- Validation Zod complète
+- Protection injection SQL (Prisma)
+- Hachage bcrypt
+- JWT avec rotation
+
+### Tests Sécurité
+
+```bash
+./scripts/test-security.sh
+```
 
 ---
 
-## 📞 Contact
+## Feuille de Route
 
-- **Développeur** : GDevWeb
-- **GitHub** : [Dépôt](https://github.com/your-username/e-commerce-backend)
+### Phase 1-3: Fondations & Features - TERMINÉ
+
+- [x] Architecture MVC
+- [x] Authentification JWT
+- [x] Système commandes
+- [x] Avis produits
+- [x] Panier Redis
+- [x] RBAC
+- [x] Upload images
+
+### Phase 4: Qualité - TERMINÉ
+
+- [x] Tests unitaires (80%+)
+- [x] Sécurité (Helmet, Rate limiting)
+- [x] Documentation Swagger
+
+### Phase 5: Production
+
+- [ ] Notifications email
+- [ ] Paiements Stripe
+- [ ] Jobs arrière-plan
+- [ ] Docker
+- [ ] CI/CD
+- [ ] Déploiement
+
+**Progression**: 84% (21/25 sessions)
 
 ---
 
-## 📄 Licence
+## Contact
+
+- **Développeur**: GDevWeb
+- **GitHub**: [Dépôt](https://github.com/your-username/e-commerce-backend)
+
+---
+
+## Licence
 
 MIT License
 
 ---
 
-**Construit avec ❤️ et TypeScript**
+**Construit avec TypeScript**

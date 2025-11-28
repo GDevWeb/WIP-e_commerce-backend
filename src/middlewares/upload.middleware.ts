@@ -2,6 +2,7 @@ import fs from "fs";
 import multer from "multer";
 import path from "path";
 
+// ❌ To delete - replaced by multer.config with sharp
 /**
  * @file Middleware for handling file uploads.
  * @description Configures multer for image uploads, including storage, file size limits, and file type validation.

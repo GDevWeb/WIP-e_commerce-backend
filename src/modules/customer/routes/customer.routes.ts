@@ -91,4 +91,19 @@ customerRouter.delete(
   adminController.deleteCustomer
 );
 
+// Swagger Zone
+
+/**
+ * @swagger
+ * /api/customers:
+ *   get:
+ *     tags: [Customers]
+ *     summary: Get customers (own data for USER, all for ADMIN)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Customers retrieved
+ */
+
 export default customerRouter;
