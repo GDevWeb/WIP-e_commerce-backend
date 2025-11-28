@@ -41,6 +41,70 @@ productRouter.get(
 );
 
 /**
+ * GET /api/products
+ * Get all products with optional filters
+ */
+productRouter.get("/", productController.getAllProducts);
+
+/**
+ * GET /api/products/:id
+ * Get single product by ID
+ */
+productRouter.get("/:id", productController.getProduct);
+
+/**
+ * GET /api/products/:productId/reviews
+ * Get product reviews
+ */
+productRouter.get(
+  "/:productId/reviews",
+  validate(GetProductReviewsSchema),
+  getProductReviews
+);
+
+/**
+ * POST /api/products
+ * Create product with optional image - ADMIN ONLY
+ */
+productRouter.post(
+  "/",
+  authMiddleware,
+  checkRole([Role.ADMIN]),
+  upload.single("image"),
+  validate(CreateProductFormDataSchema),
+  productController.createProduct
+);
+
+/**
+ * PATCH /api/products/:id
+ * Update product with optional new image - ADMIN ONLY
+ * Content-Type: multipart/form-data
+ * All fields optional, including image
+ */
+productRouter.patch(
+  "/:id",
+  authMiddleware,
+  checkRole([Role.ADMIN]),
+  upload.single("image"),
+  validate(UpdateProductFormDataSchema),
+  productController.updateProduct
+);
+
+/**
+ * DELETE /api/products/:id
+ * Delete product and its images - ADMIN ONLY
+ */
+productRouter.delete(
+  "/:id",
+  authMiddleware,
+  checkRole([Role.ADMIN]),
+  validate(DeleteProductSchema),
+  productController.deleteProduct
+);
+
+// Swagger Zone
+
+/**
  * @swagger
  * /api/products:
  *   get:
@@ -118,28 +182,6 @@ productRouter.get(
  */
 
 /**
- * GET /api/products
- * Get all products with optional filters
- */
-productRouter.get("/", productController.getAllProducts);
-
-/**
- * GET /api/products/:id
- * Get single product by ID
- */
-productRouter.get("/:id", productController.getProduct);
-
-/**
- * GET /api/products/:productId/reviews
- * Get product reviews
- */
-productRouter.get(
-  "/:productId/reviews",
-  validate(GetProductReviewsSchema),
-  getProductReviews
-);
-
-/**
  * @swagger
  * /api/products:
  *   post:
@@ -208,19 +250,6 @@ productRouter.get(
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  */
-
-/**
- * POST /api/products
- * Create product with optional image - ADMIN ONLY
- */
-productRouter.post(
-  "/",
-  authMiddleware,
-  checkRole([Role.ADMIN]),
-  upload.single("image"),
-  validate(CreateProductFormDataSchema),
-  productController.createProduct
-);
 
 /**
  * @swagger
@@ -302,32 +331,5 @@ productRouter.post(
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  */
-
-/**
- * PATCH /api/products/:id
- * Update product with optional new image - ADMIN ONLY
- * Content-Type: multipart/form-data
- * All fields optional, including image
- */
-productRouter.patch(
-  "/:id",
-  authMiddleware,
-  checkRole([Role.ADMIN]),
-  upload.single("image"),
-  validate(UpdateProductFormDataSchema),
-  productController.updateProduct
-);
-
-/**
- * DELETE /api/products/:id
- * Delete product and its images - ADMIN ONLY
- */
-productRouter.delete(
-  "/:id",
-  authMiddleware,
-  checkRole([Role.ADMIN]),
-  validate(DeleteProductSchema),
-  productController.deleteProduct
-);
 
 export default productRouter;

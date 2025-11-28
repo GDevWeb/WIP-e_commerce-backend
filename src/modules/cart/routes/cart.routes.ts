@@ -50,6 +50,8 @@ cartRouter.delete(
  */
 cartRouter.delete("/", cartController.clearCart);
 
+// Swagger Zone
+
 /**
  * @swagger
  * /api/cart:

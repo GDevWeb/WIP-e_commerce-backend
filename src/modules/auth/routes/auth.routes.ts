@@ -15,6 +15,37 @@ import {
 
 const authRouter = express.Router();
 
+authRouter.post(
+  "/register",
+  registerLimiter,
+  validate(RegisterSchema),
+  authController.register
+);
+
+authRouter.post(
+  "/login",
+  authLimiter,
+  validate(LoginSchema),
+  authController.login
+);
+
+authRouter.get("/profile", authMiddleware, authController.getProfile);
+
+authRouter.patch(
+  "/profile",
+  authMiddleware,
+  validate(UpdateProfileSchema),
+  authController.updateProfile
+);
+
+authRouter.post(
+  "/refresh",
+  validate(RefreshTokenSchema),
+  authController.refreshToken
+);
+
+// Swagger Zone
+
 /**
  * @swagger
  * /api/auth/register:
@@ -70,13 +101,6 @@ const authRouter = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
  */
-
-authRouter.post(
-  "/register",
-  registerLimiter,
-  validate(RegisterSchema),
-  authController.register
-);
 
 /**
  * @swagger
@@ -142,13 +166,6 @@ authRouter.post(
  *                   example: Invalid email or password
  */
 
-authRouter.post(
-  "/login",
-  authLimiter,
-  validate(LoginSchema),
-  authController.login
-);
-
 /**
  * @swagger
  * /api/auth/profile:
@@ -175,15 +192,6 @@ authRouter.post(
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
  */
-
-authRouter.get("/profile", authMiddleware, authController.getProfile);
-
-authRouter.patch(
-  "/profile",
-  authMiddleware,
-  validate(UpdateProfileSchema),
-  authController.updateProfile
-);
 
 /**
  * @swagger
@@ -230,11 +238,5 @@ authRouter.patch(
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-
-authRouter.post(
-  "/refresh",
-  validate(RefreshTokenSchema),
-  authController.refreshToken
-);
 
 export default authRouter;

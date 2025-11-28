@@ -81,6 +81,8 @@ orderRouter.get(
   orderController.getOrderStats
 );
 
+// Swagger Zone
+
 /**
  * @swagger
  * /api/orders:

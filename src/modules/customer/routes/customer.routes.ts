@@ -91,6 +91,8 @@ customerRouter.delete(
   adminController.deleteCustomer
 );
 
+// Swagger Zone
+
 /**
  * @swagger
  * /api/customers:

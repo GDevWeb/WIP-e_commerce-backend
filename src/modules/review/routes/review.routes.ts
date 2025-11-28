@@ -31,6 +31,8 @@ reviewRouter.delete(
   reviewController.deleteReview
 );
 
+// Swagger Zone
+
 /**
  * @swagger
  * /api/products/{productId}/reviews:

@@ -242,13 +242,13 @@
 
 ---
 
-### Session 18: Integration Tests
+### Session 18: Integration Tests **Partial +80%**
 
 **Goal: End-to-end tests**
 
 - [ ] Setup test DB (Docker PostgreSQL)
-- [ ] Tests: Register → Login → Create Order → Review
-- [ ] Tests: Product search with filters
+- [x] Tests: Register → Login → Create Order → Review
+- [x] Tests: Product search with filters
 - [ ] Basic CI/CD with GitHub Actions
 - [ ] **Deliverable**: Functional E2E tests
 
@@ -256,30 +256,30 @@
 
 ---
 
-### Session 19: Security Hardening
+### Session 19: Security Hardening **Completed**
 
 **Goal: Secure the API**
 
-- [ ] Install: `npm install helmet express-rate-limit cors`
-- [ ] Configure Helmet (XSS, CSRF protection)
-- [ ] Rate limiting per endpoint
-- [ ] Input sanitization (against NoSQL injection)
-- [ ] HTTPS only in production
-- [ ] **Deliverable**: Secured API
+- [x] Install: `npm install helmet express-rate-limit cors`
+- [x] Configure Helmet (XSS, CSRF protection)
+- [x] Rate limiting per endpoint
+- [x] Input sanitization (against NoSQL injection)
+- [x] HTTPS only in production
+- [x] **Deliverable**: Secured API
 
 **Estimated time: 4h**
 
 ---
 
-### Session 20: API Documentation
+### Session 20: API Documentation **Completed**
 
 **Goal: Swagger/OpenAPI**
 
-- [ ] Install: `npm install swagger-ui-express swagger-jsdoc`
-- [ ] Document all routes
-- [ ] Request/response examples
-- [ ] Publish on `/api-docs`
-- [ ] **Deliverable**: Interactive documentation
+- [x] Install: `npm install swagger-ui-express swagger-jsdoc`
+- [x] Document all routes
+- [x] Request/response examples
+- [x] Publish on `/api-docs`
+- [x] **Deliverable**: Interactive documentation
 
 **Estimated time: 4h**
 
