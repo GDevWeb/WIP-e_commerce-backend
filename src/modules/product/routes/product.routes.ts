@@ -41,6 +41,83 @@ productRouter.get(
 );
 
 /**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     tags:
+ *       - Products
+ *     summary: Get all products
+ *     description: Retrieve a list of products with optional filters and pagination
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Items per page
+ *       - in: query
+ *         name: name
+ *         schema:
+ *           type: string
+ *         description: Filter by product name
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by category name
+ *       - in: query
+ *         name: brand
+ *         schema:
+ *           type: string
+ *         description: Filter by brand name
+ *       - in: query
+ *         name: minPrice
+ *         schema:
+ *           type: number
+ *         description: Minimum price filter
+ *       - in: query
+ *         name: maxPrice
+ *         schema:
+ *           type: number
+ *         description: Maximum price filter
+ *     responses:
+ *       200:
+ *         description: Products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 results:
+ *                   type: integer
+ *                   example: 10
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     pageSize:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ */
+
+/**
  * GET /api/products
  * Get all products with optional filters
  */
@@ -63,6 +140,76 @@ productRouter.get(
 );
 
 /**
+ * @swagger
+ * /api/products:
+ *   post:
+ *     tags:
+ *       - Products
+ *     summary: Create a new product (ADMIN only)
+ *     description: Create a new product with optional image upload
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - price
+ *               - stock_quantity
+ *               - category_id
+ *               - brand_id
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: MacBook Pro 16"
+ *               description:
+ *                 type: string
+ *                 example: Powerful laptop for professionals
+ *               price:
+ *                 type: number
+ *                 example: 2499.99
+ *               stock_quantity:
+ *                 type: integer
+ *                 example: 15
+ *               weight:
+ *                 type: number
+ *                 example: 2.1
+ *               category_id:
+ *                 type: integer
+ *                 example: 1
+ *               brand_id:
+ *                 type: integer
+ *                 example: 1
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Product image (optional)
+ *     responses:
+ *       201:
+ *         description: Product created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Product created successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Product'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
+
+/**
  * POST /api/products
  * Create product with optional image - ADMIN ONLY
  */
@@ -74,6 +221,87 @@ productRouter.post(
   validate(CreateProductFormDataSchema),
   productController.createProduct
 );
+
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     tags: [Products]
+ *     summary: Get product by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Product retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Product'
+ *       404:
+ *         $ref: '#/components/responses/NotFoundError'
+ *
+ *   patch:
+ *     tags: [Products]
+ *     summary: Update product (ADMIN only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               stock_quantity:
+ *                 type: integer
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Product updated
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ *
+ *   delete:
+ *     tags: [Products]
+ *     summary: Delete product (ADMIN only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Product deleted
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       403:
+ *         $ref: '#/components/responses/ForbiddenError'
+ */
 
 /**
  * PATCH /api/products/:id

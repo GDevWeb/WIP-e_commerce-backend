@@ -9,32 +9,42 @@ const options: swaggerJsdoc.Options = {
       title: "E-Commerce Backend API",
       version: "1.0.0",
       description: `
-        A comprehensive RESTful API for an e-commerce platform built with Node.js, Express, TypeScript, and Prisma.
-        
-        ## Features
-        - 🔐 JWT Authentication with refresh tokens
-        - 👥 Role-Based Access Control (USER, MANAGER, ADMIN)
-        - 🛍️ Complete product management
-        - 📦 Order processing system
-        - ⭐ Product reviews
-        - 🔍 Advanced search with filters
-        - 💾 Redis caching
-        - 🖼️ Image upload
-        - 🔒 Production-ready security
-        
-        ## Authentication
-        Most endpoints require authentication. Use the /auth/login endpoint to get an access token, 
-        then click the "Authorize" button and paste your token.
-      `,
-      contact: {
-        name: "GDevWeb",
-        email: "your.email@example.com",
-        url: "https://github.com/GDevWeb/WIP-e_commerce-backend",
-      },
-      license: {
-        name: "MIT",
-        url: "https://opensource.org/licenses/MIT",
-      },
+    // ... existing description
+    
+    ## 🚀 Quick Start Guide
+    
+    ### 1. Test as Regular User
+    \`\`\`
+    1. POST /auth/register - Create a new user
+    2. Copy the accessToken from response
+    3. Click "Authorize" 🔓 and paste token
+    4. Test: GET /auth/profile
+    5. Test: POST /cart/items (add product to cart)
+    6. Test: POST /orders (create an order)
+    \`\`\`
+    
+    ### 2. Test as Admin
+    \`\`\`
+    1. POST /auth/login with:
+       {
+         "email": "admin_test@fakemail.com",
+         "password": "P@ssword123."
+       }
+    2. Copy the accessToken
+    3. Click "Authorize" 🔓 and paste token
+    4. Test: POST /products (create a product)
+    5. Test: GET /customers/admin/all (view all customers)
+    6. Test: PATCH /orders/{id}/status (update order status)
+    \`\`\`
+    
+    ### 3. Test Public Endpoints (No Auth)
+    \`\`\`
+    - GET /products (browse products)
+    - GET /products/{id} (view product details)
+    - GET /products/search?q=iphone (search products)
+    - GET /products/{id}/reviews (see reviews)
+    \`\`\`
+  `,
     },
     servers: [
       {
@@ -56,20 +66,20 @@ const options: swaggerJsdoc.Options = {
         description: "Product catalog management",
       },
       {
-        name: "Customers",
-        description: "Customer management (Admin)",
+        name: "Cart",
+        description: "Shopping cart operations",
       },
       {
         name: "Orders",
         description: "Order processing",
       },
       {
-        name: "Reviews",
-        description: "Product reviews and ratings",
+        name: "Customers",
+        description: "Customer management (Admin)",
       },
       {
-        name: "Cart",
-        description: "Shopping cart operations",
+        name: "Reviews",
+        description: "Product reviews and ratings",
       },
     ],
     components: {

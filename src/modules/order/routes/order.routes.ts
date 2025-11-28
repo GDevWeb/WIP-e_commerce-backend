@@ -80,4 +80,42 @@ orderRouter.get(
   checkRole([Role.ADMIN, Role.MANAGER]),
   orderController.getOrderStats
 );
+
+/**
+ * @swagger
+ * /api/orders:
+ *   get:
+ *     tags: [Orders]
+ *     summary: Get user orders
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Orders retrieved
+ *   post:
+ *     tags: [Orders]
+ *     summary: Create order
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     product_id:
+ *                       type: integer
+ *                     quantity:
+ *                       type: integer
+ *     responses:
+ *       201:
+ *         description: Order created
+ */
+
 export default orderRouter;

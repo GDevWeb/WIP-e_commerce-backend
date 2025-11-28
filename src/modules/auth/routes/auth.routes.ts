@@ -85,7 +85,12 @@ authRouter.post(
  *     tags:
  *       - Authentication
  *     summary: Login user
- *     description: Authenticate user and receive access & refresh tokens
+ *     description: |
+ *       Authenticate user and receive access & refresh tokens
+ *
+ *       **Test Credentials:**
+ *       - ADMIN: admin_test@fakemail.com / P@ssword123.
+ *       - Create your own USER via /auth/register
  *     requestBody:
  *       required: true
  *       content:
@@ -99,11 +104,22 @@ authRouter.post(
  *               email:
  *                 type: string
  *                 format: email
- *                 example: user@example.com
+ *                 example: admin_test@fakemail.com
  *               password:
  *                 type: string
  *                 format: password
- *                 example: Password123!
+ *                 example: P@ssword123.
+ *           examples:
+ *             admin:
+ *               summary: Admin Login
+ *               value:
+ *                 email: admin_test@fakemail.com
+ *                 password: P@ssword123.
+ *             newUser:
+ *               summary: New User (Register first)
+ *               value:
+ *                 email: user@example.com
+ *                 password: YourPassword123!
  *     responses:
  *       200:
  *         description: Login successful
