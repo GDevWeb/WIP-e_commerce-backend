@@ -1,7 +1,7 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
 import { connectRedis, disconnectRedis } from "./configuration/redis";
 import {
@@ -10,6 +10,7 @@ import {
   devCorsOptions,
   generalLimiter,
 } from "./configuration/security.config";
+import { setupSwagger } from "./docs/swagger.config";
 import { PrismaClient } from "./generated/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
@@ -61,9 +62,14 @@ server.use("/api/reviews", reviewRouter);
 server.use("/api/auth", authRouter);
 server.use("/api/cart", cartRouter);
 
-// Health check endpoint
-server.get("/", (req: Request, res: Response) => {
-  res.status(200).send("e_commerce API is running");
+// Swagger documentation
+if (process.env.NODE_ENV !== "production") {
+  setupSwagger(server);
+}
+
+// Health check
+server.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 // Error handling middleware

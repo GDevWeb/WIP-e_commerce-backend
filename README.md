@@ -1122,7 +1122,7 @@ DELETE /api/products/:id    # Supprimer produit
 ### ⏳ Phase 4 : Tests & Qualité - **EN COURS**
 
 - [x] Tests unitaires
-- [ ] Tests d'intégration
+- [x] Tests d'intégration
 - [ ] Documentation Swagger
 
 ### ⏳ Phase 5 : Bonus
@@ -1130,9 +1130,11 @@ DELETE /api/products/:id    # Supprimer produit
 - [ ] Notifications email
 - [ ] Paiement Stripe
 - [ ] Jobs arrière-plan
+- [ ] CI & CD
 - [ ] Docker & Déploiement
 
-**Progression** : ~60% (15/24 sessions) 🎯
+- Phase 4: 80% completed (4/5 sessions)
+- Next: Session 20 - API Documentation (Swagger)"
 
 ---
 
