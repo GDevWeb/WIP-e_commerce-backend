@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import ms from "ms";
 import { config } from "../../../configuration/env.config";
 import { UnauthorizedError } from "../../../errors";
-import { PrismaClient } from "../../../generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { UserProfile } from "../../../types/user.types";
 import { handlePrismaError } from "../../../utils/handlePrismaError";
 import {

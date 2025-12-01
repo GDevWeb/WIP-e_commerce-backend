@@ -4,7 +4,7 @@ import {
   OrderItem,
   OrderStatus,
   PrismaClient,
-} from "../../../generated/prisma";
+} from "@prisma/client";
 import { CreateOrderInput } from "../schema/order.schema";
 
 const prisma = new PrismaClient();

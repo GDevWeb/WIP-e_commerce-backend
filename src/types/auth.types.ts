@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { Role } from "../generated/prisma";
+import { Role } from "@prisma/client";
 
 /**
  * Extends the Express Request interface to include an optional `user` property.

@@ -1,5 +1,5 @@
 import express from "express";
-import { Role } from "../../../generated/prisma";
+import { Role } from "@prisma/client";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { checkRole } from "../../../middlewares/checkRole.middleware";
 import { validate } from "../../../middlewares/validate";

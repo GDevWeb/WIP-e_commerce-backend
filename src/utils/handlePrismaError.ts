@@ -1,5 +1,5 @@
 import { BadRequestError, ConflictError, NotFoundError } from "../errors";
-import { Prisma } from "../generated/prisma";
+import { Prisma } from "@prisma/client";
 
 /**
  * Convert the error Prisma in custom errors

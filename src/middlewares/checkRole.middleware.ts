@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import { ForbiddenError } from "../errors";
-import { PrismaClient, Role } from "../generated/prisma";
+import { PrismaClient, Role } from "@prisma/client";
 import { AuthRequest } from "../types/auth.types";
 
 const prisma = new PrismaClient();

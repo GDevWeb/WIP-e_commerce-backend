@@ -1,5 +1,5 @@
 import { redisClient } from "../../../configuration/redis";
-import { Prisma, PrismaClient, Product } from "../../../generated/prisma";
+import { Prisma, PrismaClient, Product } from "@prisma/client";
 import {
   PaginatedProducts,
   ProductFilters,
