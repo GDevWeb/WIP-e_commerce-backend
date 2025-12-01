@@ -1,7 +1,7 @@
 import express from "express";
 import { upload } from "../../../configuration/multer.config";
 import { apiWriteLimiter } from "../../../configuration/security.config";
-import { Role } from "../../../generated/prisma";
+import { Role } from "@prisma/client";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { checkRole } from "../../../middlewares/checkRole.middleware";
 import { validate } from "../../../middlewares/validate";

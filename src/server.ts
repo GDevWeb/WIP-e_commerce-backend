@@ -1,3 +1,4 @@
+import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,7 +12,6 @@ import {
   generalLimiter,
 } from "./configuration/security.config";
 import { setupSwagger } from "./docs/swagger.config";
-import { PrismaClient } from "./generated/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
 import authRouter from "./modules/auth/routes/auth.routes";
@@ -70,6 +70,13 @@ if (process.env.NODE_ENV !== "production") {
 // Health check
 server.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+});
+
+// Root route
+server.get("/", (req, res) => {
+  res.send(
+    'Welcome to the E-commerce API. Visit "/docs" for API documentation.'
+  );
 });
 
 // Error handling middleware

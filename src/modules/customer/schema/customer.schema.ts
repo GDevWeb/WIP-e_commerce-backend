@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ContactMethod, CustomerType, Role } from "../../../generated/prisma";
+import { ContactMethod, CustomerType, Role } from "@prisma/client";
 
 const customerTypeSchema = z.enum(CustomerType);
 const contactMethodSchema = z.enum(ContactMethod);

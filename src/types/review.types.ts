@@ -1,4 +1,4 @@
-import { Review } from "../generated/prisma";
+import { Review } from "@prisma/client";
 
 export interface ReviewFilters {
   productId?: number;

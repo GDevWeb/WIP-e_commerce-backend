@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { OrderStatus } from "../../../generated/prisma";
+import { OrderStatus } from "@prisma/client";
 import { AuthRequest } from "../../../types/auth.types";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import * as orderService from "../service/order.service";

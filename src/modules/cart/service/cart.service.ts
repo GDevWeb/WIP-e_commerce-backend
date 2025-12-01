@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { redisClient } from "../../../configuration/redis";
 import { BadRequestError, NotFoundError } from "../../../errors";
-import { PrismaClient } from "../../../generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { AddToCartInput } from "../schema/cart.schema";
 import { Cart, CartItem } from "../types/cart.types";
 
