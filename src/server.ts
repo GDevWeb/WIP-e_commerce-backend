@@ -62,10 +62,10 @@ server.use("/api/reviews", reviewRouter);
 server.use("/api/auth", authRouter);
 server.use("/api/cart", cartRouter);
 
-// Swagger documentation
-if (process.env.NODE_ENV !== "production") {
-  setupSwagger(server);
-}
+// // Swagger documentation
+setupSwagger(server);
+logger.info("📚 Swagger UI available at /api-docs");
+logger.info(`📚 Full URL: http://localhost:${PORT}/api-docs`);
 
 // Health check
 server.get("/health", (req, res) => {
