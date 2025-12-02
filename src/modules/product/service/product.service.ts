@@ -192,19 +192,37 @@ export const searchProducts = async (
   } = filters;
 
   // Check if data is in cache
-  const cacheKey = generateSearchCacheKey(filters);
+  // const cacheKey = generateSearchCacheKey(filters);
 
-  if (redisClient.status !== "ready") {
+  // if (redisClient.status !== "ready") {
+  //   logger.warn("Redis client is not ready. Skipping cache check.");
+  // }
+
+  // const cached = await getFromCache<SearchResult>(cacheKey);
+
+  // if (cached) {
+  //   logger.info("🎯Cache HIT:", cacheKey);
+  //   return cached;
+  // }
+
+  // logger.info("💾 Cache MISS:", cacheKey);
+
+  // New version with handling redis status -> Migration to ioredis
+  const cacheKey = generateSearchCacheKey(filters);
+  let cached: SearchResult | null = null; // On initialise la variable
+
+  // On vérifie d'abord si on peut utiliser Redis
+  if (redisClient.status === "ready") {
+    cached = await getFromCache<SearchResult>(cacheKey);
+  } else {
     logger.warn("Redis client is not ready. Skipping cache check.");
   }
 
-  const cached = await getFromCache<SearchResult>(cacheKey);
-
+  // Si on a trouvé en cache (et que redis était ready), on renvoie
   if (cached) {
-    logger.info("🎯Cache HIT:", cacheKey);
+    logger.info("🎯 Cache HIT:", cacheKey);
     return cached;
   }
-
   logger.info("💾 Cache MISS:", cacheKey);
 
   // I. Step One - Building Where clause
