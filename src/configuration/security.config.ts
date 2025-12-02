@@ -1,5 +1,7 @@
 import { CorsOptions } from "cors";
+import { Express } from "express";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 /**
  * General API rate limiter
@@ -115,8 +117,6 @@ export const devCorsOptions: CorsOptions = {
   credentials: true,
 };
 
-import { Express } from "express";
-
 /**
  * Configure input sanitization
  * Note: Primary validation is done via Zod schemas
@@ -127,4 +127,44 @@ export const configureSanitization = (app: Express) => {
   // Zod ensures type safety and prevents malicious input
 
   console.log("🧹 Input sanitization configured (via Zod)");
+};
+
+/**
+ * Configures essential security middlewares for the Express application.
+ * This includes:
+ * - Helmet: Helps secure Express apps by setting various HTTP headers.
+ *   - `crossOriginResourcePolicy`: Controls fetching of cross-origin resources.
+ *   - `contentSecurityPolicy`: Prevents a wide range of injection attacks, including XSS.
+ *     Directives are carefully set to allow necessary external resources (e.g., Vercel, Cloudflare CDN for Swagger, Cloudinary).
+ *
+ * @param app The Express application instance.
+ */
+export const configureSecurityMiddlewares = (app: Express) => {
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://vercel.live", //Allow Vercel scripts
+            "https://cdnjs.cloudflare.com", // Allow Swagger CDN
+          ],
+          styleSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com", // Allow Swagger CSS
+          ],
+          imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+          connectSrc: [
+            "'self'",
+            "https://vercel.live",
+            "https://vitals.vercel-insights.com", // Vercel Insights
+          ],
+        },
+      },
+    })
+  );
 };

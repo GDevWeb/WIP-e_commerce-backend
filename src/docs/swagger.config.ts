@@ -109,12 +109,8 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Development server",
-      },
-      {
-        url: "https://your-api.com",
-        description: "Production server (to be deployed)",
+        url: "/api",
+        description: "API Server (Relative path)",
       },
     ],
     tags: [
@@ -579,20 +575,17 @@ const swaggerSpec = swaggerJsdoc(options);
  * Setup Swagger documentation
  */
 export const setupSwagger = (app: Express) => {
-  // Swagger UI options
   const swaggerUiOptions = {
     explorer: true,
-    customCss: `
-      .swagger-ui .topbar { display: none }
-      .swagger-ui .info { margin: 30px 0; }
-      .swagger-ui .info .title { font-size: 36px; }
-      .swagger-ui .scheme-container { 
-        background: #fafafa; 
-        padding: 20px; 
-        border-radius: 4px;
-        margin: 20px 0;
-      }
-    `,
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css",
+    customJs: [
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js",
+    ],
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
     customSiteTitle: "E-Commerce API Docs",
     customfavIcon: "/favicon.ico",
   };
