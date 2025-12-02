@@ -3,6 +3,7 @@ import { Request } from "express";
 import multer from "multer";
 import path from "path";
 import { BadRequestError } from "../errors";
+import { cloudinaryStorage } from "./cloudinary.config";
 
 // Authorized files types
 const ALLOWED_MIME_TYPES = [
@@ -47,7 +48,8 @@ const fileFilter = (
 
 // Multer instance
 export const upload = multer({
-  storage,
+  // storage,
+  storage: cloudinaryStorage, // Use Cloudinary storage instead of local storage - 2025-12-02
   fileFilter,
   limits: {
     fileSize: MAX_FILE_SIZE,

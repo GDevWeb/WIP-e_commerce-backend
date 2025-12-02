@@ -23,7 +23,7 @@ import orderRouter from "./modules/order/routes/order.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
 import orderItemRouter from "./routes/orderItem.routes";
-import { ensureUploadDirs } from "./services/upload.service";
+// import { ensureUploadDirs } from "./services/upload.service";
 import logger from "./utils/logger";
 
 dotenv.config();
@@ -88,7 +88,7 @@ async function startServer() {
     await prisma.$connect();
     logger.info(`\n🖲️ Successfully connected to the database`);
 
-    await ensureUploadDirs();
+    // await ensureUploadDirs();
     await connectRedis();
 
     server.listen(PORT, () => {

@@ -1,173 +1,95 @@
-import fs from "fs/promises";
-import path from "path";
-import sharp from "sharp";
+import { v2 as cloudinary } from "cloudinary";
 import { BadRequestError } from "../errors";
 import logger from "../utils/logger";
 
-// Configuration
-const UPLOADS_ROOT = path.join(process.cwd(), "uploads");
-const PRODUCTS_DIR = path.join(UPLOADS_ROOT, "products");
-const TEMP_DIR = path.join(UPLOADS_ROOT, "temp");
+/**
+ * Extract public_id from a Cloudinary URL
+ * Example: "https://.../e-commerce/products/image.jpg" -> "e-commerce/products/image"
+ */
+const getPublicIdFromUrl = (url: string): string | null => {
+  try {
+    const splitUrl = url.split("/");
+    const filenameWithExt = splitUrl[splitUrl.length - 1];
+    const folder = splitUrl[splitUrl.length - 2]; // ex: products
+    const rootFolder = splitUrl[splitUrl.length - 3]; // ex: e-commerce
 
-// Dimensions for product images
-const IMAGE_CONFIG = {
-  thumbnail: { width: 150, height: 150 },
-  medium: { width: 500, height: 500 },
-  large: { width: 1200, height: 1200 },
+    // Note: Cela dépend de ta structure de dossier dans Cloudinary.
+    // Une méthode plus robuste consiste souvent à stocker le public_id en base si possible.
+    // Mais pour extraire depuis l'URL standard :
+    const publicId = `${rootFolder}/${folder}/${filenameWithExt.split(".")[0]}`;
+    return publicId;
+  } catch (error) {
+    return null;
+  }
 };
 
 /**
- * Processes an uploaded product image, resizing it into multiple dimensions
- * (thumbnail, medium, large) and optimizing the original, then saves them
- * to the products directory. Converts all images to WebP format.
+ * Processes the uploaded file info from Cloudinary.
+ * Since the file is already uploaded by Multer, this function simply
+ * generates the URLs for different variants (thumbnail, medium, large).
  *
- * @param file - The uploaded file object from Multer.
- * @param productId - The ID of the product to associate the images with.
- * @returns An object containing the paths to the generated thumbnail, medium, large, and original images.
- * @throws {BadRequestError} If the image processing fails.
+ * @param file - The uploaded file object from Multer (containing Cloudinary info).
+ * @returns An object containing the URLs for thumbnail, medium, large, and original.
  */
 export const processProductImage = async (
-  file: Express.Multer.File,
-  productId: number
+  file: Express.Multer.File
 ): Promise<{
   thumbnail: string;
   medium: string;
   large: string;
   original: string;
 }> => {
-  try {
-    // // Ensure the products directory exists
-    // await fs.mkdir(PRODUCTS_DIR, { recursive: true });
-    // // Ensure the temporary directory exists
-    // await fs.mkdir(TEMP_DIR, { recursive: true });
-    // Generate file names
-    const timestamp = Date.now();
-    const baseName = `product-${productId}-${timestamp}`;
-    const ext = ".webp";
-
-    const filenames = {
-      thumbnail: `${baseName}-thumb${ext}`,
-      medium: `${baseName}-medium${ext}`,
-      large: `${baseName}-large${ext}`,
-      original: `${baseName}${ext}`,
-    };
-
-    // Full paths
-    const paths = {
-      thumbnail: path.join(PRODUCTS_DIR, filenames.thumbnail),
-      medium: path.join(PRODUCTS_DIR, filenames.medium),
-      large: path.join(PRODUCTS_DIR, filenames.large),
-      original: path.join(PRODUCTS_DIR, filenames.original),
-    };
-
-    // Read the temporary file
-    const imageBuffer = await fs.readFile(file.path);
-
-    // Create different sizes with Sharp
-    await Promise.all([
-      // Thumbnail (150x150)
-      sharp(imageBuffer)
-        .resize(IMAGE_CONFIG.thumbnail.width, IMAGE_CONFIG.thumbnail.height, {
-          fit: "cover",
-          position: "center",
-        })
-        .webp({ quality: 80 })
-        .toFile(paths.thumbnail),
-
-      // Medium (500x500)
-      sharp(imageBuffer)
-        .resize(IMAGE_CONFIG.medium.width, IMAGE_CONFIG.medium.height, {
-          fit: "cover",
-          position: "center",
-        })
-        .webp({ quality: 85 })
-        .toFile(paths.medium),
-
-      // Large (1200x1200)
-      sharp(imageBuffer)
-        .resize(IMAGE_CONFIG.large.width, IMAGE_CONFIG.large.height, {
-          fit: "inside",
-        })
-        .webp({ quality: 90 })
-        .toFile(paths.large),
-
-      // Original
-      sharp(imageBuffer).webp({ quality: 90 }).toFile(paths.original),
-    ]);
-
-    // Delete the temporary file
-    await fs.unlink(file.path);
-
-    // Return URLs
-    return {
-      thumbnail: `/uploads/products/${filenames.thumbnail}`,
-      medium: `/uploads/products/${filenames.medium}`,
-      large: `/uploads/products/${filenames.large}`,
-      original: `/uploads/products/${filenames.original}`,
-    };
-  } catch (error) {
-    // Cleanup if error
-    try {
-      await fs.unlink(file.path);
-    } catch {}
-
-    throw new BadRequestError(
-      `Failed to process image: ${(error as Error).message}`
-    );
+  if (!file || !file.path) {
+    throw new BadRequestError("No file uploaded");
   }
+
+  // Avec multer-storage-cloudinary, file.filename EST le public_id
+  const publicId = file.filename;
+
+  // Génération des URLs dynamiques via l'SDK Cloudinary
+  // On applique des transformations à la volée sans dupliquer le fichier
+  return {
+    thumbnail: cloudinary.url(publicId, {
+      width: 150,
+      height: 150,
+      crop: "fill",
+      format: "webp",
+      quality: "auto",
+    }),
+    medium: cloudinary.url(publicId, {
+      width: 500,
+      height: 500,
+      crop: "fill",
+      format: "webp",
+      quality: "auto",
+    }),
+    large: cloudinary.url(publicId, {
+      width: 1200,
+      height: 1200,
+      crop: "limit",
+      format: "webp",
+      quality: "auto",
+    }),
+    original: file.path,
+  };
 };
 
 /**
- * Delete product images
- * Removes all sizes (thumbnail, medium, large, original)
+ * Delete product images from Cloudinary
  */
 export const deleteProductImage = async (imageUrl: string): Promise<void> => {
   try {
-    // Extract the originalName from file
-    const filename = path.basename(imageUrl);
-    const baseName = filename
-      .replace(/-thumb|-medium|-large/, "")
-      .replace(/\.[^.]+$/, "");
+    const regex = /\/v\d+\/(.+)\.[a-z]+$/;
+    const match = imageUrl.match(regex);
 
-    // Building file name
-    const ext = ".webp";
-    const filesToDelete = [
-      `${baseName}-thumb${ext}`,
-      `${baseName}-medium${ext}`,
-      `${baseName}-large${ext}`,
-      `${baseName}${ext}`,
-    ];
-
-    // Delete all files
-    await Promise.all(
-      filesToDelete.map(async (file) => {
-        const filePath = path.join(PRODUCTS_DIR, file);
-        try {
-          await fs.unlink(filePath);
-        } catch (error) {
-          console.warn(`File not found: ${filePath}`);
-        }
-      })
-    );
+    if (match && match[1]) {
+      const publicId = match[1];
+      await cloudinary.uploader.destroy(publicId);
+      logger.info(`🗑️ Deleted image from Cloudinary: ${publicId}`);
+    } else {
+      logger.warn(`Could not extract public_id from URL: ${imageUrl}`);
+    }
   } catch (error) {
-    console.error("Error deleting images:", error);
+    console.error("Error deleting image from Cloudinary:", error);
   }
 };
-
-/**
- * Check if uploads directory exists, create if not
- */
-export const ensureUploadDirs = async (): Promise<void> => {
-  try {
-    await fs.mkdir(PRODUCTS_DIR, { recursive: true });
-    await fs.mkdir(TEMP_DIR, { recursive: true });
-    logger.info("✅ Upload directories ready");
-    logger.info(` Products: ${PRODUCTS_DIR}`);
-    logger.info(` Temp: ${TEMP_DIR}`);
-  } catch (error) {
-    console.error("Failed to create upload directories:", error);
-    throw error;
-  }
-};
-
-// 🪛check old file - may be unused file an replaced by service in module folder
