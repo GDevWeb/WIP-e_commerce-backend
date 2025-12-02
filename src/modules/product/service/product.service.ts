@@ -1,5 +1,5 @@
-import { redisClient } from "../../../configuration/redis";
 import { Prisma, PrismaClient, Product } from "@prisma/client";
+import { redisClient } from "../../../configuration/redis";
 import {
   PaginatedProducts,
   ProductFilters,
@@ -148,7 +148,7 @@ async function invalidateSearchCache() {
   try {
     const keys = await redisClient.keys("search:products:*");
     if (keys.length > 0) {
-      await redisClient.del(keys);
+      await redisClient.del(...keys);
       console.log(`🗑️  Invalidated ${keys.length} search cache entries`);
     }
   } catch (error) {
@@ -194,7 +194,7 @@ export const searchProducts = async (
   // Check if data is in cache
   const cacheKey = generateSearchCacheKey(filters);
 
-  if (!redisClient.isReady) {
+  if (redisClient.status !== "ready") {
     logger.warn("Redis client is not ready. Skipping cache check.");
   }
 

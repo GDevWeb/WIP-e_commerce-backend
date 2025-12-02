@@ -316,7 +316,7 @@
 
 - [x] Dockerfile
 - [x] Docker Compose (API + PostgreSQL + Redis)
-- [ ] Deploy to Railway/Render/Heroku -> ❌Issue no free plan 😬
+- [ ] Deploy to Railway/Render/Heroku -> ❌Issue no free plan 😬 -> Deploy to Neon/Upstash/Cloudinary (total free plan)
 - [ ] Production environment variables
 
 ---

@@ -43,7 +43,7 @@ We will prioritize **Render** due to its integrated approach for both web servic
 ### My choice
 
 PARTIE 1 : Services Externes Setup
-├─ 1.1: Neon PostgreSQL
+├─ 1.1: [X] Neon PostgreSQL
 ├─ 1.2: Upstash Redis
 └─ 1.3: Cloudinary Images
 
@@ -67,5 +67,3 @@ PARTIE 5 : Polish & Documentation
 └─ 5.3: Status badges
 
 ---
-
-neon string: psql 'postgresql://neondb_owner:npg_ywuFWhfZI41H@ep-round-meadow-ag92p98k-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
