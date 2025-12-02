@@ -142,26 +142,38 @@ export const configureSanitization = (app: Express) => {
 export const configureSecurityMiddlewares = (app: Express) => {
   app.use(
     helmet({
+      // Allow cross-origin resource sharing for images/scripts
       crossOriginResourcePolicy: { policy: "cross-origin" },
+
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
+
+          // Allow scripts from self, unsafe-inline (for Swagger UI), Vercel (for toolbar), and Cloudflare CDN (for Swagger UI)
           scriptSrc: [
             "'self'",
             "'unsafe-inline'",
-            "https://vercel.live", //Allow Vercel scripts
-            "https://cdnjs.cloudflare.com", // Allow Swagger CDN
+            "https://vercel.live", // Toolbar Vercel
+            "https://cdnjs.cloudflare.com", // CDN Swagger UI
           ],
+
+          // Allow styles from self, unsafe-inline (for Swagger UI), Cloudflare CDN (for Swagger UI), and Google Fonts (optional)
           styleSrc: [
             "'self'",
             "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com", // Allow Swagger CSS
+            "https://cdnjs.cloudflare.com", // CDN Swagger UI
+            "https://fonts.googleapis.com", // Google Fonts
           ],
+
+          // Allow images (Cloudinary + base64 data for Swagger logo)
+
           imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
+
+          // Allow API and Analytics connections
           connectSrc: [
             "'self'",
             "https://vercel.live",
-            "https://vitals.vercel-insights.com", // Vercel Insights
+            "https://vitals.vercel-insights.com",
           ],
         },
       },
