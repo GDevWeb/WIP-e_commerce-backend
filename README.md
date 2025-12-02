@@ -843,12 +843,16 @@ DELETE /api/cart/items/:id
 
 ### Phase 5: Production
 
+- [x] Jobs arrière-plan
+- [x] CI/CD
+- [x] Déploiement
+- [ ] Clean project
+- [x] Docker
+
+### Phase 6: Extras (version 1.5)
+
 - [ ] Notifications email
 - [ ] Paiements Stripe
-- [ ] Jobs arrière-plan
-- [ ] Docker
-- [ ] CI/CD
-- [ ] Déploiement
 
 **Progression**: 84% (21/25 sessions)
 
