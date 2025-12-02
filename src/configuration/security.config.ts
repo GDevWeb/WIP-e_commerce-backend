@@ -142,34 +142,44 @@ export const configureSanitization = (app: Express) => {
 export const configureSecurityMiddlewares = (app: Express) => {
   app.use(
     helmet({
-      // Allow cross-origin resource sharing for images/scripts
       crossOriginResourcePolicy: { policy: "cross-origin" },
-
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
 
-          // Allow scripts from self, unsafe-inline (for Swagger UI), Vercel (for toolbar), and Cloudflare CDN (for Swagger UI)
+          // 1. Scripts (JS)
           scriptSrc: [
             "'self'",
             "'unsafe-inline'",
-            "https://vercel.live", // Toolbar Vercel
-            "https://cdnjs.cloudflare.com", // CDN Swagger UI
+            "https://cdnjs.cloudflare.com",
+            "https://vercel.live",
+          ],
+          scriptSrcElem: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+            "https://vercel.live",
           ],
 
-          // Allow styles from self, unsafe-inline (for Swagger UI), Cloudflare CDN (for Swagger UI), and Google Fonts (optional)
+          // 2. Styles (CSS)
           styleSrc: [
             "'self'",
             "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com", // CDN Swagger UI
-            "https://fonts.googleapis.com", // Google Fonts
+            "https://cdnjs.cloudflare.com",
+            "https://fonts.googleapis.com",
           ],
 
-          // Allow images (Cloudinary + base64 data for Swagger logo)
+          styleSrcElem: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://cdnjs.cloudflare.com",
+            "https://fonts.googleapis.com",
+          ],
 
+          // 3. Images
           imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
 
-          // Allow API and Analytics connections
+          // 4. Connexions (API calls, Analytics)
           connectSrc: [
             "'self'",
             "https://vercel.live",
