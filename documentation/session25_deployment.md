@@ -67,5 +67,3 @@ PARTIE 5 : Polish & Documentation
 └─ 5.3: Status badges
 
 ---
-
-neon string: psql 'postgresql://neondb_owner:npg_ywuFWhfZI41H@ep-round-meadow-ag92p98k-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
