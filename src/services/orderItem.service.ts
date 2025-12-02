@@ -1,4 +1,4 @@
-import { OrderItem, Prisma, PrismaClient } from "../generated/prisma";
+import { OrderItem, Prisma, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -40,3 +40,5 @@ export const updateOrderItem = async (
 export const deleteOrderItem = async (id: number): Promise<OrderItem> => {
   return prisma.orderItem.delete({ where: { id } });
 };
+
+// 🪛check old file - may be unused file an replaced by service in module folder

@@ -219,36 +219,36 @@
 
 **Goal: Test services**
 
-- [ ] Configure Jest: `npm install jest ts-jest @types/jest --save-dev`
-- [ ] Mock Prisma with `jest-mock-extended`
-- [ ] Tests: `AuthService`, `ProductService`
-- [ ] Coverage > 70% on services
-- [ ] **Deliverable**: Service test suite
+- [x] Configure Jest: `npm install jest ts-jest @types/jest --save-dev`
+- [x] Mock Prisma with `jest-mock-extended`
+- [x] Tests: `AuthService`, `ProductService`
+- [x] Coverage > 70% on services
+- [x] **Deliverable**: Service test suite
 
 **Estimated time: 4h**
 
 ---
 
-### Session 17: Unit Tests (Part 2)
+### Session 17: Unit Tests (Part 2) **Partial +80%**
 
 **Goal: Test controllers**
 
-- [ ] Install: `npm install supertest @types/supertest --save-dev`
-- [ ] Test controllers with supertest
-- [ ] Mock auth middlewares
-- [ ] **Deliverable**: Controller tests
+- [x] Install: `npm install supertest @types/supertest --save-dev`
+- [x] Test controllers with supertest
+- [x] Mock auth middlewares
+- [x] **Deliverable**: Controller tests
 
 **Estimated time: 4h**
 
 ---
 
-### Session 18: Integration Tests
+### Session 18: Integration Tests **Partial +80%**
 
 **Goal: End-to-end tests**
 
 - [ ] Setup test DB (Docker PostgreSQL)
-- [ ] Tests: Register → Login → Create Order → Review
-- [ ] Tests: Product search with filters
+- [x] Tests: Register → Login → Create Order → Review
+- [x] Tests: Product search with filters
 - [ ] Basic CI/CD with GitHub Actions
 - [ ] **Deliverable**: Functional E2E tests
 
@@ -256,30 +256,30 @@
 
 ---
 
-### Session 19: Security Hardening
+### Session 19: Security Hardening **Completed**
 
 **Goal: Secure the API**
 
-- [ ] Install: `npm install helmet express-rate-limit cors`
-- [ ] Configure Helmet (XSS, CSRF protection)
-- [ ] Rate limiting per endpoint
-- [ ] Input sanitization (against NoSQL injection)
-- [ ] HTTPS only in production
-- [ ] **Deliverable**: Secured API
+- [x] Install: `npm install helmet express-rate-limit cors`
+- [x] Configure Helmet (XSS, CSRF protection)
+- [x] Rate limiting per endpoint
+- [x] Input sanitization (against NoSQL injection)
+- [x] HTTPS only in production
+- [x] **Deliverable**: Secured API
 
 **Estimated time: 4h**
 
 ---
 
-### Session 20: API Documentation
+### Session 20: API Documentation **Completed**
 
 **Goal: Swagger/OpenAPI**
 
-- [ ] Install: `npm install swagger-ui-express swagger-jsdoc`
-- [ ] Document all routes
-- [ ] Request/response examples
-- [ ] Publish on `/api-docs`
-- [ ] **Deliverable**: Interactive documentation
+- [x] Install: `npm install swagger-ui-express swagger-jsdoc`
+- [x] Document all routes
+- [x] Request/response examples
+- [x] Publish on `/api-docs`
+- [x] **Deliverable**: Interactive documentation
 
 **Estimated time: 4h**
 
@@ -314,9 +314,9 @@
 
 ### Session 24: Docker & Deployment
 
-- [ ] Dockerfile
-- [ ] Docker Compose (API + PostgreSQL + Redis)
-- [ ] Deploy to Railway/Render/Heroku
+- [x] Dockerfile
+- [x] Docker Compose (API + PostgreSQL + Redis)
+- [ ] Deploy to Railway/Render/Heroku -> ❌Issue no free plan 😬 -> Deploy to Neon/Upstash/Cloudinary (total free plan)
 - [ ] Production environment variables
 
 ---
@@ -333,16 +333,3 @@
 | **TOTAL**  | **24**   | **12** | **96h** | **Production-Ready API**               |
 
 ---
-
-## 🎯 Recommended Next Session
-
-**👉 Session 5: Validation with Zod (4h)**
-
-This is the best time to improve your existing code before adding more features!
-
----
-
-## TODO
-
-1. upload-file, add specific subfolder by module.
-   1. Edit multer.config

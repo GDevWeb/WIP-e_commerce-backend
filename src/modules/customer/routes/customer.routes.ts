@@ -1,5 +1,5 @@
 import express from "express";
-import { Role } from "../../../generated/prisma";
+import { Role } from "@prisma/client";
 import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { checkRole } from "../../../middlewares/checkRole.middleware";
 import { validate } from "../../../middlewares/validate";
@@ -90,5 +90,20 @@ customerRouter.delete(
   checkRole([Role.ADMIN]),
   adminController.deleteCustomer
 );
+
+// Swagger Zone
+
+/**
+ * @swagger
+ * /api/customers:
+ *   get:
+ *     tags: [Customers]
+ *     summary: Get customers (own data for USER, all for ADMIN)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Customers retrieved
+ */
 
 export default customerRouter;

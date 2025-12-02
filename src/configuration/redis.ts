@@ -1,17 +1,29 @@
 import dotenv from "dotenv";
-import { createClient } from "redis";
+import Redis from "ioredis";
 import logger from "../utils/logger";
 
 dotenv.config();
 
-// client
-export const redisClient = createClient({
-  socket: {
-    host: process.env.REDIS_HOST || "localhost",
-    port: parseInt(process.env.REDIS_PORT || "6379"),
+//DEVELOPMENT REDIS CLIENT USING createClient
+// export const redisClient = createClient({
+//   socket: {
+//     host: process.env.REDIS_HOST || "localhost",
+//     port: parseInt(process.env.REDIS_PORT || "6379"),
+//   },
+//   password: process.env.REDIS_PASSWORD || undefined,
+//   database: parseInt(process.env.REDIS_DB || "0"),
+// });
+
+//PRODUCTION REDIS CLIENT USING IORedis
+export const redisClient = new Redis(process.env.REDIS_URL!, {
+  maxRetriesPerRequest: 3,
+  enableReadyCheck: false,
+
+  lazyConnect: true,
+
+  tls: {
+    rejectUnauthorized: false,
   },
-  password: process.env.REDIS_PASSWORD || undefined,
-  database: parseInt(process.env.REDIS_DB || "0"),
 });
 
 // handle events

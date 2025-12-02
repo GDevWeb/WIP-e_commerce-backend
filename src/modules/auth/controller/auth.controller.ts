@@ -5,7 +5,7 @@ import * as authService from "../service/auth.service";
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const authResponse = await authService.register(req.body);
-  console.log("ℹ️From controller register - value of body:", req.body);
+  // console.log("ℹ️From controller register - value of body:", req.body);
 
   res.status(201).json(authResponse);
 });

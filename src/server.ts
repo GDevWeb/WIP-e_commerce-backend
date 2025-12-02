@@ -1,8 +1,17 @@
+import { PrismaClient } from "@prisma/client";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import path from "path";
 import { connectRedis, disconnectRedis } from "./configuration/redis";
-import { PrismaClient } from "./generated/prisma";
+import {
+  configureSanitization,
+  corsOptions,
+  devCorsOptions,
+  generalLimiter,
+} from "./configuration/security.config";
+import { setupSwagger } from "./docs/swagger.config";
 import { errorHandler } from "./middlewares/errorHandler";
 import { configureSecurityMiddlewares } from "./middlewares/security";
 import authRouter from "./modules/auth/routes/auth.routes";
@@ -14,9 +23,7 @@ import orderRouter from "./modules/order/routes/order.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
 import orderItemRouter from "./routes/orderItem.routes";
-import { ensureUploadDirs } from "./services/upload.service";
 import logger from "./utils/logger";
-import cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -24,16 +31,27 @@ const server = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 
-// helmet
+// CORS middleware
+const isDevelopment = process.env.NODE_ENV === "development";
+server.use(cors(isDevelopment ? devCorsOptions : corsOptions));
+
+// Security middlewares
 configureSecurityMiddlewares(server);
 
-server.use(express.json());
+// Body parsers
+server.use(express.json({ limit: "10mb" }));
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 
-const UPLOADS_PATH = path.join(process.cwd(), "uploads");
+// Input sanitization
+configureSanitization(server);
 
+// Rate limiting middleware
+server.use("/api/", generalLimiter);
+// Static files (uploads)
+const UPLOADS_PATH = path.join(process.cwd(), "uploads");
 server.use("/uploads", express.static(UPLOADS_PATH));
+// API routes
 server.use("/api/categories", categoryRouter);
 server.use("/api/brands", brandRouter);
 server.use("/api/products", productRouter);
@@ -44,25 +62,34 @@ server.use("/api/reviews", reviewRouter);
 server.use("/api/auth", authRouter);
 server.use("/api/cart", cartRouter);
 
-server.get("/", (req: Request, res: Response) => {
-  res.status(200).send("e_commerce API is running");
+// // Swagger documentation
+setupSwagger(server);
+logger.info("📚 Swagger UI available at /api-docs");
+logger.info(`📚 Full URL: http://localhost:${PORT}/api-docs`);
+
+// Health check
+server.get("/health", (req, res) => {
+  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
+// Root route
+server.get("/", (req, res) => {
+  res.send(
+    'Welcome to the E-commerce API. Visit "/docs" for API documentation.'
+  );
+});
+
+// Error handling middleware
 server.use(errorHandler);
 
+// Start the server
 async function startServer() {
   try {
-    // 1.Prisma
     await prisma.$connect();
     logger.info(`\n🖲️ Successfully connected to the database`);
 
-    // 2.Create uploads folder
-    await ensureUploadDirs();
-
-    // 3.Redis
     await connectRedis();
 
-    // 4.API
     server.listen(PORT, () => {
       logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
     });
@@ -72,6 +99,7 @@ async function startServer() {
   }
 }
 
+// Graceful shutdown
 process.on("SIGINT", async () => {
   logger.info("\n🔴 Shutting down gracefully...");
   await disconnectRedis();
@@ -83,4 +111,5 @@ process.on("SIGTERM", async () => {
   await disconnectRedis();
   process.exit(0);
 });
+
 startServer();

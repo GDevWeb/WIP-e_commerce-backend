@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, Review } from "../generated/prisma";
+import { Prisma, PrismaClient, Review } from "@prisma/client";
 import { PaginateReviews, ReviewFilters } from "../types/review.types";
 
 const prisma = new PrismaClient();
@@ -86,3 +86,5 @@ export const deleteReview = async (id: number): Promise<Review> => {
     where: { id },
   });
 };
+
+// 🪛check old file - may be unused file an replaced by service in module folder

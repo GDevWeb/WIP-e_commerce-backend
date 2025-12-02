@@ -3,7 +3,7 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "../../../errors";
-import { PrismaClient } from "../../../generated/prisma";
+import { PrismaClient } from "@prisma/client";
 import { CreateReviewInput } from "../schema/review.schema";
 
 const prisma = new PrismaClient();

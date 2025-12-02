@@ -1,7 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import { redisClient } from "../../../configuration/redis";
 import { BadRequestError, NotFoundError } from "../../../errors";
-import { PrismaClient } from "../../../generated/prisma";
 import { AddToCartInput } from "../schema/cart.schema";
 import { Cart, CartItem } from "../types/cart.types";
 
@@ -76,7 +76,7 @@ async function saveCart(
 ): Promise<void> {
   const key = getCartKey(userId, sessionId);
 
-  await redisClient.setEx(key, CART_TTL, JSON.stringify(cart));
+  await redisClient.setex(key, CART_TTL, JSON.stringify(cart));
 }
 
 /**

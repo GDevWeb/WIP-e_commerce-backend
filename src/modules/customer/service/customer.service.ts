@@ -4,7 +4,7 @@ import {
   Prisma,
   PrismaClient,
   Role,
-} from "../../../generated/prisma";
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -159,5 +159,3 @@ export const updateCustomer = async (
     data,
   });
 };
-
-// /generate comments and jsdocs
