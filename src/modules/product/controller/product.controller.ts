@@ -1,9 +1,16 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import * as uploadService from "../../../services/upload.service";
 import { asyncHandler } from "../../../utils/asyncHandler";
 import { generateSKU } from "../../../utils/product.utils";
 import { SearchProductsQuery } from "../schema/product.schema";
 import * as productService from "../service/product.service";
+
+interface IImagesVariations {
+  medium: string;
+  large?: string;
+  small?: string;
+}
 
 /**
  * Retrieves all products with optional filtering and pagination.
@@ -75,61 +82,37 @@ export const createProduct = asyncHandler(async (req, res) => {
     brand_id,
   } = req.body;
 
-  // Generate SKU
   const sku = generateSKU(name);
 
-  // Handle the image if exists
+  // 1. Prepare the image URL
   let imageUrl: string | null = null;
-  let images: any = null;
+  let imagesVariations: IImagesVariations | null = null;
 
   if (req.file) {
-    const tempProduct = await productService.createProduct({
-      name,
-      sku,
-      imageUrl: null,
-      description: description || null,
-      weight: weight ? parseFloat(weight) : null,
-      price: parseFloat(price),
-      stock_quantity: parseInt(stock_quantity),
-      category: { connect: { id: parseInt(category_id) } },
-      brand: { connect: { id: parseInt(brand_id) } },
-    });
+    imagesVariations = await uploadService.processProductImage(req.file);
 
-    // Handle the image with the product's id
-    images = await uploadService.processProductImage(req.file, tempProduct.id);
-    imageUrl = images.medium;
-
-    // Update the product with the image URL
-    const updatedProduct = await productService.updateProduct(tempProduct.id, {
-      imageUrl,
-    });
-
-    res.status(201).json({
-      status: "success",
-      message: "Product created successfully with image",
-      data: updatedProduct,
-      images,
-    });
-  } else {
-    // Create without image
-    const newProduct = await productService.createProduct({
-      name,
-      sku,
-      imageUrl: null,
-      description: description || null,
-      weight: weight ? parseFloat(weight) : null,
-      price: parseFloat(price),
-      stock_quantity: parseInt(stock_quantity),
-      category: { connect: { id: parseInt(category_id) } },
-      brand: { connect: { id: parseInt(brand_id) } },
-    });
-
-    res.status(201).json({
-      status: "success",
-      message: "Product created successfully",
-      data: newProduct,
-    });
+    imageUrl = imagesVariations.medium;
   }
+
+  // 2. Create the product IN A SINGLE OPERATION
+  const newProduct = await productService.createProduct({
+    name,
+    sku,
+    imageUrl: imageUrl,
+    description: description || null,
+    weight: weight ? parseFloat(weight) : null,
+    price: parseFloat(price),
+    stock_quantity: parseInt(stock_quantity),
+    category: { connect: { id: parseInt(category_id) } },
+    brand: { connect: { id: parseInt(brand_id) } },
+  });
+
+  res.status(201).json({
+    status: "success",
+    message: "Product created successfully",
+    data: newProduct,
+    images: imagesVariations,
+  });
 });
 
 /**
@@ -143,7 +126,7 @@ export const createProduct = asyncHandler(async (req, res) => {
 export const updateProduct = asyncHandler(async (req, res) => {
   const productId = parseInt(req.params.id);
 
-  // Vérifier que le produit existe
+  // Verify that the product exists
   const existingProduct = await productService.getProductById(productId);
 
   const {
@@ -156,8 +139,8 @@ export const updateProduct = asyncHandler(async (req, res) => {
     brand_id,
   } = req.body;
 
-  // Construire l'objet de mise à jour
-  const data: any = {};
+  // Build the update object
+  const data: Prisma.ProductUpdateInput = {};
 
   if (name !== undefined) data.name = name;
   if (description !== undefined) data.description = description;
@@ -174,28 +157,28 @@ export const updateProduct = asyncHandler(async (req, res) => {
     data.brand = { connect: { id: parseInt(brand_id) } };
   }
 
-  // Traiter la nouvelle image si présente
-  let images: any = null;
+  // Process the new image if present
+  let imagesVariations: IImagesVariations | null = null;
 
   if (req.file) {
-    // Supprimer l'ancienne image si elle existe
+    // Delete existing image if any
     if (existingProduct.imageUrl) {
       await uploadService.deleteProductImage(existingProduct.imageUrl);
     }
 
-    // Traiter la nouvelle image
-    images = await uploadService.processProductImage(req.file, productId);
-    data.imageUrl = images.medium;
+    // Process the new image
+    imagesVariations = await uploadService.processProductImage(req.file);
+    data.imageUrl = imagesVariations.medium;
   }
 
-  // Mettre à jour le produit
+  // Update the product
   const updatedProduct = await productService.updateProduct(productId, data);
 
   res.status(200).json({
     status: "success",
     message: "Product updated successfully",
     data: updatedProduct,
-    ...(images && { images }), // Inclure les URLs des images si présent
+    ...(imagesVariations && { images: imagesVariations }),
   });
 });
 
@@ -206,15 +189,15 @@ export const updateProduct = asyncHandler(async (req, res) => {
 export const deleteProduct = asyncHandler(async (req, res): Promise<void> => {
   const productId = parseInt(req.params.id);
 
-  // Récupérer le produit pour supprimer son image
+  // Retrieve the product to delete its image
   const product = await productService.getProductById(productId);
 
-  // Supprimer l'image si elle existe
+  // Delete the image if it exists
   if (product.imageUrl) {
     await uploadService.deleteProductImage(product.imageUrl);
   }
 
-  // Supprimer le produit
+  // Delete the product
   const deletedProduct = await productService.deleteProduct(productId);
 
   res.status(200).json({

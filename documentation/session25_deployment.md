@@ -43,7 +43,7 @@ We will prioritize **Render** due to its integrated approach for both web servic
 ### My choice
 
 PARTIE 1 : Services Externes Setup
-├─ 1.1: Neon PostgreSQL
+├─ 1.1: [X] Neon PostgreSQL
 ├─ 1.2: Upstash Redis
 └─ 1.3: Cloudinary Images
 

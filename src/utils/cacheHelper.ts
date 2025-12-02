@@ -32,7 +32,7 @@ export async function setInCache<T>(
   ttl: number = 300
 ): Promise<void> {
   try {
-    await redisClient.setEx(key, ttl, JSON.stringify(data));
+    await redisClient.setex(key, ttl, JSON.stringify(data));
   } catch (error) {
     console.error("Cache set error:", error);
   }

@@ -1,5 +1,5 @@
-import { redisClient } from "../../../configuration/redis";
 import { Prisma, PrismaClient, Product } from "@prisma/client";
+import { redisClient } from "../../../configuration/redis";
 import {
   PaginatedProducts,
   ProductFilters,
@@ -148,7 +148,7 @@ async function invalidateSearchCache() {
   try {
     const keys = await redisClient.keys("search:products:*");
     if (keys.length > 0) {
-      await redisClient.del(keys);
+      await redisClient.del(...keys);
       console.log(`🗑️  Invalidated ${keys.length} search cache entries`);
     }
   } catch (error) {
@@ -192,19 +192,23 @@ export const searchProducts = async (
   } = filters;
 
   // Check if data is in cache
-  const cacheKey = generateSearchCacheKey(filters);
 
-  if (!redisClient.isReady) {
+  // New version with handling redis status -> Migration to ioredis - 2025-12-02
+  const cacheKey = generateSearchCacheKey(filters);
+  let cached: SearchResult | null = null;
+
+  //Primarily to avoid errors when Redis is down
+  if (redisClient.status === "ready") {
+    cached = await getFromCache<SearchResult>(cacheKey);
+  } else {
     logger.warn("Redis client is not ready. Skipping cache check.");
   }
 
-  const cached = await getFromCache<SearchResult>(cacheKey);
-
+  //if we have found in cache (and redis was ready), we return
   if (cached) {
-    logger.info("🎯Cache HIT:", cacheKey);
+    logger.info("🎯 Cache HIT:", cacheKey);
     return cached;
   }
-
   logger.info("💾 Cache MISS:", cacheKey);
 
   // I. Step One - Building Where clause
