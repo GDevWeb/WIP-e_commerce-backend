@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import { OrderStatus, PrismaClient } from "../src/generated/prisma";
+import { OrderStatus, PrismaClient } from "@prisma/client";
 
 config();
 

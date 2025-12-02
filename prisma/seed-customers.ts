@@ -1,63 +1,67 @@
+import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcrypt";
 import { config } from "dotenv";
-import { Prisma, PrismaClient } from "../src/generated/prisma";
 
 config();
 
 const prisma = new PrismaClient();
 
-const customerData: Prisma.CustomerCreateInput[] = [
-  {
-    first_name: "John",
-    last_name: "Doe",
-    email: "john.doe@example.com",
-    phone_number: "123-456-7890",
-    address: "123 Main St, Anytown, USA",
-    date_of_birth: new Date("1990-01-15T00:00:00.000Z"),
-    customer_type: "GOLD",
-    preferred_contact_method: "EMAIL",
-  },
-  {
-    first_name: "Jane",
-    last_name: "Smith",
-    email: "jane.smith@example.com",
-    phone_number: "098-765-4321",
-    address: "456 Oak Ave, Somewhere, USA",
-    date_of_birth: new Date("1985-05-20T00:00:00.000Z"),
-    customer_type: "PLATINUM",
-    preferred_contact_method: "PHONE",
-  },
-  {
-    first_name: "Peter",
-    last_name: "Jones",
-    email: "peter.jones@example.com",
-    phone_number: "111-222-3333",
-    address: "789 Pine Ln, Nowhere, USA",
-    date_of_birth: new Date("1992-03-01T00:00:00.000Z"),
-    customer_type: "STANDARD",
-    preferred_contact_method: "SMS",
-  },
-];
-
 async function main() {
-  console.info("Start seeding customer table ...");
+  console.log("🌱 Seeding customers...");
 
-  await Promise.all(
-    customerData.map(async (customer) => {
-      return prisma.customer.upsert({
-        where: { email: customer.email },
-        update: {},
-        create: customer,
-      });
-    })
-  );
+  const hashedPassword = await bcrypt.hash("password123", 10);
 
-  console.info("Customers seeded.");
-  console.info("Seeding finished.");
+  // Admin
+  await prisma.customer.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      first_name: "Admin",
+      last_name: "User",
+      email: "admin@example.com",
+      password: hashedPassword,
+      role: "ADMIN",
+      phone_number: "+33123456789",
+      address: "123 Admin St, Paris, France",
+    },
+  });
+
+  // User 1
+  await prisma.customer.upsert({
+    where: { email: "user@example.com" },
+    update: {},
+    create: {
+      first_name: "John",
+      last_name: "Doe",
+      email: "user@example.com",
+      password: hashedPassword,
+      role: "USER",
+      phone_number: "+33987654321",
+      address: "456 User Ave, Lyon, France",
+    },
+  });
+
+  // User 2 (nouveau)
+  await prisma.customer.upsert({
+    where: { email: "alice@example.com" },
+    update: {},
+    create: {
+      first_name: "Alice",
+      last_name: "Smith",
+      email: "alice@example.com",
+      password: hashedPassword,
+      role: "USER",
+      phone_number: "+33555123456",
+      address: "789 Customer Blvd, Marseille, France",
+    },
+  });
+
+  console.log("✅ Customers seeded (3 users)");
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("❌ Error:", e);
     process.exit(1);
   })
   .finally(async () => {

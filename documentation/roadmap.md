@@ -314,9 +314,9 @@
 
 ### Session 24: Docker & Deployment
 
-- [ ] Dockerfile
-- [ ] Docker Compose (API + PostgreSQL + Redis)
-- [ ] Deploy to Railway/Render/Heroku
+- [x] Dockerfile
+- [x] Docker Compose (API + PostgreSQL + Redis)
+- [ ] Deploy to Railway/Render/Heroku -> ❌Issue no free plan 😬
 - [ ] Production environment variables
 
 ---
@@ -333,16 +333,3 @@
 | **TOTAL**  | **24**   | **12** | **96h** | **Production-Ready API**               |
 
 ---
-
-## 🎯 Recommended Next Session
-
-**👉 Session 5: Validation with Zod (4h)**
-
-This is the best time to improve your existing code before adding more features!
-
----
-
-## TODO
-
-1. upload-file, add specific subfolder by module.
-   1. Edit multer.config
