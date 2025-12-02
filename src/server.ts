@@ -23,7 +23,6 @@ import orderRouter from "./modules/order/routes/order.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
 import orderItemRouter from "./routes/orderItem.routes";
-// import { ensureUploadDirs } from "./services/upload.service";
 import logger from "./utils/logger";
 
 dotenv.config();
@@ -31,6 +30,10 @@ dotenv.config();
 const server = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
+
+// CORS middleware
+const isDevelopment = process.env.NODE_ENV === "development";
+server.use(cors(isDevelopment ? devCorsOptions : corsOptions));
 
 // Security middlewares
 configureSecurityMiddlewares(server);
@@ -43,9 +46,6 @@ server.use(cookieParser());
 // Input sanitization
 configureSanitization(server);
 
-// CORS middleware
-const isDevelopment = process.env.NODE_ENV === "development";
-server.use(cors(isDevelopment ? devCorsOptions : corsOptions));
 // Rate limiting middleware
 server.use("/api/", generalLimiter);
 // Static files (uploads)
@@ -88,7 +88,6 @@ async function startServer() {
     await prisma.$connect();
     logger.info(`\n🖲️ Successfully connected to the database`);
 
-    // await ensureUploadDirs();
     await connectRedis();
 
     server.listen(PORT, () => {
