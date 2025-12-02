@@ -1,5 +1,5 @@
+import { Prisma, PrismaClient } from "@prisma/client";
 import { config } from "dotenv";
-import { CategoryType, Prisma, PrismaClient } from "../src/generated/prisma";
 
 config();
 
@@ -13,12 +13,7 @@ const brandData: Prisma.BrandCreateInput[] = [
   { name: "Microsoft" },
 ];
 
-const categoryData: Prisma.CategoryCreateInput[] = [
-  { name: CategoryType.ELECTRONICS },
-  { name: CategoryType.CLOTHING },
-  { name: CategoryType.BOOKS },
-  { name: CategoryType.HOME_APPLIANCES },
-];
+const categoryData: Prisma.CategoryCreateInput[] = [{ name: "ELECTRONICS" }];
 
 async function main() {
   console.log("Start seeding...");
@@ -56,7 +51,7 @@ async function main() {
 
   // Récupérer les categories
   const electronics = await prisma.category.findUnique({
-    where: { name: CategoryType.ELECTRONICS },
+    where: { name: "ELECTRONICS" },
   });
 
   if (!logitech || !apple || !dell || !samsung || !electronics) {
