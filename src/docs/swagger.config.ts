@@ -590,7 +590,6 @@ export const setupSwagger = (app: Express) => {
     customfavIcon: "/favicon.ico",
   };
 
-  // Serve Swagger UI
   app.use(
     "/api-docs",
     swaggerUi.serve,
