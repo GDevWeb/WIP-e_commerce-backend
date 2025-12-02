@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import path from "path";
-import { connectRedis, disconnectRedis } from "./configuration/redis";
+import { connectRedis } from "./configuration/redis";
 import {
   configureSanitization,
   corsOptions,
@@ -82,34 +82,67 @@ server.get("/", (req, res) => {
 // Error handling middleware
 server.use(errorHandler);
 
-// Start the server
-async function startServer() {
+// // Start the server
+// async function startServer() {
+//   try {
+//     await prisma.$connect();
+//     logger.info(`\n🖲️ Successfully connected to the database`);
+
+//     await connectRedis();
+
+//     server.listen(PORT, () => {
+//       logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
+//     });
+//   } catch (error) {
+//     logger.error("❌ Failed to connect to the database", error);
+//     process.exit(1);
+//   }
+// }
+
+// // Graceful shutdown
+// process.on("SIGINT", async () => {
+//   logger.info("\n🔴 Shutting down gracefully...");
+//   await disconnectRedis();
+//   process.exit(0);
+// });
+
+// process.on("SIGTERM", async () => {
+//   logger.info("\n🔴 Shutting down gracefully...");
+//   await disconnectRedis();
+//   process.exit(0);
+// });
+
+// startServer();
+
+async function startLocalServer() {
   try {
     await prisma.$connect();
     logger.info(`\n🖲️ Successfully connected to the database`);
 
+    // Redis connection is managed by Vercel in serverless mode
     await connectRedis();
 
     server.listen(PORT, () => {
       logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
     });
   } catch (error) {
-    logger.error("❌ Failed to connect to the database", error);
+    logger.error("❌ Failed to start server", error);
     process.exit(1);
   }
 }
 
-// Graceful shutdown
-process.on("SIGINT", async () => {
-  logger.info("\n🔴 Shutting down gracefully...");
-  await disconnectRedis();
-  process.exit(0);
-});
+// Check if the file is run directly or imported
+if (require.main === module) {
+  startLocalServer();
+} else {
+  // If imported (e.g., by Vercel), connect to the database
+  prisma
+    .$connect()
+    .then(() => {
+      logger.info("🖲️ Database connected for Vercel Serverless");
+    })
+    .catch((e) => logger.error("DB Error", e));
+}
 
-process.on("SIGTERM", async () => {
-  logger.info("\n🔴 Shutting down gracefully...");
-  await disconnectRedis();
-  process.exit(0);
-});
-
-startServer();
+// Export the server for Vercel serverless deployment
+export default server;
