@@ -41,7 +41,7 @@ async function main() {
     },
   });
 
-  // User 2 (nouveau)
+  // User 2
   await prisma.customer.upsert({
     where: { email: "alice@example.com" },
     update: {},
