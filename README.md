@@ -13,6 +13,8 @@ A robust, production-grade RESTful API for an e-commerce platform, engineered wi
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791.svg)
+![Prisma](https://img.shields.io/badge/Prisma-6.16-darkblue.svg)
+![Redis](https://img.shields.io/badge/Redis-Upstash-red.svg)
 
 - **Live API**: [https://e-commerce-backend-nine-alpha.vercel.app/](https://e-commerce-backend-nine-alpha.vercel.app/)
 - **Documentation**: Available via Insomnia collection
@@ -234,6 +236,8 @@ Une API RESTful robuste pour une plateforme e-commerce, conçue avec **Node.js**
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791.svg)
+![Prisma](https://img.shields.io/badge/Prisma-6.16-darkblue.svg)
+![Redis](https://img.shields.io/badge/Redis-Upstash-red.svg)
 
 ---
 
