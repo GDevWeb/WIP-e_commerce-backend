@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { BadRequestError } from "../errors";
 import logger from "../utils/logger";
 
+// Copy of developement upload service - temporary for development purposes
 // Configuration
 const UPLOADS_ROOT = path.join(process.cwd(), "uploads");
 const PRODUCTS_DIR = path.join(UPLOADS_ROOT, "products");

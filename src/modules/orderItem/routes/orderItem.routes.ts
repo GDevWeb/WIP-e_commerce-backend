@@ -1,16 +1,16 @@
 import express from "express";
+import { validate } from "../../../middlewares/validate";
 import {
   createOrderItem,
   deleteOrderItem,
   getAllOrderItems,
   getOrderItem,
   updateOrderItem,
-} from "../controllers/orderItem.controller";
-import { validate } from "../middlewares/validate";
+} from "../controller/orderItem.controller";
 import {
   createOrderItemSchema,
   updateOrderItemSchema,
-} from "../schemas/orderItem.schema";
+} from "../schema/orderItem.schema";
 
 const orderItemRouter = express.Router();
 

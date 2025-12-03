@@ -20,9 +20,9 @@ import cartRouter from "./modules/cart/routes/cart.routes";
 import categoryRouter from "./modules/category/routes/category.routes";
 import customerRouter from "./modules/customer/routes/customer.routes";
 import orderRouter from "./modules/order/routes/order.routes";
+import orderItemRouter from "./modules/orderItem/routes/orderItem.routes";
 import productRouter from "./modules/product/routes/product.routes";
 import reviewRouter from "./modules/review/routes/review.routes";
-import orderItemRouter from "./routes/orderItem.routes";
 import logger from "./utils/logger";
 
 dotenv.config();
@@ -62,10 +62,16 @@ server.use("/api/reviews", reviewRouter);
 server.use("/api/auth", authRouter);
 server.use("/api/cart", cartRouter);
 
-// // Swagger documentation
-setupSwagger(server);
-logger.info("📚 Swagger UI available at /api-docs");
-logger.info(`📚 Full URL: http://localhost:${PORT}/api-docs`);
+// Swagger documentation
+const enableSwagger =
+  process.env.NODE_ENV === "development" ||
+  process.env.ENABLE_SWAGGER === "true";
+
+if (enableSwagger) {
+  setupSwagger(server);
+  logger.info("📚 Swagger UI available at /api-docs");
+  logger.info(`📚 Full URL: http://localhost:${PORT}/api-docs`);
+}
 
 // Health check
 server.get("/health", (req, res) => {
@@ -74,46 +80,24 @@ server.get("/health", (req, res) => {
 
 // Root route
 server.get("/", (req, res) => {
-  res.send(
-    'Welcome to the E-commerce API. Visit "/docs" for API documentation.'
-  );
-});
+  //In development, redirect to Swagger UI
+  if (process.env.NODE_ENV === "development") {
+    return res.redirect("/api-docs");
+  }
 
+  // In production (Vercel), display a professional welcome message with the link to the repo
+  res.send(`
+    <div style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+      <h1>E-Commerce API is Running</h1>
+      <p>Environment: <strong>Production</strong></p>
+      <p>Documentation available on GitHub or Insomnia.</p>
+    </div>
+  `);
+});
 // Error handling middleware
 server.use(errorHandler);
 
-// // Start the server
-// async function startServer() {
-//   try {
-//     await prisma.$connect();
-//     logger.info(`\n🖲️ Successfully connected to the database`);
-
-//     await connectRedis();
-
-//     server.listen(PORT, () => {
-//       logger.info(`🌍 Server is listening on: "http://localhost:${PORT}"`);
-//     });
-//   } catch (error) {
-//     logger.error("❌ Failed to connect to the database", error);
-//     process.exit(1);
-//   }
-// }
-
-// // Graceful shutdown
-// process.on("SIGINT", async () => {
-//   logger.info("\n🔴 Shutting down gracefully...");
-//   await disconnectRedis();
-//   process.exit(0);
-// });
-
-// process.on("SIGTERM", async () => {
-//   logger.info("\n🔴 Shutting down gracefully...");
-//   await disconnectRedis();
-//   process.exit(0);
-// });
-
-// startServer();
-
+// Start the server
 async function startLocalServer() {
   try {
     await prisma.$connect();

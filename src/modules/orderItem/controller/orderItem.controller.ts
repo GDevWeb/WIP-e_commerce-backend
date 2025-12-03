@@ -1,5 +1,5 @@
-import * as orderItemService from "../services/orderItem.service";
-import { asyncHandler } from "../utils/asyncHandler";
+import { asyncHandler } from "../../../utils/asyncHandler";
+import * as orderItemService from "../service/orderItem.service";
 
 export const getAllOrderItems = asyncHandler(async (req, res) => {
   const orderItems = await orderItemService.getAllOrderItems();

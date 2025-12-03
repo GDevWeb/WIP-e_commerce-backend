@@ -1,17 +1,17 @@
 import { Prisma, PrismaClient, Product } from "@prisma/client";
 import { redisClient } from "../../../configuration/redis";
 import {
-  PaginatedProducts,
-  ProductFilters,
-} from "../../../types/product.types";
-import {
   generateSearchCacheKey,
   getFromCache,
   setInCache,
 } from "../../../utils/cacheHelper";
 import logger from "../../../utils/logger";
 import { SearchProductsQuery } from "../schema/product.schema";
-import { SearchResult } from "../types/product.types";
+import {
+  PaginatedProducts,
+  ProductFilters,
+  SearchResult,
+} from "../types/product.types";
 
 const prisma = new PrismaClient();
 

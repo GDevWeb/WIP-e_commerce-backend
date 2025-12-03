@@ -1,5 +1,0 @@
-{
-  "baseUrl": "http://localhost:3000",
-  "accessToken": "YOUR_ACCESS_TOKEN_HERE",
-  "refreshToken": "YOUR_REFRESH_TOKEN_HERE"
-}

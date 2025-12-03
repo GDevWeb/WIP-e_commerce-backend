@@ -1,0 +1,1489 @@
+// 20251203094533
+// http://localhost:3000/api-docs.json
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-Commerce Backend API",
+    "version": "1.0.0",
+    "description": "\n        A comprehensive RESTful API for an e-commerce platform built with Node.js, Express, TypeScript, and Prisma.\n        \n        ## ✨ Features\n        - 🔐 JWT Authentication with refresh tokens\n        - 👥 Role-Based Access Control (USER, MANAGER, ADMIN)\n        - 🛍️ Complete product management\n        - 📦 Order processing system\n        - ⭐ Product reviews and ratings\n        - 🛒 Shopping cart with Redis\n        - 🔍 Advanced search with filters\n        - 💾 Redis caching\n        - 🖼️ Image upload support\n        - 🔒 Production-ready security (Helmet, Rate Limiting, CORS)\n        \n        ## 🧪 Test Credentials\n        \n        Use these credentials to test different access levels:\n        \n        **ADMIN Account** (Full access to all endpoints):\n        ```json\n        {\n          \"email\": \"admin_test@fakemail.com\",\n          \"password\": \"P@ssword123.\"\n        }\n        ```\n        \n        **Regular USER** (Limited access):\n        - Use POST /auth/register to create your own test account\n        - Or register via the interface below\n        \n        ## 🚀 Quick Start Guide\n        \n        ### 1️⃣ Test as Regular User\n        ```\n        1. POST /auth/register - Create a new user account\n        2. Copy the accessToken from the response\n        3. Click \"Authorize\" 🔓 button (top right)\n        4. Paste your token in the dialog\n        5. Click \"Authorize\" then \"Close\"\n        6. Now test these endpoints:\n           - GET /auth/profile (view your profile)\n           - GET /products (browse products)\n           - POST /cart/items (add items to cart)\n           - POST /orders (create an order)\n           - POST /products/{id}/reviews (leave a review)\n        ```\n        \n        ### 2️⃣ Test as Admin\n        ```\n        1. POST /auth/login with the ADMIN credentials above\n        2. Copy the accessToken from the response\n        3. Click \"Authorize\" 🔓 and paste the token\n        4. Click \"Authorize\" then \"Close\"\n        5. Now test admin-only endpoints:\n           - POST /products (create a product)\n           - PATCH /products/{id} (update a product)\n           - DELETE /products/{id} (delete a product)\n           - GET /customers/admin/all (view all customers)\n           - GET /products/admin/stats (view product statistics)\n        ```\n        \n        ### 3️⃣ Test Public Endpoints (No Authentication Required)\n        ```\n        - GET /products (browse product catalog)\n        - GET /products/{id} (view product details)\n        - GET /products/search?name=iphone (search products)\n        - GET /products/{id}/reviews (see product reviews)\n        - GET /health (API health check)\n        ```\n        \n        ## 📖 Authentication Flow\n        \n        1. **Register**: POST /auth/register to create an account\n        2. **Login**: POST /auth/login to get tokens\n        3. **Authorize**: Click the 🔓 button and paste your accessToken\n        4. **Use API**: All protected endpoints now accessible\n        5. **Refresh**: POST /auth/refresh when token expires\n        \n        ## 💡 Tips\n        - Access tokens expire after 7 days\n        - Use refresh token to get new access token without logging in again\n        - Rate limiting: 5 login attempts per 15 minutes\n        - Admin credentials are for testing only\n        \n        ## 🔗 Links\n        - GitHub: https://github.com/GDevWeb/WIP-e_commerce-backend\n        - Documentation: Full API docs available at /api-docs.json\n      ",
+    "contact": {
+      "name": "GDevWeb",
+      "email": "gaetan.dammaretz.dev@gmail.com",
+      "url": "https://github.com/GDevWeb/WIP-e_commerce-backend"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "API Server (Relative path)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "👉 Start here! User authentication and profile management"
+    },
+    {
+      "name": "Products",
+      "description": "Product catalog management (CRUD operations)"
+    },
+    {
+      "name": "Cart",
+      "description": "Shopping cart operations (Redis-based)"
+    },
+    {
+      "name": "Orders",
+      "description": "Order processing and management"
+    },
+    {
+      "name": "Reviews",
+      "description": "Product reviews and ratings"
+    },
+    {
+      "name": "Customers",
+      "description": "Customer management (Admin only)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token from /auth/login or /auth/register"
+      }
+    },
+    "schemas": {
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token (expires in 7 days)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNjMwMDAwMDAwLCJleHAiOjE2MzA2MDQ4MDB9.abc123xyz"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT refresh token (expires in 30 days)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYzMDAwMDAwMCwiZXhwIjoxNjMyNTkyMDAwfQ.xyz789abc"
+          },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "example": "user@example.com"
+              },
+              "first_name": {
+                "type": "string",
+                "example": "John"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["USER", "MANAGER", "ADMIN"],
+                "example": "USER"
+              }
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["USER", "MANAGER", "ADMIN"],
+            "example": "USER"
+          },
+          "phone_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "0123456789"
+          },
+          "address": {
+            "type": "string",
+            "nullable": true,
+            "example": "123 Main Street, City, Country"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "iPhone 15 Pro"
+          },
+          "sku": {
+            "type": "string",
+            "example": "IPH-15P-256-BLK"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Latest iPhone model with A17 Pro chip, titanium design, and advanced camera system"
+          },
+          "price": {
+            "type": "number",
+            "format": "float",
+            "example": 999.99
+          },
+          "stock_quantity": {
+            "type": "integer",
+            "example": 50
+          },
+          "weight": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "example": 0.221
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true,
+            "example": "/uploads/products/product-1-thumb.webp"
+          },
+          "category_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "brand_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "category": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "ELECTRONICS"
+              }
+            }
+          },
+          "brand": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "example": 1
+              },
+              "name": {
+                "type": "string",
+                "example": "Apple"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "OrderItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "product_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          },
+          "unit_price": {
+            "type": "number",
+            "format": "float",
+            "example": 999.99
+          },
+          "product": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "iPhone 15 Pro"
+              },
+              "sku": {
+                "type": "string",
+                "example": "IPH-15P-256-BLK"
+              }
+            }
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PROCESSING",
+              "SHIPPED",
+              "DELIVERED",
+              "CANCELLED"
+            ],
+            "example": "PENDING"
+          },
+          "total": {
+            "type": "number",
+            "format": "float",
+            "example": 1999.98
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItem"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Review": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "product_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "customer_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "rating": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "example": 5
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true,
+            "example": "Excellent product! Highly recommend."
+          },
+          "customer": {
+            "type": "object",
+            "properties": {
+              "first_name": {
+                "type": "string",
+                "example": "John"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Doe"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "An error occurred"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "Validation failed"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "example": "email"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid email format"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized - Invalid or missing token"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ForbiddenError": {
+        "description": "Insufficient permissions",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Access denied. Required role: ADMIN"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Resource not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationError"
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Register a new user",
+        "description": "Create a new user account and receive authentication tokens",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "first_name", "last_name"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "user@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8,
+                    "example": "Password123!"
+                  },
+                  "first_name": {
+                    "type": "string",
+                    "example": "John"
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "example": "Doe"
+                  },
+                  "phone_number": {
+                    "type": "string",
+                    "example": "0123456789"
+                  },
+                  "address": {
+                    "type": "string",
+                    "example": "123 Main Street"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login user",
+        "description": "Authenticate user and receive access & refresh tokens\n\n**Test Credentials:**\n- ADMIN: admin_test@fakemail.com / P@ssword123.\n- Create your own USER via /auth/register\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin_test@fakemail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "P@ssword123."
+                  }
+                }
+              },
+              "examples": {
+                "admin": {
+                  "summary": "Admin Login",
+                  "value": {
+                    "email": "admin_test@fakemail.com",
+                    "password": "P@ssword123."
+                  }
+                },
+                "newUser": {
+                  "summary": "New User (Register first)",
+                  "value": {
+                    "email": "user@example.com",
+                    "password": "YourPassword123!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid email or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/profile": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Get user profile",
+        "description": "Retrieve authenticated user's profile information",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Profile retrieved successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh access token",
+        "description": "Get a new access token using refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Access token refreshed successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        },
+                        "refreshToken": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cart": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Get user cart",
+        "description": "Retrieve the current user's shopping cart",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cart retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "product_id": {
+                                "type": "integer",
+                                "example": 1
+                              },
+                              "name": {
+                                "type": "string",
+                                "example": "iPhone 15 Pro"
+                              },
+                              "price": {
+                                "type": "number",
+                                "example": 999.99
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "subtotal": {
+                                "type": "number",
+                                "example": 1999.98
+                              }
+                            }
+                          }
+                        },
+                        "total": {
+                          "type": "number",
+                          "example": 1999.98
+                        },
+                        "itemCount": {
+                          "type": "integer",
+                          "example": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/cart/items": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Add item to cart",
+        "description": "Add a product to the shopping cart",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["product_id", "quantity"],
+                "properties": {
+                  "product_id": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "ID of the product to add"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "example": 2,
+                    "minimum": 1,
+                    "description": "Quantity to add"
+                  }
+                }
+              },
+              "example": {
+                "product_id": 1,
+                "quantity": 2
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item added to cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Item added to cart successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "product_id": {
+                          "type": "integer"
+                        },
+                        "quantity": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product or insufficient stock"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/cart/items/{productId}": {
+      "patch": {
+        "tags": ["Cart"],
+        "summary": "Update cart item quantity",
+        "description": "Update the quantity of an item in the cart",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID",
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["quantity"],
+                "properties": {
+                  "quantity": {
+                    "type": "integer",
+                    "example": 3,
+                    "minimum": 1
+                  }
+                }
+              },
+              "example": {
+                "quantity": 3
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cart item updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cart item updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid quantity or insufficient stock"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Item not in cart"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Remove item from cart",
+        "description": "Remove a product from the shopping cart",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Product ID to remove",
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item removed from cart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Item removed from cart successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "Item not in cart"
+          }
+        }
+      }
+    },
+    "/api/cart/clear": {
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "Clear entire cart",
+        "description": "Remove all items from the shopping cart",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart cleared successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Cart cleared successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/api/customers": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get customers (own data for USER, all for ADMIN)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customers retrieved"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "tags": ["Orders"],
+        "summary": "Get user orders",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders retrieved"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Orders"],
+        "summary": "Create order",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "product_id": {
+                          "type": "integer"
+                        },
+                        "quantity": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order created"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get all products",
+        "description": "Retrieve a list of products with optional filters and pagination",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by product name"
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by category name"
+          },
+          {
+            "in": "query",
+            "name": "brand",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by brand name"
+          },
+          {
+            "in": "query",
+            "name": "minPrice",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Minimum price filter"
+          },
+          {
+            "in": "query",
+            "name": "maxPrice",
+            "schema": {
+              "type": "number"
+            },
+            "description": "Maximum price filter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Products retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "results": {
+                      "type": "integer",
+                      "example": 10
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "type": "integer"
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "summary": "Create a new product (ADMIN only)",
+        "description": "Create a new product with optional image upload",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "stock_quantity",
+                  "category_id",
+                  "brand_id"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "MacBook Pro 16\""
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Powerful laptop for professionals"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 2499.99
+                  },
+                  "stock_quantity": {
+                    "type": "integer",
+                    "example": 15
+                  },
+                  "weight": {
+                    "type": "number",
+                    "example": 2.1
+                  },
+                  "category_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "brand_id": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Product image (optional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Product created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get product by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Products"],
+        "summary": "Update product (ADMIN only)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "stock_quantity": {
+                    "type": "integer"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete product (ADMIN only)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenError"
+          }
+        }
+      }
+    },
+    "/api/products/{productId}/reviews": {
+      "get": {
+        "tags": ["Reviews"],
+        "summary": "Get product reviews",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reviews retrieved"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Reviews"],
+        "summary": "Create review",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "productId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created"
+          }
+        }
+      }
+    }
+  }
+}

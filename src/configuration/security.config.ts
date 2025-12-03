@@ -140,53 +140,5 @@ export const configureSanitization = (app: Express) => {
  * @param app The Express application instance.
  */
 export const configureSecurityMiddlewares = (app: Express) => {
-  app.use(
-    helmet({
-      crossOriginResourcePolicy: { policy: "cross-origin" },
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-
-          // 1. Scripts (JS)
-          scriptSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com",
-            "https://vercel.live",
-          ],
-          scriptSrcElem: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com",
-            "https://vercel.live",
-          ],
-
-          // 2. Styles (CSS)
-          styleSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com",
-            "https://fonts.googleapis.com",
-          ],
-
-          styleSrcElem: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://cdnjs.cloudflare.com",
-            "https://fonts.googleapis.com",
-          ],
-
-          // 3. Images
-          imgSrc: ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
-
-          // 4. Connexions (API calls, Analytics)
-          connectSrc: [
-            "'self'",
-            "https://vercel.live",
-            "https://vitals.vercel-insights.com",
-          ],
-        },
-      },
-    })
-  );
+  app.use(helmet());
 };
